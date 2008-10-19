@@ -5,3 +5,4 @@
  ++ Wizard JS handling
  ++ TCEForm Rendering
  ++ RefIndex Records
+ ++ EM-Switch to select compressed or normal JS-sources ...
