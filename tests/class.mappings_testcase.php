@@ -26,6 +26,12 @@ class mappings_testcase extends tx_phpunit_testcase {
     $this->assertEquals(1,preg_match($regEx,$this->mapper->generateMap($cObj,'ÄÖÜ..')),'Name-attribute is not cleaned as supposed...');
   }
 
+    function test_emptyMapNameDoesnTHurt() {
+	    $cObj = $this->getMock('tslib_cObj', array('typolink'));
+	    $input = '<map></map>';	    
+	    $this->assertEquals(0,preg_match('/^<map name="\S+">/',$this->mapper->generateMap($cObj,'',$input)),'Empty Map-Name inputs are not processed as supposed');        
+    }
+
   function test_creatingSimpleRectMap() {
 	$cObj = $this->getMock('tslib_cObj', array('typolink'));
 	$cObj->expects($this->atLeastOnce())->method('typolink')->will($this->returnValue('<a href="http://www.foo.org" title="tt">text</a>'));
@@ -52,7 +58,7 @@ class mappings_testcase extends tx_phpunit_testcase {
 	$output = '<map name="test"><area href="http://www.foo.org" shape="rect" /></map>';
 	$this->assertEquals($output,$this->mapper->generateMap($cObj,'test',$input),'Href-Attribute is not recognized for the area-link creation.');
   }
-
+  
   function setUp() {
     require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_mapper.php');
     $this->mapper = t3lib_div::makeInstance('tx_imagemapwizard_mapper');

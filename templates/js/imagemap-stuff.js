@@ -4,6 +4,11 @@
 canvasClass = function () {
     var canvasId,canvasVectors,pictureId,boxId,formsId,boxMarkerCount,areaCount,areaObjects,areaObjectList,formBlueprints;
     
+    var mouseIsDown = false;
+    var mouseOverCanvas = false;
+    var mouseCurrentObjectDrag = -1;
+    var mouseCurrentEdgeDrag = -1;
+    var mouseCurrentBorderDrag = -1;
     /**
     *  Initialize basic-js Object which handles all the functionality
     * 
@@ -13,10 +18,9 @@ canvasClass = function () {
     * @param formid container which holds form-blueprints and which is supposed to containe the real forms aswell
     * @usage  external
     */
-    this.init = function (id,picid,boxid,formid){
+    this.init = function (id,picid,formid){
         canvasId = "#" + id;
         pictureId = "#" + picid;
-        boxId = "#" + boxid;
         formsId = "#" + formid;
         boxMarkerCount = 0;
         areaCount = 0;
@@ -27,9 +31,48 @@ canvasClass = function () {
         formBlueprints = this.parseFormToBluePrint(formsId);
         $(formsId).empty();
         $(canvasId).width($(pictureId).width()).height($(pictureId).height());
-        $(boxId).width($(pictureId).width()+6).height($(pictureId).height()+6);
     }
+    
+    this.mousedown = function(e) {
+        var x = e.pageX - $(canvasId).offset().left;
+        var y = e.pageY - $(canvasId).offset().top;
+        mouseIsDown = true;
+        jQuery.each(areaObjectList, function(i, objId) {             
+            if(mouseCurrentObjectDrag==-1) {
+                var tmp = areaObjects[objId].hitOnObjectEdge(x,y,3);
+                if(tmp != -1) {
+                    mouseCurrentObjectDrag=objId;
+                    mouseCurrentEdgeDrag=tmp;
+                }
+            }            
+        });
+    }
+    
 
+    this.mouseup = function(e){
+        mouseIsDown = false;
+        mouseCurrentObjectDrag = -1;
+        mouseCurrentEdgeDrag = -1;
+    }
+    
+
+    this.mousemove = function(e){       
+        var x = e.pageX - $(canvasId).offset().left;
+        var y = e.pageY - $(canvasId).offset().top;
+        
+        mouseOverCanvas = true;        
+        if(x<0)                         { x=0;                        mouseOverCanvas=false; }
+        if(x>$(pictureId).width())     { x=$(pictureId).width();    mouseOverCanvas=false; }
+        if(y<0)                         { y=0;                        mouseOverCanvas=false; }
+        if(y>$(pictureId).height())    { y=$(pictureId).height();    mouseOverCanvas=false; }
+        
+        if(mouseCurrentObjectDrag!=-1) {
+            mouseCurrentEdgeDrag = areaObjects[mouseCurrentObjectDrag].performResizeAction(mouseCurrentEdgeDrag,x,y);
+            this.updateCanvas(mouseCurrentObjectDrag);     
+            this.updateForm(mouseCurrentObjectDrag);
+        }
+    }
+    
     /**
     *  Adds a Rectangle-Area Object
     * 
@@ -38,18 +81,22 @@ canvasClass = function () {
     * @param colorValue the hex-value of the color
     * @usage external
     */
-    this.addRectArea = function (coords,linkValue,colorValue) {
+    this.addRectArea = function (coords,linkValue,colorValue,prepend) {
 		var tmp = new areaRectClass();
-        var theId = this.getNextId();
-        tmp.init(this,theId,coords,linkValue,colorValue);
-        areaObjects[theId] = tmp;
-        areaObjectList.push(theId);
-        this.addCanvasLayer(theId);
-        $(formsId).append(tmp.formMarkup().replace(/OBJID/g,theId));
-        $(formsId).sortable({});
-		areaObjects[theId].applyBasicAreaActions($("#" + theId));
-        this.updateCanvas(theId);
-        this.updateForm(tmp.getId());
+        tmp.init(this,this.getNextId(),coords,linkValue,colorValue);
+        areaObjects[tmp.getId()] = tmp;
+        areaObjectList.push(tmp.getId());
+        if(prepend) {
+            $(formsId).prepend(tmp.formMarkup().replace(/OBJID/g,tmp.getId()));
+        } else {
+            $(formsId).append(tmp.formMarkup().replace(/OBJID/g,tmp.getId()));        
+        }
+        $(formsId).data("parent",this).sortable({stop:function(e) { $(this).data("parent").updateCanvasLayerOrder(); } });
+		areaObjects[tmp.getId()].applyBasicAreaActions($("#" + tmp.getId()));
+        this.updateForm(tmp.getId());        
+        this.addCanvasLayer(tmp.getId());
+        this.updateCanvas(tmp.getId());
+        this.updateCanvasLayerOrder();
     }
     
     /**
@@ -76,54 +123,13 @@ canvasClass = function () {
 	this.persistanceXML = function() {
 		var result = "";
         var tmpArr = new Array();
-        jQuery.each(areaObjectList, function(i, objId) {
-			result = result + "\n" + areaObjects[objId].persistanceXML();
+        jQuery.each($(formsId + " > div"), function(i, obj) {
+            if(typeof areaObjects[$(obj).attr("id")] != 'undefined') {
+                result = result + "\n" + areaObjects[$(obj).attr("id")].persistanceXML();
+            }
         });
         return result;
 	}
-
-
-    /**
-    *  Adds a draggable MarkerPoint which is used to resize the Areas etc..
-    *
-    * @param id     the Area-Object-Id needed as back-reference
-    * @param x      initial x-coord
-    * @param y      initial y-coord
-    * @returns String   the new container-id of the created marker-point
-    * @usage area*Classes
-    */
-    this.addMarkerPoint = function(id,x,y) {
-        var markerId = this.getNextMarkerPointId();
-        $(boxId).append("<div class=\"point\" id=\"" + markerId + "\" style=\"left:"+ x +"px;top:"+ y +"px;\"><!-- --></div>");
-        $("#" + markerId).data("canvas",this);
-        $("#" + markerId).data("parentId",id);
-
-        $("#" + markerId).draggable({
-            containment:'parent',
-            refreshPositions:true,
-
-            drag:function(e,ui) {
-            	$(this).data("canvas").updateCanvas($(this).data("parentId"));
-            	$(this).data("canvas").updateForm($(this).data("parentId"));
-            },
-
-            start:function(e,ui) { },
-            /*start:function(e,ui) {
-                $(this).everyTime(5,"canvasFn", function() {
-                    $(this).data("canvas").updateCanvas($(this).data("parentId"));
-                    $(this).data("canvas").updateForm($(this).data("parentId"));
-                }, 0 , false)
-
-            },*/
-
-            stop:function(e,ui) {
-                $(this).stopTime("canvasFn");
-                $(this).data("canvas").updateCanvas($(this).data("parentId"));
-                $(this).data("canvas").updateForm($(this).data("parentId"));
-            }
-        });
-        return "#" + markerId;
-    }
 
     /**
     *  Removes Markerpoints
@@ -169,7 +175,21 @@ canvasClass = function () {
         canvasVectors[id].clear();
         $('#' + id + '_canvas').remove();
     }
-    
+
+    /**
+    * Adjust canvas-layer order analog to the order of the forms
+    *
+    * @usage internal
+    */
+    this.updateCanvasLayerOrder = function() {
+        var z = 100;
+        jQuery.each($(formsId + " > div"), function(i, obj) {
+            if(typeof areaObjects[$(obj).attr("id")] != 'undefined') {
+                $('#' + $(obj).attr("id") + '_canvas').css("z-index",z--);
+            }
+        });
+    }
+
     /**
     * Re-Sync the form-data with the Area-Object
     *
@@ -242,18 +262,16 @@ canvasClass = function () {
 }
 
 areaRectClass = function () {
-    var markers,canvasObj,_id,_link,_color,_moreOptionsVisible,_moreOptionsInitFlag;
-
+    var canvasObj,_id,_link,_color,_moreOptionsVisible,_moreOptionsInitFlag;
+    var _coords;
 	var _colors =
-		['990033','ff9999','993366','ff66cc','ff0066','ff00cc','cc0099','cc99ff',
+		['ff9999','993366','ff66cc','ff0066','ff00cc','cc0099','cc99ff',
 		'cc00cc','cc99cc','9933cc','9966cc','6600cc','6633ff','6666cc','333399',
 		'3333ff','3366ff','0000ff','336699','003366','0099cc','0099ff','66ffff',
 		'009999','33cccc','006666','33cc99','00ff99','669966','339933','33cc66',
 		'009933','ccff99','33ff33','00ff00','009900','66cc00','99cc66','669900',
 		'ccff00','333300','666633','ffff99','ffcc00','996600','993300','ff6633',
-		'996633','cc9999','ff3333','990000','cc9966','999999','666666','333333','000000'];
-
-
+		'996633','cc9999','ff3333','990000','cc9966', 'eeeeee','999999','666666','333333','000000'];
 
     // called from canvasClass
     this.init = function(canvas,id,coords,link,color) {
@@ -262,16 +280,14 @@ areaRectClass = function () {
         _link = link;
 		_color = (color && color.match(/^#\S{6}$/g))?color:("#" + _colors[parseInt(Math.random()*57)]);
         _moreOptionsVisible = false;
-    	var tmpcoords = coords.split(",");
-    	markers = new Array();
-        markers.push(canvasObj.addMarkerPoint(_id,tmpcoords[0],tmpcoords[1]));
-        markers.push(canvasObj.addMarkerPoint(_id,tmpcoords[2],tmpcoords[3]));
+        _coords = new Array();
+    	var tmpCoords = coords.split(",");
+        this.setX(tmpCoords[0],tmpCoords[2]);
+        this.setY(tmpCoords[1],tmpCoords[3]);
     }
 
     // called from canvasClass
     this.remove = function() {
-        canvasObj.removeMarkerPoint(markers[0]);
-        canvasObj.removeMarkerPoint(markers[1]);
         $("#" + this.getFormId()).remove();
         canvasObj.removeArea(this.getId());
     }
@@ -283,13 +299,17 @@ areaRectClass = function () {
 
     // called from canvasClass
     this.drawSelection = function(vectorsObj) {
-        vectorsObj.setStroke(1);
-        vectorsObj.setColor(_color);
-        vectorsObj.drawRect(this.getLeftX(), this.getTopY(), this.getW(),  this.getH());
-// removed to get some more performance
-//        vectorsObj.setStroke(Stroke.DOTTED);
-//        vectorsObj.setColor("#000000");
-//        vectorsObj.drawRect(this.getLeftX(), this.getTopY(), this.getW(),  this.getH());
+            vectorsObj.setColor(_color);
+            vectorsObj.drawRect(this.getLeftX(),this.getTopY(),this.getWidth(),this.getHeight());
+            vectorsObj.fillRect(this.getLeftX()-3,this.getTopY()-3,7,7);
+            vectorsObj.fillRect(this.getRightX()-3,this.getTopY()-3,7,7);
+            vectorsObj.fillRect(this.getRightX()-3,this.getBottomY()-3,7,7);
+            vectorsObj.fillRect(this.getLeftX()-3,this.getBottomY()-3,7,7);
+            vectorsObj.setColor("#ffffff");
+            vectorsObj.fillRect(this.getLeftX()-2,this.getTopY()-2,5,5);
+            vectorsObj.fillRect(this.getRightX()-2,this.getTopY()-2,5,5);
+            vectorsObj.fillRect(this.getRightX()-2,this.getBottomY()-2,5,5);
+            vectorsObj.fillRect(this.getLeftX()-2,this.getBottomY()-2,5,5);
     }
 
     // called from canvasClass
@@ -304,8 +324,6 @@ areaRectClass = function () {
     this.applyBasicAreaActions = function(jq) {
 
     	_moreOptionsInitFlag = false;
-
-//        $(formsId).sortable({containment:"parent"});
         $("#" + this.getFormId() + "_upd").data("area",this).click(function(event) {
             $(this).data("area").updateCoordsFromForm();
         });
@@ -329,7 +347,6 @@ areaRectClass = function () {
            	.data("obj",this)
     	    .change(function(event) {
     	        $(this).data("obj").updateStatesFromForm();
-    	    	//$(this).data("obj").updateLink($(this).val());
     	    });
 
         if(!_moreOptionsVisible)	$("#" + this.getFormId() + " > .moreOptions").hide();
@@ -350,11 +367,11 @@ areaRectClass = function () {
 		_moreOptionsInitFlag=true;
     }
 
-    this.updateColor = function(color,realChange) {
+    this.updateColor = function(color,updateCanvas) {
   		        _color = color;
 		        $("#" + this.getFormId() + "_main > .colorPreview > div").css("backgroundColor", color);
 		        $("#" + this.getFormId() + "_color > .colorBox > div").css("backgroundColor", color);
-		        if(realChange==1) canvasObj.updateCanvas(this.getId());
+		        if(updateCanvas==1) canvasObj.updateCanvas(this.getId());
     }
 
     // called from canvasClass
@@ -374,25 +391,78 @@ areaRectClass = function () {
     }
 
     this.getId = function()         {   return _id;  }
-
     // called from canvasClass
-    this.getFormId = function()     {   return "area" + this.getId();   }
-    this.getLeftX = function()          {   var x1 = $(markers[0]).position().left; var x2 = $(markers[1]).position().left;     return parseInt(x1>x2?x2:x1); }
-    this.getTopY = function()          {   var y1 = $(markers[0]).position().top ; var y2 = $(markers[1]).position().top ;     return parseInt(y1>y2?y2:y1); }
-    this.getRightX = function()      {   var x1 = $(markers[0]).position().left; var x2 = $(markers[1]).position().left;     return parseInt(x1>x2?x1:x2); }
-    this.getBottomY = function()      {   var y1 = $(markers[0]).position().top ; var y2 = $(markers[1]).position().top ;     return parseInt(y1>y2?y1:y2); }
+    this.getFormId = function()     {   return this.getId();   }
+  
+    this.hitOnObjectEdge = function(mouseX,mouseY,edgeSize) {
+        var result = -1;
+        if(this.hitEdge(mouseX,mouseY,this.getLeftX(),this.getTopY(),edgeSize)) {
+            result = 0;
+        } else if(this.hitEdge(mouseX,mouseY,this.getRightX(),this.getTopY(),edgeSize)) {
+            result = 1;
+        } else if(this.hitEdge(mouseX,mouseY,this.getRightX(),this.getBottomY(),edgeSize)) {
+            result = 2;
+        } else if(this.hitEdge(mouseX,mouseY,this.getLeftX(),this.getBottomY(),edgeSize)) {
+            result = 3;
+        }
+        return result;
+    }
+    
+    this.hitEdge = function(mX,mY,bX,bY,edgeSize) {    
+        return ((Math.abs(mX-bX)<=(edgeSize)) && (Math.abs(mY-bY)<=(edgeSize)));    
+    }
+    
+       
+    this.performResizeAction = function(edge,x,y) {
+        var tx = this.getLeftX();
+        var ty = this.getTopY();
+        var tw = this.getWidth();
+        var th = this.getHeight();
+        /* calculate new size */
+        if(edge==0 || edge==3) {    tw = tw-(x-tx);   }
+        if(edge==0 || edge==1) {    th = th-(y-ty);   }
+        if(edge==2 || edge==1) {    tw = x-tx;  }
+        if(edge==2 || edge==3) {    th = y-ty;  }
+        if(edge==0 || edge==3) {    tx = x;   }
+        if(edge==0 || edge==1) {    ty = y;   }
+        /* handle negativ width values */
+        if(tw<0) {
+            tx=tx+tw;
+            tw=-tw;
+            if(edge==0) {       edge=1; }
+            else if(edge==1) {  edge=0; }
+            else if(edge==2) {  edge=3; }
+            else if(edge==3) {  edge=2; }
+        }
+        /* handle negativ height values */
+        if(th<0) {
+            ty=ty+th;
+            th=-th;
+            if(edge==0) {       edge=3; }
+            else if(edge==1) {  edge=2; }
+            else if(edge==2) {  edge=1; }
+            else if(edge==3) {  edge=0; }            
+        }
+        this.setX(tx,tx+tw);
+        this.setY(ty,ty+th);
+        return edge;
+    }
+    
+    this.getLeftX = function()          {  return parseInt(_coords[0]); }
+    this.getTopY = function()          {  return parseInt(_coords[1]);  }
+    this.getRightX = function()      {  return parseInt(_coords[2]);  }
+    this.getBottomY = function()      {  return parseInt(_coords[3]); }
 
-	this.getW = function()	{ return this.getRightX()-this.getLeftX(); }
-	this.getH = function()	{ return this.getBottomY()-this.getTopY(); }
-
-
+	this.getWidth = function()	{ return this.getRightX()-this.getLeftX(); }
+	this.getHeight = function()	{ return this.getBottomY()-this.getTopY(); }
+    
     this.setX = function(x1,x2)   {
-        $(markers[0]).css("left",parseInt(x1>x2?x2:x1) + "px");
-        $(markers[1]).css("left",parseInt(x1>x2?x1:x2) + "px");
+          _coords[0] = parseInt(parseInt(x1)>parseInt(x2)?x2:x1);
+          _coords[2] = parseInt(parseInt(x1)>parseInt(x2)?x1:x2);
     }
     this.setY = function(y1,y2)   {
-        $(markers[0]).css("top",parseInt(y1>y2?y2:y1) + "px");
-        $(markers[1]).css("top",parseInt(y1>y2?y1:y2) + "px");
+          _coords[1] = parseInt(parseInt(y1)>parseInt(y2)?y2:y1);
+          _coords[3] = parseInt(parseInt(y1)>parseInt(y2)?y1:y2);  
     }
     this.setW = function(value)     {   var x = this.getLeftX();    this.setX(x,x+value);     }
     this.setH = function(value)     {   var y = this.getTopY();    this.setY(y,y+value);     }

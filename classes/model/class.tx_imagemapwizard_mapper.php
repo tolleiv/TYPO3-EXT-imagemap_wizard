@@ -64,6 +64,10 @@ class tx_imagemapwizard_mapper {
 	 */
 
 	public function createValidNameAttribute($value) {
+        
+        if(!preg_match('/\S+/',$value)) {
+            $value = t3lib_div::shortMD5(rand(0,100));
+        }
 		return preg_replace('/[^a-zA-Z0-9\-_]/i','-',$value);
 	}
 

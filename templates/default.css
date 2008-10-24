@@ -9,16 +9,19 @@
 #canvas { z-index:100; }
  .point { width:5px; height:5px; background:#ffffff; border:1px solid #000000; position:absolute; left:0px; top:0px; }
 #actions { float:left; margin:10px 20px 0 20px; width:400px; }
-#areaForms { padding:20px 5px; width:430px; float:left; }
-.areaForm { position:relative; width: 400px; float:left; margin:3px; padding:10px; border:1px solid black; }
+#areaForms { padding:20px 5px 50px 5px; width:430px; float:left; }
+.areaForm { position:relative; width: 450px; float:left; margin:3px; padding:10px; border:1px solid black; }
 .areaForm .formCoord { width: 50px; }
 .arrow { position:absolute; right:10px; top:15px; }
-.moreOptions .line { padding:5px 10px; }
+.moreOptions { margin-top:10px; padding:10px 0px 0px 0px; border-top:1px dashed lightgrey; }
+/*.moreOptions .line {  }*/
 
-.colors { }
+.moreOptions .halfLine {  float:left; width:190px; }
 .colorPreview { border:1px solid #000; float:left; margin-right:5px; }
 .colorPreview div { width:10px; height:10px;  border:2px solid #fff; }
-.colorBox { border:1px solid #000; float:left; }
-.colorBox div { width:20px; height:20px;  border:2px solid #fff; }
-.colorPicker { width:152px; border:1px solid #000; float:left; margin-left:5px; }
-.colorPickerCell { float:left; width:6px; height:6px; margin:0; border:1px solid white; cursor:pointer; font-size:1px; line-height:1px; }
+.moreOptions .colorBox { border:1px solid #000; float:left; }
+.moreOptions .colorBox div { width:20px; height:20px;  border:2px solid #fff; }
+.moreOptions .colorPicker { width:152px; border:1px solid #000; float:left; margin-left:5px; }
+.moreOptions .colorPickerCell { float:left; width:6px; height:6px; margin:0; border:1px solid white; cursor:pointer; font-size:1px; line-height:1px; }
+
+.moreOptions .positionOptions { padding-left: 40px; }
