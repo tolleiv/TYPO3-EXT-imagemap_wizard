@@ -10,10 +10,10 @@
  .point { width:5px; height:5px; background:#ffffff; border:1px solid #000000; position:absolute; left:0px; top:0px; }
 #actions { float:left; margin:10px 20px 0 20px; width:400px; }
 #areaForms { padding:20px 5px 50px 5px; width:430px; float:left; }
-.areaForm { position:relative; width: 450px; float:left; margin:3px; padding:10px; border:1px solid black; }
+.areaForm { position:relative; width: 450px; float:left; margin:3px; padding:10px; border:1px solid grey; }
 .areaForm .formCoord { width: 50px; }
 .arrow { position:absolute; right:10px; top:15px; }
-.moreOptions { margin-top:10px; padding:10px 0px 0px 0px; border-top:1px dashed lightgrey; }
+.moreOptions { margin-top:10px; padding:10px 0px 0px 0px; border-top:1px dashed grey; }
 /*.moreOptions .line {  }*/
 
 .moreOptions .halfLine {  float:left; width:190px; }

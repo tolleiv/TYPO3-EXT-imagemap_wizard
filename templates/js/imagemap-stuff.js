@@ -33,29 +33,46 @@ canvasClass = function () {
         $(canvasId).width($(pictureId).width()).height($(pictureId).height());
     }
     
+    
+    /**
+    * triggered form the outside whenever the mouse was clicked
+    * tries to find the object which relates to the click-event
+    *
+    * @param Event
+    */
     this.mousedown = function(e) {
         var x = e.pageX - $(canvasId).offset().left;
         var y = e.pageY - $(canvasId).offset().top;
         mouseIsDown = true;
-        jQuery.each(areaObjectList, function(i, objId) {             
+        jQuery.each($(formsId + " > div"), function(i, obj) {
             if(mouseCurrentObjectDrag==-1) {
-                var tmp = areaObjects[objId].hitOnObjectEdge(x,y,3);
+                var tmp = areaObjects[$(this).attr("id")].hitOnObjectEdge(x,y,3);
                 if(tmp != -1) {
-                    mouseCurrentObjectDrag=objId;
+                    mouseCurrentObjectDrag=$(this).attr("id");
                     mouseCurrentEdgeDrag=tmp;
                 }
-            }            
-        });
-    }
-    
-
+            } 
+        });          
+    }    
+ 
+    /**
+    * triggered form the outside whenever the mouse was release
+    * resets all states
+    *
+    * @param Event
+    */
     this.mouseup = function(e){
         mouseIsDown = false;
         mouseCurrentObjectDrag = -1;
         mouseCurrentEdgeDrag = -1;
-    }
-    
+    }    
 
+    /**
+    * triggered form the outside whenever the mouse was moved
+    * validates coordinates and updates current objects (if any)
+    *
+    * @param Event
+    */
     this.mousemove = function(e){       
         var x = e.pageX - $(canvasId).offset().left;
         var y = e.pageY - $(canvasId).offset().top;
@@ -91,12 +108,23 @@ canvasClass = function () {
         } else {
             $(formsId).append(tmp.formMarkup().replace(/OBJID/g,tmp.getId()));        
         }
-        $(formsId).data("parent",this).sortable({stop:function(e) { $(this).data("parent").updateCanvasLayerOrder(); } });
+        $(formsId).data("parent",this).sortable({
+            distance:3, 
+            start:function(e) {
+                $("#" + $(e.target).attr("id") + " > .sortbtn").css("visibility","hidden");  
+                $("#" + $(e.target).attr("id") + " > div > .sortbtn").css("visibility","hidden");            
+            },
+            stop:function(e) {
+                $(this).data("parent").updateCanvasLayerOrder(); 
+                $(this).data("parent").fixSortbtnVisibility();
+            }
+        });
 		areaObjects[tmp.getId()].applyBasicAreaActions($("#" + tmp.getId()));
         this.updateForm(tmp.getId());        
         this.addCanvasLayer(tmp.getId());
         this.updateCanvas(tmp.getId());
         this.updateCanvasLayerOrder();
+        this.fixSortbtnVisibility();        
     }
     
     /**
@@ -112,6 +140,63 @@ canvasClass = function () {
         });
         areaObjectList=tmpArr;
         this.removeCanvasLayer(id);
+        this.fixSortbtnVisibility();
+    }
+
+    /**
+    * triggered to move a single areaObject manually up - for assistance of sortable
+    *
+    * @param id ObjectID
+    */
+    this.areaUp = function(id) {
+        var prev = -1;
+        var self = -1;
+        jQuery.each($(formsId + " > div"), function(i, obj) {
+            if($(obj).attr("id")==id) {
+                self = $(obj).attr("id");                
+            }
+            if(self == -1) {
+                prev = $(obj).attr("id");
+            }
+        });    
+        if(prev != -1) {
+            $("#" + self).insertBefore("#" + prev);
+            this.updateCanvasLayerOrder();
+        }
+        this.fixSortbtnVisibility();
+    }
+
+    /**
+    * triggered to move a single areaObject manually down - for assistance of sortable
+    *
+    * @param id ObjectID
+    */
+    this.areaDown = function(id) {
+        var next = -1;
+        var self = -1;
+        jQuery.each($(formsId + " > div"), function(i, obj) {
+            if((self != -1) && (next == -1)) {
+                next = $(obj).attr("id");
+            }              
+            if($(obj).attr("id")==id) {
+                self= $(obj).attr("id");
+            }
+        });    
+        if(next != -1) {
+            $("#" + self).insertAfter("#" +next);
+            this.updateCanvasLayerOrder();            
+        }        
+        this.fixSortbtnVisibility();
+    }
+
+    /**
+    * triggered to show/hide the buttons for manuell sorting (hide if options not available etc..)
+    *
+    */    
+    this.fixSortbtnVisibility = function() {
+        $(formsId + " > div > .basicOptions > .sortbtn").css("visibility","visible");
+        $(formsId + " > div:first > .basicOptions > .upbtn").css("visibility","hidden");
+        $(formsId + " > div:last > .basicOptions > .downbtn").css("visibility","hidden");    
     }
 
     /**
@@ -130,16 +215,6 @@ canvasClass = function () {
         });
         return result;
 	}
-
-    /**
-    *  Removes Markerpoints
-    *
-    * @param id     the container-id
-    * @usage area*Classes
-    */
-    this.removeMarkerPoint = function(id) {
-        $(id).remove();
-    }
 
     /**
     * Add a new canvas-layer and create a new Graphics-Objects.
@@ -202,8 +277,8 @@ canvasClass = function () {
             var item = value.split("=");
             $("#" + item[0]).attr("value",item[1]);
         });
-    }
-    
+    }    
+
     /**
     * Reload form from blueprint after the linkvalue was updated (Required since Link-Wizard URL need to change).
     *
@@ -254,7 +329,7 @@ canvasClass = function () {
     this.parseFormToBluePrint = function(id) {
         var result = new Array();
         $(id + " > div").each(function(elem) {
-            result[this.id] = "<div class=\"areaForm " +  this.id + "\" id=\"MAPFORMID\">"+ $("#" + this.id).html() + "</div>";
+            result[this.id] = "<div class=\"" +  this.id + " " + $(this).attr("class") + "\" id=\"MAPFORMID\">"+ $("#" + this.id).html() + "</div>";
         });
         return result;
     }
@@ -265,13 +340,10 @@ areaRectClass = function () {
     var canvasObj,_id,_link,_color,_moreOptionsVisible,_moreOptionsInitFlag;
     var _coords;
 	var _colors =
-		['ff9999','993366','ff66cc','ff0066','ff00cc','cc0099','cc99ff',
-		'cc00cc','cc99cc','9933cc','9966cc','6600cc','6633ff','6666cc','333399',
-		'3333ff','3366ff','0000ff','336699','003366','0099cc','0099ff','66ffff',
-		'009999','33cccc','006666','33cc99','00ff99','669966','339933','33cc66',
-		'009933','ccff99','33ff33','00ff00','009900','66cc00','99cc66','669900',
-		'ccff00','333300','666633','ffff99','ffcc00','996600','993300','ff6633',
-		'996633','cc9999','ff3333','990000','cc9966', 'eeeeee','999999','666666','333333','000000'];
+		['990033','ff9999','993366','ff66cc','ff0066','ff00cc','cc0099','cc99ff','cc00cc','cc99cc','9933cc','9966cc','6600cc','6633ff','6666cc','333399','3333ff',		
+		'3366ff','0000ff','336699','003366','0099cc','0099ff','66ffff','009999','33cccc','006666','33cc99','00ff99','669966','339933','33cc66','009933',		
+		'ccff99','00ff00','009900','66cc00','99cc66','669900','ccff00','333300','666633','ffff99','ffcc00','996600','993300','ff6633','996633','cc9999',		
+		'ff3333','990000','cc9966', 'eeeeee','999999','666666','333333','000000'];
 
     // called from canvasClass
     this.init = function(canvas,id,coords,link,color) {
@@ -292,6 +364,8 @@ areaRectClass = function () {
         canvasObj.removeArea(this.getId());
     }
 
+    this.getCanvas = function() { return canvasObj; }
+
     // called from canvasClass
 	this.persistanceXML = function() {
 		return "<area shape=\"rect\" coords=\""+this.getLeftX()+","+this.getTopY()+","+this.getRightX()+","+this.getBottomY()+"\" color=\""+_color+"\">"+_link+"</area>";
@@ -299,8 +373,13 @@ areaRectClass = function () {
 
     // called from canvasClass
     this.drawSelection = function(vectorsObj) {
-            vectorsObj.setColor(_color);
+            vectorsObj.setColor(_color);            
+            vectorsObj.setStroke(1);
             vectorsObj.drawRect(this.getLeftX(),this.getTopY(),this.getWidth(),this.getHeight());
+            /*vectorsObj.setStroke(Stroke.DOTTED);
+            vectorsObj.setColor("#ffffff");         
+            vectorsObj.drawRect(this.getLeftX(),this.getTopY(),this.getWidth(),this.getHeight());
+            vectorsObj.setColor(_color);         */
             vectorsObj.fillRect(this.getLeftX()-3,this.getTopY()-3,7,7);
             vectorsObj.fillRect(this.getRightX()-3,this.getTopY()-3,7,7);
             vectorsObj.fillRect(this.getRightX()-3,this.getBottomY()-3,7,7);
@@ -343,11 +422,28 @@ areaRectClass = function () {
                     $(this).attr("src",$(this).attr("src").replace(/up/,"down"));
                 }
         });
+        $("#" + this.getFormId() + " > .basicOptions > .colorPreview")
+        	.data("pseudo","#" + this.getFormId() + " > .basicOptions > .exp > img")
+            .click(function(event) {
+                $($(this).data("pseudo")).click();
+            });
         $("#" + this.getFormId() + "_link")
            	.data("obj",this)
     	    .change(function(event) {
     	        $(this).data("obj").updateStatesFromForm();
     	    });
+        $("#" + this.getFormId() + "_up")
+           	.data("obj",this)
+            .click(function(event) {
+            $(this).data("obj").getCanvas().areaUp($(this).data("obj").getId());
+        });
+        $("#" + this.getFormId() + "_down")
+           	.data("obj",this)
+            .click(function(event) {
+            $(this).data("obj").getCanvas().areaDown($(this).data("obj").getId());
+        });
+            
+            
 
         if(!_moreOptionsVisible)	$("#" + this.getFormId() + " > .moreOptions").hide();
 		else						this.applyAdditionalAreaActions();

@@ -29,18 +29,15 @@ $(document).ready(function(){
     	setValue("<map>" + canvasObject.persistanceXML() + "\n</map>");
     	close();
     });
-   $("#canvas").mousedown(function(e){
+    $("#canvas").mousedown(function(e){
         canvasObject.mousedown(e);
     });
     $(document).mouseup(function(e){
         canvasObject.mouseup(e);
     });
-
     $(document).mousemove(function(e){       
         canvasObject.mousemove(e);
-    });    
-    
-    
+    });
 });
 ');
 
@@ -58,21 +55,26 @@ $(document).ready(function(){
     </div>
     <div id="info"><!-- --></div>
     <div id="areaForms">
-        <div id="rectForm">
+        <div id="rectForm" class="areaForm bgColor5">
             <div id="MAPFORMID_main" class="basicOptions">
             	<div class="colorPreview ptr"><div><!-- --></div></div>
             	<input type="text" id="MAPFORMID_link" value="..." /> <?  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
-            	<input type="button" id="MAPFORMID_del" value="D" />
-            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","alt='expand'"); ?></div>
+            	<? echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"up\" class=\"ptr sortbtn upbtn\""); ?>
+            	<? echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"down\"class=\"ptr sortbtn downbtn\""); ?>
+            	<? echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"expand\""); ?>
+            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","class=\"ptr\" alt='expand'"); ?></div>
             </div>
             <div id="MAPFORMID_more" class="moreOptions">            	
-            	<div id="MAPFORMID_color" class="colors halfLine"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
-                <div class="positionOptions halfLine">X1: <input type="text" class="formCoord" id="MAPFORMID_x1" value="x" /> Y1: <input type="text" class="formCoord" id="MAPFORMID_y1" value="y" /><br/>X2: <input type="text" class="formCoord" id="MAPFORMID_x2" value="x" /> Y2: <input type="text" class="formCoord" id="MAPFORMID_y2" value="y" /> <input type="button" id="MAPFORMID_upd" value="R" /></div>
+                <div class="halfLine">
+            	    <div id="MAPFORMID_color" class="colors"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
+                    <div id="MAPFORMID_stroke" class="colors"><div class="strokeBox"><div><!-- --></div></div><div class="strokePicker"><!-- --></div><div class="cc""><!-- --></div></div>
+                </div>
+                <div class="positionOptions halfLine">X1: <input type="text" class="formCoord" id="MAPFORMID_x1" value="x" /> Y1: <input type="text" class="formCoord" id="MAPFORMID_y1" value="y" /><br/>X2: <input type="text" class="formCoord" id="MAPFORMID_x2" value="x" /> Y2: <input type="text" class="formCoord" id="MAPFORMID_y2" value="y" /> <? echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\"class=\"ptr\"  alt=\"refresh\""); ?></div>
                 <div class="cc"><!-- --></div>
             </div>
         </div>
-        <div id="circForm">circForm is not rady yet</div>
-        <div id="polyForm">polyForm is not rady yet</div>
+        <div id="circForm" class="areaForm bgColor4">circForm is not ready yet</div>
+        <div id="polyForm" class="areaForm bgColor4">polyForm is not ready yet</div>
     </div>
 
 	<span class="cc"><!-- --></span>
