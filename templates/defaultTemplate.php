@@ -9,23 +9,13 @@ $this->addExternalJs("templates/js/im.canvasClass.js");
 $this->addExternalJs("templates/js/js.inheritance.js");
 $this->addExternalJs("templates/js/im.areaClass.js");
 $this->addExternalJs("templates/js/im.areaRectClass.js");
+$this->addExternalJs("templates/js/im.areaCircleClass.js");
 $this->addExternalJs("templates/js/im.areaPolyClass.js");
 $this->addExternalCSS("templates/default.css");
 
-$existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape##Class(),'##coords##','##link##','##color##',0);\n");
+$existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape##Class(),'##coords##','##alt##','##link##','##color##',0);\n");
 
 $this->addInlineJs('
-function extend(Child, Parent) {
-  var F = function(){};
-  F.prototype = Parent.prototype;
-  Child.prototype = new F();
-}
-function begetObject(o) {
-  function F() {}
-  F.prototype = o;
-  return new F();
-}
-
 $(document).ready(function(){
     canvasObject = new canvasClass();
     canvasObject.init("canvas","picture","areaForms");
@@ -35,12 +25,15 @@ $(document).ready(function(){
     // add Button-Actions
     $("#addRect").click(function(event) {
     	//TODO find useful default???
-        canvasObject.addArea(new areaRectClass(),\'100,100,50,50\',\'\',\'\',1);
+        canvasObject.addArea(new areaRectClass(),\'100,100,50,50\',\'\',\'\',\'\',1);
     });
-    // add Button-Actions
     $("#addPoly").click(function(event) {
     	//TODO find useful default???
-        canvasObject.addArea(new areaPolyClass(),\'100,100,75,75,50,100\',\'\',\'\',1);
+        canvasObject.addArea(new areaPolyClass(),\'100,100,75,75,50,100\',\'\',\'\',\'\',1);
+    });
+    $("#addCirc").click(function(event) {
+    	//TODO find useful default???
+        canvasObject.addArea(new areaCircleClass(),\'100,100,50\',\'\',\'\',\'\',1);
     });
     $(".niy").click(function(event) {
     	alert("Not implemented yet - but would be cool to have it :)");
@@ -63,13 +56,14 @@ $(document).ready(function(){
 
  ?>
 <div id="root">
-	<div id="picture">
-		<div id="image"><? echo $this->data->renderImage(); ?></div>
+
+    <div id="picture">
+        <div id="image"><? echo $this->data->renderImage(); ?></div>
         <div id="canvas" class="canvas"><!-- --></div>
     </div>
 	<div id="actions">
     <input type="button" id="addRect" value="Add Rect-Area" />
-    <input type="button" id="addCirc" value="Add Circ-Area" class="niy" />
+    <input type="button" id="addCirc" value="Add Circ-Area" />
     <input type="button" id="addPoly" value="Add Poly-Area" />
     <input type="button" id="submit" value="Save &amp; Close" />
     </div>
@@ -78,7 +72,8 @@ $(document).ready(function(){
         <div id="rectForm" class="areaForm bgColor5">
             <div id="MAPFORMID_main" class="basicOptions">
             	<div class="colorPreview ptr"><div><!-- --></div></div>
-            	<input type="text" id="MAPFORMID_link" value="..." /> <?  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
+                <label for="MAPFORMID_label">Label:</label><input type="text" id="MAPFORMID_label" value="..." />
+            	<label for="MAPFORMID_link">Link:</label><input type="text" id="MAPFORMID_link" value="..." /> <?  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
             	<? echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"up\" class=\"ptr sortbtn upbtn\""); ?>
             	<? echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"down\"class=\"ptr sortbtn downbtn\""); ?>
             	<? echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"expand\""); ?>
@@ -93,11 +88,30 @@ $(document).ready(function(){
                 <div class="cc"><!-- --></div>
             </div>
         </div>
-        <div id="circForm" class="areaForm bgColor4">circForm is not ready yet</div>
+        <div id="circForm" class="areaForm bgColor5">
+            <div id="MAPFORMID_main" class="basicOptions">
+            	<div class="colorPreview ptr"><div><!-- --></div></div>
+                <label for="MAPFORMID_label">Label:</label><input type="text" id="MAPFORMID_label" value="..." />
+            	<label for="MAPFORMID_link">Link:</label><input type="text" id="MAPFORMID_link" value="..." /> <?  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
+            	<? echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"up\" class=\"ptr sortbtn upbtn\""); ?>
+            	<? echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"down\"class=\"ptr sortbtn downbtn\""); ?>
+            	<? echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"expand\""); ?>
+            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","class=\"ptr\" alt='expand'"); ?></div>
+            </div>
+            <div id="MAPFORMID_more" class="moreOptions">            	
+                <div class="halfLine">
+            	    <div id="MAPFORMID_color" class="colors"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
+                    <div id="MAPFORMID_stroke" class="colors"><div class="strokeBox"><div><!-- --></div></div><div class="strokePicker"><!-- --></div><div class="cc""><!-- --></div></div>
+                </div>
+                <div class="positionOptions halfLine"><label for="MAPFORMID_x" class="XYlabel XYlabel-first">X:</label><input type="text" class="formCoord" id="MAPFORMID_x" value="x" /><label for="MAPFORMID_y1" class="XYlabel">Y:</label><input type="text" class="formCoord" id="MAPFORMID_y" value="y" /><label for="MAPFORMID_radius" class="XYlabel XYlabel-first">R:</label><input type="text" class="formCoord" id="MAPFORMID_radius" value="r" /> <? echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\"class=\"ptr\" alt=\"refresh\" title=\"refresh\""); ?><div class="cc"><!-- --></div></div>
+                <div class="cc"><!-- --></div>
+            </div>
+        </div>
         <div id="polyForm" class="areaForm bgColor5">
             <div id="MAPFORMID_main" class="basicOptions">
             	<div class="colorPreview ptr"><div><!-- --></div></div>
-            	<input type="text" id="MAPFORMID_link" value="..." /> <?  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
+                <label for="MAPFORMID_label">Label:</label><input type="text" id="MAPFORMID_label" value="..." />
+            	<label for="MAPFORMID_link">Link:</label><input type="text" id="MAPFORMID_link" value="..." /> <?  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
             	<? echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"up\" class=\"ptr sortbtn upbtn\""); ?>                
             	<? echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"down\"class=\"ptr sortbtn downbtn\""); ?>
             	<? echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"expand\""); ?>

@@ -12,8 +12,7 @@ var areaRectClass = areaClass.extend({
 
     // called from canvasClass
 	persistanceXML: function() {
-        console.log(this.getLink());
-		return "<area shape=\"rect\" coords=\""+this.getLeftX()+","+this.getTopY()+","+this.getRightX()+","+this.getBottomY()+"\" color=\""+this.getColor()+"\">"+this.getLink()+"</area>";
+		return "<area shape=\"rect\" coords=\""+this.getLeftX()+","+this.getTopY()+","+this.getRightX()+","+this.getBottomY()+"\" alt=\"" + this.getLabel() + "\" color=\""+this.getColor()+"\">"+this.getLink()+"</area>";
 	},
 
     // called from canvasClass
@@ -41,7 +40,15 @@ var areaRectClass = areaClass.extend({
 
     // called from canvasClass
     formUpdate: function() {
-        return this.getFormId() + "_x1=" + this.getLeftX() + ";" + this.getFormId() + "_y1=" + this.getTopY() + ";" + this.getFormId() + "_x2=" + this.getRightX() + ";" + this.getFormId() + "_y2=" + this.getBottomY() +  ";" + this.getFormId() + "_link=" + this.getLink();
+        var result = this.getFormId() + "_x1=" + this.getLeftX() + ";" 
+                    + this.getFormId() + "_y1=" + this.getTopY() + ";"
+                    + this.getFormId() + "_x2=" + this.getRightX() + ";"
+                    + this.getFormId() + "_y2=" + this.getBottomY() +  ";";
+        
+        
+        result = result  + this.getFormId() + "_link=" + this.getLink() + ";";
+        result = result  + this.getFormId() + "_label=" + this.getLabel() + ";";
+        return result;
     },
     
     

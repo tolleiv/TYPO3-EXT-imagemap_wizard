@@ -91,6 +91,7 @@ class tx_imagemapwizard_dataObject {
 								"##shape##"=>ucfirst($area["@"]["shape"]),
 								"##color##"=>$area["@"]["color"],
 								"##link##"=>$area["value"],
+								"##alt##"=>$area["@"]["alt"],
 							);
 
 			$result .= str_replace(array_keys($markers),array_values($markers),$template);

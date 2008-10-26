@@ -2,6 +2,7 @@
 var areaClass = Class.extend({
     _id:-1,
     _link:-1,
+    _label:'',
     _canvas:-1,
     _moreOptionsInitFlag:false,
     _moreOptionsVisible:false,
@@ -11,9 +12,10 @@ var areaClass = Class.extend({
 		        'ff3333','990000','cc9966', 'eeeeee','999999','666666','333333','000000'],
     
     // called from canvasClass
-    init: function(canvas,id,coords,link,color) {
+    init: function(canvas,id,coords,label,link,color) {
         this._canvas = canvas;
         this._id = id;
+        this.setLabel(label);
         this.setLink(link);
 		this.setColor(color);
         this.initCoords(coords);
@@ -28,6 +30,14 @@ var areaClass = Class.extend({
         return this._canvas;
     },
     
+    setLabel: function(label) {
+        this._label = label;
+    },
+    
+    getLabel: function() {
+        return this._label;
+    },
+    
     setLink: function(link) {
         this._link = link;
     },
@@ -37,8 +47,8 @@ var areaClass = Class.extend({
     },
     
     _color:-1,
-    setColor: function(color) {
-        this._color = (color && color.match(/^#\S{6}$/g))?color:("#" + this._colors[parseInt(Math.random()*57)])    
+    setColor: function(color) {    
+        this._color = ((typeof color =='string') && color.match(/^#\S{6}$/g))?color:("#" + this._colors[parseInt(Math.random()*57)])    
     },
 
     updateColor: function(color,updateCanvas) {
@@ -113,6 +123,7 @@ var areaClass = Class.extend({
 
     updateStatesFromForm: function() {
 		this.setLink(document.forms[0].elements[this.getFormId() + "_link"].value);
+        this.setLabel(document.forms[0].elements[this.getFormId() + "_label"].value);
 		this._moreOptionsVisible = $("#" + this.getFormId() +" > .moreOptions").is(":visible");
     },
 

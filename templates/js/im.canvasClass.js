@@ -2,7 +2,7 @@
 //TODO validate coords
 
 canvasClass = function () {
-    var canvasId,canvasVectors,pictureId,boxId,formsId,boxMarkerCount,areaCount,areaObjects,areaObjectList,formBlueprints;
+    var canvasId,canvasVectors,pictureId,boxId,formsId,boxMarkerCount,areaCount,areaObjects,areaObjectList,formBlueprints,maxW,maxH;
     
     var mouseIsDown = false;
     var mouseOverCanvas = false;
@@ -27,10 +27,11 @@ canvasClass = function () {
         canvasVectors = new Array();
         areaObjects = new Array();
         areaObjectList = new Array();
-
+        maxW = $(pictureId).width();
+        maxH = $(pictureId).height();
         formBlueprints = this.parseFormToBluePrint(formsId);
         $(formsId).empty();
-        $(canvasId).width($(pictureId).width()).height($(pictureId).height());
+        $(canvasId).width($(pictureId).width()).height($(pictureId).height());        
     }
     
     
@@ -78,10 +79,10 @@ canvasClass = function () {
         var y = e.pageY - $(canvasId).offset().top;
         
         mouseOverCanvas = true;        
-        if(x<0)                         { x=0;                        mouseOverCanvas=false; }
-        if(x>$(pictureId).width())     { x=$(pictureId).width();    mouseOverCanvas=false; }
-        if(y<0)                         { y=0;                        mouseOverCanvas=false; }
-        if(y>$(pictureId).height())    { y=$(pictureId).height();    mouseOverCanvas=false; }
+        if(x<0)                   { x=0;                  mouseOverCanvas=false; }
+        if(x>this.getMaxW())     { x=this.getMaxW();    mouseOverCanvas=false; }
+        if(y<0)                   { y=0;                  mouseOverCanvas=false; }
+        if(y>this.getMaxH())     { y=this.getMaxH();    mouseOverCanvas=false; }
         
         if(mouseCurrentObjectDrag!=-1) {
             mouseCurrentEdgeDrag = areaObjects[mouseCurrentObjectDrag].performResizeAction(mouseCurrentEdgeDrag,x,y);
@@ -99,8 +100,8 @@ canvasClass = function () {
     * @param colorValue the hex-value of the color
     * @usage external
     */    
-    this.addArea = function(obj,coords,linkValue,colorValue,prepend) {
-        obj.init(this,this.getNextId(),coords,linkValue,colorValue);
+    this.addArea = function(obj,coords,labelValue,linkValue,colorValue,prepend) {
+        obj.init(this,this.getNextId(),coords,labelValue,linkValue,colorValue);
         areaObjects[obj.getId()] = obj;
         areaObjectList.push(obj.getId());
         if(prepend) {
@@ -211,6 +212,7 @@ canvasClass = function () {
         var tmpArr = new Array();
         jQuery.each($(formsId + " > div"), function(i, obj) {
             if(typeof areaObjects[$(obj).attr("id")] != 'undefined') {
+                areaObjects[$(obj).attr("id")].updateStatesFromForm();
                 result = result + "\n" + areaObjects[$(obj).attr("id")].persistanceXML();
             }
         });
@@ -342,5 +344,10 @@ canvasClass = function () {
         });
         return result;
     }
-
+    this.getMaxW = function() {
+        return maxW;
+    }
+    this.getMaxH = function() {
+        return maxH;
+    }
 }
