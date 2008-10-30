@@ -1,6 +1,3 @@
-
-//TODO validate coords
-
 canvasClass = function () {
     var canvasId,canvasVectors,pictureId,boxId,formsId,boxMarkerCount,areaCount,areaObjects,areaObjectList,formBlueprints,maxW,maxH;
     
@@ -41,9 +38,9 @@ canvasClass = function () {
     *
     * @param Event
     */
-    this.mousedown = function(e) {
-        var x = e.pageX - $(canvasId).offset().left;
-        var y = e.pageY - $(canvasId).offset().top;
+    this.mousedown = function(event) {
+        var x = event.pageX - $(canvasId).offset().left;
+        var y = event.pageY - $(canvasId).offset().top;
         mouseIsDown = true;
         jQuery.each($(formsId + " > div"), function(i, obj) {
             if(mouseCurrentObjectDrag==-1) {
@@ -51,6 +48,8 @@ canvasClass = function () {
                 if(tmp != -1) {
                     mouseCurrentObjectDrag=$(this).attr("id");
                     mouseCurrentEdgeDrag=tmp;
+                    event.stopPropagation();
+
                 }
             } 
         });          
@@ -62,7 +61,7 @@ canvasClass = function () {
     *
     * @param Event
     */
-    this.mouseup = function(e){
+    this.mouseup = function(event){
         mouseIsDown = false;
         mouseCurrentObjectDrag = -1;
         mouseCurrentEdgeDrag = -1;
@@ -74,9 +73,9 @@ canvasClass = function () {
     *
     * @param Event
     */
-    this.mousemove = function(e){       
-        var x = e.pageX - $(canvasId).offset().left;
-        var y = e.pageY - $(canvasId).offset().top;
+    this.mousemove = function(event){       
+        var x = event.pageX - $(canvasId).offset().left;
+        var y = event.pageY - $(canvasId).offset().top;
         
         mouseOverCanvas = true;        
         if(x<0)                   { x=0;                  mouseOverCanvas=false; }
@@ -88,7 +87,9 @@ canvasClass = function () {
             mouseCurrentEdgeDrag = areaObjects[mouseCurrentObjectDrag].performResizeAction(mouseCurrentEdgeDrag,x,y);
             this.updateCanvas(mouseCurrentObjectDrag);     
             this.updateForm(mouseCurrentObjectDrag);
+            event.stopPropagation();
         }
+        return false;
     }
 
     /**
@@ -227,7 +228,7 @@ canvasClass = function () {
     * @usage internal
     */
     this.addCanvasLayer = function(id) {
-        $(canvasId).append('<div id="' + id + '_canvas" class="canvas"><!-- --></div>');
+        $(canvasId).append('<div id="' + id + '_canvas" class="canvas"><!-- --></div>');       
         canvasVectors[id] = new jsGraphics(id + '_canvas');
     } 
 
@@ -350,4 +351,4 @@ canvasClass = function () {
     this.getMaxH = function() {
         return maxH;
     }
-}
+};

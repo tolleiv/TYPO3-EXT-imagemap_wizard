@@ -75,75 +75,31 @@ $.fn.simpleColor = function(options) {
 		'cc9966','ffcc99','ffffff','cccccc','999999','666666','333333','000000',
 		'000000','000000','000000','000000','000000','000000','000000','000000'];
 
-	// Option defaults
     options = $.extend({
-//        defaultColor:  this.attr('defaultColor') || '#FFF',
-//        border:        this.attr('border') || '1px solid #000',
-//        boxWidth:      this.attr('boxWidth') || '115px',
-//        boxHeight:     this.attr('boxHeight') || '20px',
-//        columns:       this.attr('columns') || 16,
-//        insert:        this.attr('insert') || 'after',
-//        buttonClass:   this.attr('buttonClass') || '',
         colors:        this.attr('colors') || default_colors,
-        indicator:     this.attr('indicator') || null,
-//        fixedWidth:   this.attr('fixedWidth') || false,
-        //click :		   this.attr('click') || function(){},
-        //mouseover :	   this.attr('mouseover') || function(){},
+        indicator:     this.attr('indicator') || null
     }, options || {});
 
-	// Figure out the cell dimensions
-/*
-	options.totalWidth = options.columns * (options.cellWidth + (2 * options.cellMargin) + (2 * options.cellBorder));
-	if ($.browser.msie) {
-		options.totalWidth += 2;
-	}
-*/
-//	options.totalHeight = Math.ceil(options.colors.length / options.stepSize / options.columns ) * (options.cellHeight + (2 * options.cellMargin) + (2 * options.cellBorder));
-
-	// Store these options so they'll be available to the other functions
-	// TODO - must be a better way to do this, not sure what the 'official'
-	// jQuery method is. Ideally i want to pass these as a parameter to the
-	// each() function but i'm not sure how
 	$.simpleColorOptions = options;
 
-	this.each(buildSelector);
-
-	return this;
-
-	function buildSelector(index) {
+	this.each(function (index) {
 		var options = $.simpleColorOptions;
-//		$(this).css('border',  options.border);
-//		$(this).css('margin',  '0px');
-//		$(this).css('margin-top',  '3px');
-//		$(this).css('width',   options.fixedWidth==false?options.totalWidth:options.fixedWidth + 'px');
-//		$(this).css('height',  options.totalHeight + 'px');
 		for (var i=0; i<options.colors.length; i++) {
 
 			var cell = $("<div class='colorPickerCell' id='" + options.colors[i] + "'/>");
-		/*
-			cell.css('width',           options.cellWidth + 'px');
-			cell.css('height',          options.cellHeight + 'px');
-			cell.css('margin',          options.cellMargin + 'px');
-			cell.css('border',          options.cellBorder + 'px ' + options.cellBorderStyle);
-			cell.css('cursor',          'pointer');
-			cell.css('lineHeight',      options.cellHeight + 'px');
-			cell.css('fontSize',        '1px');
-			cell.css('float',           'left');
-		*/
 			cell.css('backgroundColor', '#'+options.colors[i]);
 			$(this).append(cell);
 
 			var data = { color: "#" + options.colors[i] };
 			cell.data('parent',this).bind("click",data, function(event) {
-//				console.log(event);
-//				console.log(event.data);
 				if(typeof event.data != 'undefined') {
 					$($(this).data('parent')).trigger("click",[event.data.color]);
 				}
 			});
 		}
 		$(this).append("<br style=\"clear:both\">");
-	};
-};
+	});
+	return this;
+}
 })(jQuery);
 

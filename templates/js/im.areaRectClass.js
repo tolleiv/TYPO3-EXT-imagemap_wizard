@@ -1,4 +1,3 @@
-
 var areaRectClass = areaClass.extend({
     _coords:-1,
 
@@ -134,5 +133,6 @@ var areaRectClass = areaClass.extend({
           this._coords[3] = parseInt(parseInt(y1)>parseInt(y2)?y1:y2);  
     },
     setW: function(value)     {   var x = this.getLeftX();    this.setX(x,x+value);     },
-    setH: function(value)     {   var y = this.getTopY();    this.setY(y,y+value);     },
+    setH: function(value)     {   var y = this.getTopY();    this.setY(y,y+value);     }
 });
+

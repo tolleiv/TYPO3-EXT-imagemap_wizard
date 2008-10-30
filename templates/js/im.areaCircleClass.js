@@ -1,4 +1,3 @@
-
 var areaCircleClass = areaClass.extend({
     _coords:-1,
 
@@ -110,5 +109,5 @@ var areaCircleClass = areaClass.extend({
     },
     setRadius: function(r)   {
           this._coords[2] = Math.abs(parseInt(r));
-    },
+    }
 });

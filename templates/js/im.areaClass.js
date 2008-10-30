@@ -1,4 +1,3 @@
-
 var areaClass = Class.extend({
     _id:-1,
     _link:-1,
@@ -18,7 +17,7 @@ var areaClass = Class.extend({
         this.setLabel(label);
         this.setLink(link);
 		this.setColor(color);
-        this.initCoords(coords);
+        this.initCoords(coords);        
     },
     
     remove: function() {
@@ -83,14 +82,14 @@ var areaClass = Class.extend({
         	.data("obj",this)
         	.data("rel","#" + this.getFormId() +" > .moreOptions")
         	.click(function(event) {
-                if ($($(this).data("rel")).is(":hidden")) {
-                    $($(this).data("rel")).slideDown("fast");
-                    $(this).attr("src",$(this).attr("src").replace(/down/,"up"));
+               // if ($($(this).data("rel")).is(":hidden")) {
+               if(!$(this).data("obj").isMoreOptionsVisible()) {
                     $(this).data("obj").applyAdditionalAreaActions();
+                    $($(this).data("rel")).slideDown("fast");
                 } else {
                     $($(this).data("rel")).slideUp("fast");
-                    $(this).attr("src",$(this).attr("src").replace(/up/,"down"));
                 }
+                $(this).data("obj").toogleMoreOptionsFlag();        
         });
         $("#" + this.getFormId() + " > .basicOptions > .colorPreview")
         	.data("pseudo","#" + this.getFormId() + " > .basicOptions > .exp > img")
@@ -119,12 +118,13 @@ var areaClass = Class.extend({
 		else						this.applyAdditionalAreaActions();
 
         this.updateColor(this.getColor(),0);
+        this.refreshExpandButtons();
     },
 
     updateStatesFromForm: function() {
 		this.setLink(document.forms[0].elements[this.getFormId() + "_link"].value);
         this.setLabel(document.forms[0].elements[this.getFormId() + "_label"].value);
-		this._moreOptionsVisible = $("#" + this.getFormId() +" > .moreOptions").is(":visible");
+		//this._moreOptionsVisible = $("#" + this.getFormId() +" > .moreOptions").is(":visible");
     },
 
     applyAdditionalAreaActions: function() {
@@ -140,9 +140,22 @@ var areaClass = Class.extend({
          this.applyAdditionalTypeActions();
         
         this._moreOptionsInitFlag=true;
-        
-        
     },
+
+    refreshExpandButtons: function()    {
+        $("#" + this.getFormId() + " > .basicOptions > .exp > img").hide();    
+        if(this.isMoreOptionsVisible()) {
+            $("#" + this.getFormId() + " > .basicOptions > .exp > img.up").show();
+        } else {
+            $("#" + this.getFormId() + " > .basicOptions > .exp > img.down").show();       
+        }
+    },
+
+    toogleMoreOptionsFlag: function() { 
+        this._moreOptionsVisible = !this._moreOptionsVisible;
+        this.refreshExpandButtons();    
+    },
+    isMoreOptionsVisible: function()      { return this._moreOptionsVisible; },
 
     getId: function()         {   return this._id;  },
     getFormId: function()     {   return this.getId();   },

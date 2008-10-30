@@ -1,4 +1,3 @@
-
 var areaPolyClass = areaClass.extend({
     _coords:-1,
 
@@ -46,7 +45,7 @@ var areaPolyClass = areaClass.extend({
         var tmpMarkup = this.getCanvas().getFormBlueprint("polyCoords");
         for(var i=0;i<this._coords.length;i++) {
             result = result + tmpMarkup.replace(/MAPFORMID/g,this.getFormId())
-                                .replace(/N/g,i)
+                                .replace(/vN/g,i)
                                 .replace(/vX/g,this._coords[i].x)
                                 .replace(/vY/g,this._coords[i].y);
         }

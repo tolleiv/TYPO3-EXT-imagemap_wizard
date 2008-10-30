@@ -16,23 +16,20 @@ $this->addExternalCSS("templates/default.css");
 $existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape##Class(),'##coords##','##alt##','##link##','##color##',0);\n");
 
 $this->addInlineJs('
+
 $(document).ready(function(){
     canvasObject = new canvasClass();
     canvasObject.init("canvas","picture","areaForms");
-	 // add existing stuff
 	'.$existingFields.'
 
-    // add Button-Actions
+
     $("#addRect").click(function(event) {
-    	//TODO find useful default???
         canvasObject.addArea(new areaRectClass(),\'100,100,50,50\',\'\',\'\',\'\',1);
     });
     $("#addPoly").click(function(event) {
-    	//TODO find useful default???
         canvasObject.addArea(new areaPolyClass(),\'100,100,75,75,50,100\',\'\',\'\',\'\',1);
     });
     $("#addCirc").click(function(event) {
-    	//TODO find useful default???
         canvasObject.addArea(new areaCircleClass(),\'100,100,50\',\'\',\'\',\'\',1);
     });
     $(".niy").click(function(event) {
@@ -77,14 +74,14 @@ $(document).ready(function(){
             	<? echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"up\" class=\"ptr sortbtn upbtn\""); ?>
             	<? echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"down\"class=\"ptr sortbtn downbtn\""); ?>
             	<? echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"expand\""); ?>
-            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","class=\"ptr\" alt='expand'"); ?></div>
+            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt='expand'"); ?><? echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt='expand'"); ?></div>
             </div>
             <div id="MAPFORMID_more" class="moreOptions">            	
                 <div class="halfLine">
             	    <div id="MAPFORMID_color" class="colors"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
                     <div id="MAPFORMID_stroke" class="colors"><div class="strokeBox"><div><!-- --></div></div><div class="strokePicker"><!-- --></div><div class="cc""><!-- --></div></div>
                 </div>
-                <div class="positionOptions halfLine"><label for="MAPFORMID_x1" class="XYlabel XYlabel-first">X1:</label><input type="text" class="formCoord" id="MAPFORMID_x1" value="x" /><label for="MAPFORMID_y1" class="XYlabel">Y1:</label><input type="text" class="formCoord" id="MAPFORMID_y1" value="y" /><label for="MAPFORMID_x2" class="XYlabel XYlabel-first">X2:</label><input type="text" class="formCoord" id="MAPFORMID_x2" value="x" /><label for="MAPFORMID_y2" class="XYlabel">Y2:</label><input type="text" class="formCoord" id="MAPFORMID_y2" value="y" /> <? echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\"class=\"ptr\" alt=\"refresh\" title=\"refresh\""); ?><div class="cc"><!-- --></div></div>
+                <div class="positionOptions halfLine"><? echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\" class=\"ptr refresh\" alt=\"refresh\" title=\"refresh\""); ?><label for="MAPFORMID_x1" class="XYlabel XYlabel-first">X1:</label><input type="text" class="formCoord" id="MAPFORMID_x1" value="x" /><label for="MAPFORMID_y1" class="XYlabel">Y1:</label><input type="text" class="formCoord" id="MAPFORMID_y1" value="y" /><br class="cc"/><label for="MAPFORMID_x2" class="XYlabel XYlabel-first">X2:</label><input type="text" class="formCoord" id="MAPFORMID_x2" value="x" /><label for="MAPFORMID_y2" class="XYlabel">Y2:</label><input type="text" class="formCoord" id="MAPFORMID_y2" value="y" /><div class="cc"><!-- --></div></div>
                 <div class="cc"><!-- --></div>
             </div>
         </div>
@@ -96,14 +93,14 @@ $(document).ready(function(){
             	<? echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"up\" class=\"ptr sortbtn upbtn\""); ?>
             	<? echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"down\"class=\"ptr sortbtn downbtn\""); ?>
             	<? echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"expand\""); ?>
-            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","class=\"ptr\" alt='expand'"); ?></div>
+            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt='expand'"); ?><? echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt='expand'"); ?></div>
             </div>
             <div id="MAPFORMID_more" class="moreOptions">            	
                 <div class="halfLine">
             	    <div id="MAPFORMID_color" class="colors"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
                     <div id="MAPFORMID_stroke" class="colors"><div class="strokeBox"><div><!-- --></div></div><div class="strokePicker"><!-- --></div><div class="cc""><!-- --></div></div>
                 </div>
-                <div class="positionOptions halfLine"><label for="MAPFORMID_x" class="XYlabel XYlabel-first">X:</label><input type="text" class="formCoord" id="MAPFORMID_x" value="x" /><label for="MAPFORMID_y1" class="XYlabel">Y:</label><input type="text" class="formCoord" id="MAPFORMID_y" value="y" /><label for="MAPFORMID_radius" class="XYlabel XYlabel-first">R:</label><input type="text" class="formCoord" id="MAPFORMID_radius" value="r" /> <? echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\"class=\"ptr\" alt=\"refresh\" title=\"refresh\""); ?><div class="cc"><!-- --></div></div>
+                <div class="positionOptions halfLine"><? echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\" class=\"ptr refresh\" alt=\"refresh\" title=\"refresh\""); ?><label for="MAPFORMID_x" class="XYlabel XYlabel-first">X:</label><input type="text" class="formCoord" id="MAPFORMID_x" value="x" /><label for="MAPFORMID_y1" class="XYlabel">Y:</label><input type="text" class="formCoord" id="MAPFORMID_y" value="y" /><br class="cc"/><label for="MAPFORMID_radius" class="XYlabel XYlabel-first">R:</label><input type="text" class="formCoord" id="MAPFORMID_radius" value="r" /><div class="cc"><!-- --></div></div>
                 <div class="cc"><!-- --></div>
             </div>
         </div>
@@ -116,28 +113,24 @@ $(document).ready(function(){
             	<? echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"down\"class=\"ptr sortbtn downbtn\""); ?>
             	<? echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"expand\""); ?>
                 <? echo $this->getIcon("gfx/add.gif","id=\"MAPFORMID_add\" alt=\"add\" class=\"ptr add\""); ?>
-            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","class=\"ptr\" alt='expand'"); ?></div>
+            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt='expand'"); ?><? echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt='expand'"); ?></div>
             </div>
             <div id="MAPFORMID_more" class="moreOptions">            	
                 <div class="halfLine">
             	    <div id="MAPFORMID_color" class="colors"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
                     <div id="MAPFORMID_stroke" class="colors"><div class="strokeBox"><div><!-- --></div></div><div class="strokePicker"><!-- --></div><div class="cc""><!-- --></div></div>
                 </div>
-                <div class="positionOptions halfLine">POLYCOORDS <? echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\"class=\"ptr\" alt=\"refresh\" title=\"refresh\""); ?><div class="cc"><!-- --></div></div>
+                <div class="positionOptions halfLine"><? echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\"class=\"ptr refresh\" alt=\"refresh\" title=\"refresh\""); ?>POLYCOORDS<div class="cc"><!-- --></div></div>
                 <div class="cc"><!-- --></div>
             </div>
         </div>
         <div id="polyCoords" class="noIdWrap">
-            <label for="MAPFORMID_xN" class="XYlabel XYlabel-first">XN:</label><input type="text" class="formCoord" id="MAPFORMID_xN" value="vX" /> <label for="MAPFORMID_yN" class="XYlabel">YN:</label><input type="text" class="formCoord" id="MAPFORMID_yN" value="vY" />
-             <? echo $this->getIcon("gfx/arrowup.png","id=\"MAPFORMID_beforeN\" alt=\"add before\" title=\"add before\" class=\"coordOpt addCoord ptr\""); ?>            
-             <? echo $this->getIcon("gfx/arrowdown.png","id=\"MAPFORMID_afterN\" alt=\"add after\" title=\"add after\" class=\"coordOpt addCoord ptr\""); ?>            
-             <? echo $this->getIcon("gfx/close_gray.gif","id=\"MAPFORMID_rmN\" alt=\"rm\" title=\"rm\" class=\"coordOpt rmCoord ptr\""); ?>            
+            <label for="MAPFORMID_xvN" class="XYlabel">XvN:</label><input type="text" class="formCoord" id="MAPFORMID_xvN" value="vX" /><label for="MAPFORMID_yvN" class="XYlabel">YvN:</label><input type="text" class="formCoord" id="MAPFORMID_yvN" value="vY" />
+             <? echo $this->getIcon("gfx/arrowup.png","id=\"MAPFORMID_beforevN\" alt=\"add before\" title=\"add before\" class=\"coordOpt addCoord ptr\""); ?>            
+             <? echo $this->getIcon("gfx/arrowdown.png","id=\"MAPFORMID_aftervN\" alt=\"add after\" title=\"add after\" class=\"coordOpt addCoord ptr\""); ?>            
+             <? echo $this->getIcon("gfx/close_gray.gif","id=\"MAPFORMID_rmvN\" alt=\"rm\" title=\"rm\" class=\"coordOpt rmCoord ptr\""); ?><br class="cc" />
         </div>
     </div>
 
 	<span class="cc"><!-- --></span>
 </div>
-
-
-
-
