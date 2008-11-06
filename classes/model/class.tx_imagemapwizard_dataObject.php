@@ -44,7 +44,8 @@ class tx_imagemapwizard_dataObject {
         t3lib_BEfunc::fixVersioningPid($table,$this->liveRow);
 	    $this->mapField = $field;
 	    $this->map = t3lib_div::makeInstance("tx_imagemapwizard_mapper")->map2array($this->row[$this->mapField]);
-	    $this->backPath = t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env')::getBackPath();
+        
+	    $this->backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getBackPath();');
     }
 
 	public function getFieldValue($field) {
