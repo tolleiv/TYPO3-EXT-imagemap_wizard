@@ -12,11 +12,11 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Imagemap Wizard',
-	'description' => '',
+	'description' => 'Provides an TYPO3 Wizard which enables interactive Imagemap-Creation - related to the TYPO3-Linkwizard.',
 	'category' => 'be',
 	'shy' => 0,
-	'version' => '0.0.1',
-	'dependencies' => '',
+	'version' => '0.0.12',
+	'dependencies' => 'cms',
 	'conflicts' => '',
 	'priority' => '',
 	'loadOrder' => '',

@@ -26,35 +26,39 @@
  *
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
-
-
 define('PATH_tslib', PATH_site.'typo3/sysext/cms/tslib/');
+require_once(PATH_tslib.'class.tslib_fe.php');
+require_once(PATH_t3lib.'class.t3lib_userauth.php');
+require_once(PATH_t3lib.'class.t3lib_userauthgroup.php');
+require_once(PATH_t3lib.'class.t3lib_beuserauth.php');
+require_once(PATH_t3lib.'class.t3lib_tsfebeuserauth.php');        
+require_once(PATH_tslib.'class.tslib_feuserauth.php');
+require_once(PATH_t3lib.'class.t3lib_cs.php');
+require_once(PATH_tslib.'class.tslib_content.php') ;
+require_once(PATH_t3lib.'class.t3lib_tstemplate.php');
+require_once(PATH_t3lib.'class.t3lib_page.php');
+require_once(PATH_t3lib.'class.t3lib_timetrack.php');
 
 class tx_imagemapwizard_typo3env {
-
+    protected $lastError;
+    protected $BE_USER = NULL;
+    protected $BE_USER_GLOBAL = NULL;
 	/**
 	 * Initialize TSFE so that the Frontend-Stuff can also be used in the Backend
 	 *
 	 * @param	Integer		pid The pid if the page which is simulated
 	 * @return	Boolean		returns success of the operation
 	 */
-	function initTSFE($pid = 1){
-		require_once(PATH_site.'typo3/sysext/cms/tslib/class.tslib_fe.php');
-		require_once(PATH_site.'t3lib/class.t3lib_userauth.php');
-		require_once(PATH_site.'typo3/sysext/cms/tslib/class.tslib_feuserauth.php');
-		require_once(PATH_site.'t3lib/class.t3lib_cs.php');
-		require_once(PATH_site.'typo3/sysext/cms/tslib/class.tslib_content.php') ;
-		require_once(PATH_site.'t3lib/class.t3lib_tstemplate.php');
-		require_once(PATH_site.'t3lib/class.t3lib_page.php');
-		require_once(PATH_site.'t3lib/class.t3lib_timetrack.php');
-
+	function initTSFE($pid = 1,$ws = 0){
 		$TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
 		$GLOBALS['TSFE'] = new $TSFEclassName($GLOBALS['TYPO3_CONF_VARS'], $pid, '0', 0, '','','','');
+        $GLOBALS['TSFE']->ADMCMD_preview_postInit(array('BEUSER_uid'=>$GLOBALS['BE_USER']->user['uid']));
 		$temp_TTclassName = t3lib_div::makeInstanceClassName('t3lib_timeTrack');
 		$GLOBALS['TT'] = new $temp_TTclassName();
 		$GLOBALS['TT']->start();
 		$GLOBALS['TSFE']->config['config']['language']=$_GET['L'];
 		$GLOBALS['TSFE']->id = $pid;
+		$GLOBALS['TSFE']->workspacePreview = $GLOBALS['BE_USER']->workspace;
 		$GLOBALS['TSFE']->connectToMySQL();
 		$sqlDebug = $GLOBALS['TYPO3_DB']->debugOutput;
 		$GLOBALS['TYPO3_DB']->debugOutput = false;
@@ -62,19 +66,21 @@ class tx_imagemapwizard_typo3env {
 		$GLOBALS['TSFE']->initFEuser();
 		$GLOBALS['TSFE']->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
 		$GLOBALS['TSFE']->sys_page->init($GLOBALS['TSFE']->showHiddenPage);
-		$GLOBALS['TSFE']->sys_page->init($GLOBALS['TSFE']->showHiddenPage);
 		$page = $GLOBALS['TSFE']->sys_page->getPage($pid);
 		if (count($page) == 0) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
+            		$this->lastError = "DB Error(".__LINE__."):".$sqlDebug;
 			return false;
 		}
 		if ($page['doktype']==4 && count($GLOBALS['TSFE']->getPageShortcut($page['shortcut'],$page['shortcut_mode'],$page['uid'])) == 0) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
+            		$this->lastError = "DB Error(".__LINE__."):" .$sqlDebug;
 			return false;
 		}
 
 		if ($page['doktype'] == 199 || $page['doktype'] == 254) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
+            		$this->lastError = "DB Error(".__LINE__."):".$sqlDebug;
 			return false;
 		}
 		$GLOBALS['TSFE']->getPageAndRootline();
@@ -85,16 +91,77 @@ class tx_imagemapwizard_typo3env {
 		$GLOBALS['TSFE']->pSetup = $GLOBALS['TSFE']->tmpl->setup[$GLOBALS['TSFE']->sPre.'.'];
 		if (!$GLOBALS['TSFE']->tmpl->loaded || ($GLOBALS['TSFE']->tmpl->loaded && !$GLOBALS['TSFE']->pSetup)) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
+           		$this->lastError = "DB Error(".__LINE__."):".$sqlDebug;
 			return false;
 		}
 		$GLOBALS['TSFE']->getConfigArray();
 		$GLOBALS['TSFE']->getCompressedTCarray();
 		$GLOBALS['TSFE']->inituserGroups();
-		$GLOBALS['TSFE']->connectToDB();
+		$GLOBALS['TSFE']->workspacePreviewInit();
+		$GLOBALS['TSFE']->clear_preview();
 		$GLOBALS['TSFE']->determineId();
 		$GLOBALS['TSFE']->newCObj();
 		return true;
 	}
+ 
+    /**
+    * prepares Frontend-like-Rendering 
+    * and it really sucks that this is needed
+    *
+    * @see releaseEnv()
+    */ 
+	function prepareEnv() {
+		if($this->BE_USER==NULL) {
+			$this->initMyBE_USER();
+		}
+        chdir(self::getBackPath());
+		$this->BE_USER_GLOBAL = $GLOBALS['BE_USER'];	
+		$GLOBALS['BE_USER'] = $this->BE_USER;
+	}	
+
+    /**
+    * closes Frontend-like-Rendering 
+    * and it also really sucks that this is needed
+    *
+    * @see prepareEnv()
+    */ 	
+	function releaseEnv() {
+		$GLOBALS['BE_USER'] = $this->BE_USER_GLOBAL;
+        chdir(t3lib_extMgm::extPath('imagemap_wizard'));
+	}
+
+    
+    /**
+    * lazyload the feBEUSER
+    *
+    */
+	function initMyBE_USER() {        
+	    $this->BE_USER = t3lib_div::makeInstance('t3lib_tsfeBeUserAuth');     // New backend user object
+        $this->BE_USER->userTS_dontGetCached = 1;
+        $this->BE_USER->OS = TYPO3_OS;
+        $this->BE_USER->setBeUserByUid($GLOBALS['BE_USER']->user['uid']);
+        $this->BE_USER->unpack_uc('');
+        if ($this->BE_USER->user['uid'])      {
+                $this->BE_USER->fetchGroupData();
+                $GLOBALS['TSFE']->beUserLogin = 1;
+        } else {
+                $this->BE_USER = NULL;
+                $GLOBALS['TSFE']->beUserLogin = 0;
+        }
+	}
+
+    /**
+    * Enables external debugging ...
+    *
+    */
+   function get_lastError() {
+        return $this->lastError;
+    }
+    
+    public static function getBackPath() {
+        return str_replace(TYPO3_mainDir,'',$GLOBALS['BACK_PATH']);
+    }
+    
 }
 
 

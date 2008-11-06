@@ -33,22 +33,19 @@ require_once(PATH_t3lib.'class.t3lib_stdgraphic.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
 
 class tx_imagemapwizard_dataObject {
-	protected $row,$table,$mapField,$imageField,$backPath;
+	protected $row,$liveRow,$table,$mapField,$imageField,$backPath;
 	public function __construct($table,$field,$uid) {
 	    $this->table = $table;
 	    t3lib_div::loadTCA($this->table);
 
 		$this->imageField = $this->determineImageFieldName();
-
-		$tmp = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*',$table,' uid = "'.intval($uid).'"'.t3lib_BEfunc::deleteClause($this->table),'','');
-		if(count($tmp)!=1) die("Inconsistend database...expected 1 dataset instead of " + count($tmp));
-		$this->row = $tmp[0];
-
+		$this->row = t3lib_BEfunc::getRecordWSOL($table,$uid);
+        $this->liveRow = $this->row;
+        t3lib_BEfunc::fixVersioningPid($table,$this->liveRow);
 	    $this->mapField = $field;
 	    $this->map = t3lib_div::makeInstance("tx_imagemapwizard_mapper")->map2array($this->row[$this->mapField]);
-		$this->backPath = str_replace(TYPO3_mainDir,'',$GLOBALS['BACK_PATH']);
-
-	}
+	    $this->backPath = t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env')::getBackPath();
+    }
 
 	public function getFieldValue($field) {
 		if(array_key_exists($field,$this->row)) return $this->row[$field];
@@ -64,21 +61,22 @@ class tx_imagemapwizard_dataObject {
 	}
 
 	public function renderImage() {
-
-		t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->initTSFE($this->row['pid']);
-		$conf = array('table'=>$this->table,'select.'=>array('uidInList'=>$this->row['uid']));
-
-		chdir($this->backPath);
-		//render like in FE
+        $t3env = t3lib_div::makeInstance('tx_imagemapwizard_typo3env');
+		if(!$t3env->initTSFE($this->getLivePid(),$GLOBALS['BE_USER']->workspace,$GLOBALS['BE_USER']->user['uid'])) {
+            return 'Can\'t render image since TYPO3 Environment is not ready.<br/>Error was:'.$t3env->get_lastError();
+        }        
+		$conf = array('table'=>$this->table,'select.'=>array('uidInList'=>$this->getLiveUid()));
+		//render like in FE with WS-preview etc...
+		$t3env->prepareEnv($this->backPath);
 		$result = $GLOBALS['TSFE']->cObj->CONTENT($conf);
+		$t3env->releaseEnv(t3lib_extMgm::extPath('imagemap_wizard'));		
 
 		// extract the image
 		$matches=array();
-		if(!preg_match('/(<img[^>]+usemap="####IMAGEMAP_USEMAP###"[^>]*\/>)/',$result,$matches)) die('no image found :(');
+		if(!preg_match('/(<img[^>]+usemap="####IMAGEMAP_USEMAP###"[^>]*\/>)/',$result,$matches)) {
+            return 'No Image rendered from TSFE. :(';
+        }
 		$result = str_replace('src="','src="'.$this->backPath,$matches[1]);
-
-		chdir(t3lib_extMgm::extPath('imagemap_wizard'));
-
 		return $result;
 	}
 
@@ -99,6 +97,14 @@ class tx_imagemapwizard_dataObject {
 		}
 		return $result;
 	}
+    
+    protected function getLivePid() {
+        return $this->row['pid']>0?$this->row['pid']:$this->liveRow['pid'];
+    }
+    
+    protected function getLiveUid() {
+        return ($GLOBALS['BE_USER']->workspace===0)?$this->row['uid']:$this->row['t3ver_oid'];
+    }
 
 	protected function determineImageFieldName() {
 		return isset($GLOBALS['TCA'][$this->table]['columns'][$this->mapField]['config']['userImageField'])?$GLOBALS['TCA'][$this->table]['columns'][$this->mapField]['config']['userImageField']:'image';
