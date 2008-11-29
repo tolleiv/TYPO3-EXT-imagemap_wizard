@@ -47,11 +47,11 @@ canvasClass = function () {
         canvasVectors = new Array();
         areaObjects = new Array();
         areaObjectList = new Array();
-        maxW = $(pictureId).width();
-        maxH = $(pictureId).height();
+        maxW = jQuery(pictureId).width();
+        maxH = jQuery(pictureId).height();
         formBlueprints = this.parseFormToBluePrint(formsId);
-        $(formsId).empty();
-        $(canvasId).width($(pictureId).width()).height($(pictureId).height());        
+        jQuery(formsId).empty();
+        jQuery(canvasId).width(jQuery(pictureId).width()).height(jQuery(pictureId).height());        
     }
     
     
@@ -62,14 +62,14 @@ canvasClass = function () {
     * @param Event
     */
     this.mousedown = function(event) {
-        var x = event.pageX - $(canvasId).offset().left;
-        var y = event.pageY - $(canvasId).offset().top;
+        var x = event.pageX - jQuery(canvasId).offset().left;
+        var y = event.pageY - jQuery(canvasId).offset().top;
         mouseIsDown = true;
-        jQuery.each($(formsId + " > div"), function(i, obj) {
+        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
             if(mouseCurrentObjectDrag==-1) {
-                var tmp = areaObjects[$(this).attr("id")].hitOnObjectEdge(x,y,3);
+                var tmp = areaObjects[jQuery(this).attr("id")].hitOnObjectEdge(x,y,3);
                 if(tmp != -1) {
-                    mouseCurrentObjectDrag=$(this).attr("id");
+                    mouseCurrentObjectDrag=jQuery(this).attr("id");
                     mouseCurrentEdgeDrag=tmp;
                     event.stopPropagation();
 
@@ -97,8 +97,8 @@ canvasClass = function () {
     * @param Event
     */
     this.mousemove = function(event){       
-        var x = event.pageX - $(canvasId).offset().left;
-        var y = event.pageY - $(canvasId).offset().top;
+        var x = event.pageX - jQuery(canvasId).offset().left;
+        var y = event.pageY - jQuery(canvasId).offset().top;
         
         mouseOverCanvas = true;        
         if(x<0)                   { x=0;                  mouseOverCanvas=false; }
@@ -129,19 +129,19 @@ canvasClass = function () {
         areaObjects[obj.getId()] = obj;
         areaObjectList.push(obj.getId());
         if(prepend) {
-            $(formsId).prepend(obj.formMarkup().replace(/OBJID/g,obj.getId()));
+            jQuery(formsId).prepend(obj.formMarkup().replace(/OBJID/g,obj.getId()));
         } else {
-            $(formsId).append(obj.formMarkup().replace(/OBJID/g,obj.getId()));        
+            jQuery(formsId).append(obj.formMarkup().replace(/OBJID/g,obj.getId()));        
         }
-        $(formsId).data("parent",this).sortable({
+        jQuery(formsId).data("parent",this).sortable({
             distance:3, 
             start:function(e) {
-                $("#" + $(e.target).attr("id") + " > .sortbtn").css("visibility","hidden");  
-                $("#" + $(e.target).attr("id") + " > div > .sortbtn").css("visibility","hidden");            
+                jQuery("#" + jQuery(e.target).attr("id") + " > .sortbtn").css("visibility","hidden");  
+                jQuery("#" + jQuery(e.target).attr("id") + " > div > .sortbtn").css("visibility","hidden");            
             },
             stop:function(e) {
-                $(this).data("parent").updateCanvasLayerOrder(); 
-                $(this).data("parent").fixSortbtnVisibility();
+                jQuery(this).data("parent").updateCanvasLayerOrder(); 
+                jQuery(this).data("parent").fixSortbtnVisibility();
             }
         });
 		areaObjects[obj.getId()].applyBasicAreaActions();
@@ -177,16 +177,16 @@ canvasClass = function () {
     this.areaUp = function(id) {
         var prev = -1;
         var self = -1;
-        jQuery.each($(formsId + " > div"), function(i, obj) {
-            if($(obj).attr("id")==id) {
-                self = $(obj).attr("id");                
+        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
+            if(jQuery(obj).attr("id")==id) {
+                self = jQuery(obj).attr("id");                
             }
             if(self == -1) {
-                prev = $(obj).attr("id");
+                prev = jQuery(obj).attr("id");
             }
         });    
         if(prev != -1) {
-            $("#" + self).insertBefore("#" + prev);
+            jQuery("#" + self).insertBefore("#" + prev);
             this.updateCanvasLayerOrder();
         }
         this.fixSortbtnVisibility();
@@ -200,16 +200,16 @@ canvasClass = function () {
     this.areaDown = function(id) {
         var next = -1;
         var self = -1;
-        jQuery.each($(formsId + " > div"), function(i, obj) {
+        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
             if((self != -1) && (next == -1)) {
-                next = $(obj).attr("id");
+                next = jQuery(obj).attr("id");
             }              
-            if($(obj).attr("id")==id) {
-                self= $(obj).attr("id");
+            if(jQuery(obj).attr("id")==id) {
+                self= jQuery(obj).attr("id");
             }
         });    
         if(next != -1) {
-            $("#" + self).insertAfter("#" +next);
+            jQuery("#" + self).insertAfter("#" +next);
             this.updateCanvasLayerOrder();            
         }        
         this.fixSortbtnVisibility();
@@ -220,9 +220,9 @@ canvasClass = function () {
     *
     */    
     this.fixSortbtnVisibility = function() {
-        $(formsId + " > div > .basicOptions > .sortbtn").css("visibility","visible");
-        $(formsId + " > div:first > .basicOptions > .upbtn").css("visibility","hidden");
-        $(formsId + " > div:last > .basicOptions > .downbtn").css("visibility","hidden");    
+        jQuery(formsId + " > div > .basicOptions > .sortbtn").css("visibility","visible");
+        jQuery(formsId + " > div:first > .basicOptions > .upbtn").css("visibility","hidden");
+        jQuery(formsId + " > div:last > .basicOptions > .downbtn").css("visibility","hidden");    
     }
 
     /**
@@ -234,10 +234,10 @@ canvasClass = function () {
 	this.persistanceXML = function() {
 		var result = "";
         var tmpArr = new Array();
-        jQuery.each($(formsId + " > div"), function(i, obj) {
-            if(typeof areaObjects[$(obj).attr("id")] != 'undefined') {
-                areaObjects[$(obj).attr("id")].updateStatesFromForm();
-                result = result + "\n" + areaObjects[$(obj).attr("id")].persistanceXML();
+        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
+            if(typeof areaObjects[jQuery(obj).attr("id")] != 'undefined') {
+                areaObjects[jQuery(obj).attr("id")].updateStatesFromForm();
+                result = result + "\n" + areaObjects[jQuery(obj).attr("id")].persistanceXML();
             }
         });
         return result;
@@ -251,7 +251,7 @@ canvasClass = function () {
     * @usage internal
     */
     this.addCanvasLayer = function(id) {
-        $(canvasId).append('<div id="' + id + '_canvas" class="canvas"><!-- --></div>');       
+        jQuery(canvasId).append('<div id="' + id + '_canvas" class="canvas"><!-- --></div>');       
         canvasVectors[id] = new jsGraphics(id + '_canvas');
     } 
 
@@ -275,7 +275,7 @@ canvasClass = function () {
     */    
     this.removeCanvasLayer = function(id) {
         canvasVectors[id].clear();
-        $('#' + id + '_canvas').remove();
+        jQuery('#' + id + '_canvas').remove();
     }
 
     /**
@@ -285,9 +285,9 @@ canvasClass = function () {
     */
     this.updateCanvasLayerOrder = function() {
         var z = 100;
-        jQuery.each($(formsId + " > div"), function(i, obj) {
-            if(typeof areaObjects[$(obj).attr("id")] != 'undefined') {
-                $('#' + $(obj).attr("id") + '_canvas').css("z-index",z--);
+        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
+            if(typeof areaObjects[jQuery(obj).attr("id")] != 'undefined') {
+                jQuery('#' + jQuery(obj).attr("id") + '_canvas').css("z-index",z--);
             }
         });
     }
@@ -302,14 +302,14 @@ canvasClass = function () {
         var data = areaObjects[id].formUpdate();
         jQuery.each(data.split(";"), function(elem, value) {
             var item = value.split("=");
-            $("#" + item[0]).attr("value",item[1]);
+            jQuery("#" + item[0]).attr("value",item[1]);
         });
     }    
 
     this.refreshForm = function(id) {
 		areaObjects[id].updateStatesFromForm();
-        $("#" + areaObjects[id].getFormId()).replaceWith(areaObjects[id].formMarkup().replace(/OBJID/g,id));
-		areaObjects[id].applyBasicAreaActions($("#" + id));
+        jQuery("#" + areaObjects[id].getFormId()).replaceWith(areaObjects[id].formMarkup().replace(/OBJID/g,id));
+		areaObjects[id].applyBasicAreaActions(jQuery("#" + id));
         this.updateForm(areaObjects[id].getId());        
     }
 
@@ -359,11 +359,11 @@ canvasClass = function () {
     */ 
     this.parseFormToBluePrint = function(id) {
         var result = new Array();
-        $(id + " > div").each(function(elem) {
-            if($(this).attr("class") == "noIdWrap") {
-                result[this.id] = $("#" + this.id).html();
+        jQuery(id + " > div").each(function(elem) {
+            if(jQuery(this).attr("class") == "noIdWrap") {
+                result[this.id] = jQuery("#" + this.id).html();
             } else {
-                result[this.id] = "<div class=\"" +  this.id + " " + $(this).attr("class") + "\" id=\"MAPFORMID\">"+ $("#" + this.id).html() + "</div>";
+                result[this.id] = "<div class=\"" +  this.id + " " + jQuery(this).attr("class") + "\" id=\"MAPFORMID\">"+ jQuery("#" + this.id).html() + "</div>";
             }
         });
         return result;

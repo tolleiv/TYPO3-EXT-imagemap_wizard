@@ -30,7 +30,6 @@ define('TYPO3_MOD_PATH','../typo3conf/ext/imagemap_wizard/');
 $BACK_PATH = '../../../typo3/';
 require($BACK_PATH.'init.php');
 require($BACK_PATH.'template.php');
-//require_once(PATH_t3lib.'class.t3lib_stdgraphic.php');
 
 require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/controller/class.tx_imagemapwizard_wizardController.php');
 require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_imagemapwizard_backendView.php');

@@ -6,6 +6,7 @@
     <data type="array">
         <languageKey index="default" type="array">
             <label index="imagemap_wizard.title">ImageMap Wizard</label>
+            <label index="form.no_image">No Image defined for current record (maybe you need to save your changes first).</label>
         </languageKey>
         <languageKey index="dk" type="array">
         </languageKey>

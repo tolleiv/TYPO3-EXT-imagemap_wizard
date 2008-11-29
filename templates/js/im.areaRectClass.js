@@ -83,8 +83,8 @@ var areaRectClass = areaClass.extend({
     },
     
     updateCoordsFromForm: function(id) {
-        this.setX(parseInt($("#" + this.getFormId() + "_x1").val()), parseInt($("#" + this.getFormId() + "_x2").val()));
-        this.setY(parseInt($("#" + this.getFormId() + "_y1").val()), parseInt($("#" + this.getFormId() + "_y2").val()));
+        this.setX(parseInt(jQuery("#" + this.getFormId() + "_x1").val()), parseInt(jQuery("#" + this.getFormId() + "_x2").val()));
+        this.setY(parseInt(jQuery("#" + this.getFormId() + "_y1").val()), parseInt(jQuery("#" + this.getFormId() + "_y2").val()));
         this.getCanvas().updateCanvas(this.getId());
     },
 
@@ -139,10 +139,10 @@ var areaRectClass = areaClass.extend({
         return edge;
     },
     
-    getLeftX: function()          {  return parseInt(this._coords[0]); },
-    getTopY: function()          {  return parseInt(this._coords[1]);  },
-    getRightX: function()      {  return parseInt(this._coords[2]);  },
-    getBottomY: function()      {  return parseInt(this._coords[3]); },
+    getLeftX: function()          {  return this._scale*parseInt(this._coords[0]); },
+    getTopY: function()          {  return this._scale*parseInt(this._coords[1]);  },
+    getRightX: function()      {  return this._scale*parseInt(this._coords[2]);  },
+    getBottomY: function()      {  return this._scale*parseInt(this._coords[3]); },
 
 	getWidth: function()	{ return this.getRightX()-this.getLeftX(); },
 	getHeight: function()	{ return this.getBottomY()-this.getTopY(); },

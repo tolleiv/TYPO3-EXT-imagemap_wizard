@@ -78,9 +78,9 @@ var areaCircleClass = areaClass.extend({
     },
     
     updateCoordsFromForm: function(id) {
-        this.setX(parseInt($("#" + this.getFormId() + "_x").val()));
-        this.setY(parseInt($("#" + this.getFormId() + "_y").val()));
-        this.setRadius(parseInt($("#" + this.getFormId() + "_radius").val()));
+        this.setX(parseInt(jQuery("#" + this.getFormId() + "_x").val()));
+        this.setY(parseInt(jQuery("#" + this.getFormId() + "_y").val()));
+        this.setRadius(parseInt(jQuery("#" + this.getFormId() + "_radius").val()));
         this.getCanvas().updateCanvas(this.getId());
     },
 
@@ -116,19 +116,19 @@ var areaCircleClass = areaClass.extend({
     },
 
     getX: function() {
-        return this._coords[0];
+        return this._scale*this._coords[0];
     },
     setX: function(x)   {
         this._coords[0] = parseInt(x);
     },
     getY: function() {
-        return this._coords[1];
+        return this._scale*this._coords[1];
     },
     setY: function(x)   {
         this._coords[1] = parseInt(x);
     },
     getRadius: function() {
-        return this._coords[2];
+        return this._scale*this._coords[2];
     },
     setRadius: function(r)   {
           this._coords[2] = Math.abs(parseInt(r));

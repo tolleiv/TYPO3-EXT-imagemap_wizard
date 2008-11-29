@@ -47,11 +47,11 @@ var areaPolyClass = areaClass.extend({
                 var x2 = this._coords[((i>0)?i:this._coords.length)-1].x;
                 var y2 = this._coords[((i>0)?i:this._coords.length)-1].y;
                 vectorsObj.setColor(this.getColor());
-                vectorsObj.drawLine(x1,y1,x2,y2);
+                vectorsObj.drawLine(this._scale*x1,this._scale*y1,this._scale*x2,this._scale*y2);
             }
             
             for(var i=0;i<this._coords.length;i++) {
-                this.drawEdge(vectorsObj,this._coords[i].x,this._coords[i].y);
+                this.drawEdge(vectorsObj,this._scale*this._coords[i].x,this._scale*this._coords[i].y);
             }
     },
     
@@ -88,35 +88,35 @@ var areaPolyClass = areaClass.extend({
     },    
     
     applyBasicTypeActions: function() {
-        $("#" + this.getFormId() + "_add")
+        jQuery("#" + this.getFormId() + "_add")
            	.data("obj",this)
             .click(function(event) {
-                $(this).data("obj").insertNewCoordAfterPoint(-1);
+                jQuery(this).data("obj").insertNewCoordAfterPoint(-1);
         });    
     },
     
     applyAdditionalTypeActions: function() {   
-        $("#" + this.getFormId() + "_more > .positionOptions > .addCoord")
+        jQuery("#" + this.getFormId() + "_more > .positionOptions > .addCoord")
             .data("obj",this)
             .click(function(e) {
                 if(this.id.match(/^.*_after\d+$/)) {
-                    $(this).data("obj").insertNewCoordAfterPoint(parseInt(this.id.replace(/^.*_after/g,'')));
+                    jQuery(this).data("obj").insertNewCoordAfterPoint(parseInt(this.id.replace(/^.*_after/g,'')));
                 } 
                 if(this.id.match(/^.*_before\d+$/)) {
-                    $(this).data("obj").insertNewCoordBeforePoint(parseInt(this.id.replace(/^.*_before/g,'')));
+                    jQuery(this).data("obj").insertNewCoordBeforePoint(parseInt(this.id.replace(/^.*_before/g,'')));
                 } 
             });
-        $("#" + this.getFormId() + "_more > .positionOptions > .rmCoord")
+        jQuery("#" + this.getFormId() + "_more > .positionOptions > .rmCoord")
             .data("obj",this)
             .click(function(e) {
-                $(this).data("obj").removeCoord(parseInt(this.id.replace(/^.*_rm/g,'')));
+                jQuery(this).data("obj").removeCoord(parseInt(this.id.replace(/^.*_rm/g,'')));
             });
     },
     
     updateCoordsFromForm: function(id) {
        for(var i=0;i<this._coords.length;i++) {
-            this._coords[i].x = parseInt($("#" + this.getFormId() + "_x" + i).val());
-            this._coords[i].y = parseInt($("#" + this.getFormId() + "_y" + i).val());
+            this._coords[i].x = parseInt(jQuery("#" + this.getFormId() + "_x" + i).val());
+            this._coords[i].y = parseInt(jQuery("#" + this.getFormId() + "_y" + i).val());
        }
         this.getCanvas().updateCanvas(this.getId());
     },

@@ -37,14 +37,13 @@ class tx_imagemapwizard_dataObject {
 	public function __construct($table,$field,$uid) {
 	    $this->table = $table;
 	    t3lib_div::loadTCA($this->table);
-
 		$this->imageField = $this->determineImageFieldName();
 		$this->row = t3lib_BEfunc::getRecordWSOL($table,$uid);
         $this->liveRow = $this->row;
         t3lib_BEfunc::fixVersioningPid($table,$this->liveRow);
 	    $this->mapField = $field;
 	    $this->map = t3lib_div::makeInstance("tx_imagemapwizard_mapper")->map2array($this->row[$this->mapField]);
-        
+
 	    $this->backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getBackPath();');
     }
 
@@ -53,35 +52,75 @@ class tx_imagemapwizard_dataObject {
 		return NULL;
 	}
 
-	public function getImageLocation() {
-		return $this->backPath.$GLOBALS['TCA'][$this->table]['columns'][$this->imageField]['config']['uploadfolder'].'/'.$this->getFieldValue($this->imageField);
+	public function getImageLocation($abs=false) {
+		return ($abs?PATH_site:$this->backPath).$GLOBALS['TCA'][$this->table]['columns'][$this->imageField]['config']['uploadfolder'].'/'.$this->getFieldValue($this->imageField);
 	}
-
+    
 	public function hasValidImageFile() {
-		return is_readable(PATH_site.$this->getImageLocation());
+		return is_file($this->getImageLocation(true))&&is_readable($this->getImageLocation(true));
 	}
 
 	public function renderImage() {
-        $t3env = t3lib_div::makeInstance('tx_imagemapwizard_typo3env');
+		$t3env = t3lib_div::makeInstance('tx_imagemapwizard_typo3env');
 		if(!$t3env->initTSFE($this->getLivePid(),$GLOBALS['BE_USER']->workspace,$GLOBALS['BE_USER']->user['uid'])) {
-            return 'Can\'t render image since TYPO3 Environment is not ready.<br/>Error was:'.$t3env->get_lastError();
-        }        
+			return 'Can\'t render image since TYPO3 Environment is not ready.<br/>Error was:'.$t3env->get_lastError();
+		}
+
 		$conf = array('table'=>$this->table,'select.'=>array('uidInList'=>$this->getLiveUid()));
+
 		//render like in FE with WS-preview etc...
-		$t3env->prepareEnv($this->backPath);
+		$t3env->pushEnv();
+		$t3env->setEnv(PATH_site);
 		$result = $GLOBALS['TSFE']->cObj->CONTENT($conf);
-		$t3env->releaseEnv(t3lib_extMgm::extPath('imagemap_wizard'));		
+		$t3env->popEnv();
 
 		// extract the image
 		$matches=array();
 		if(!preg_match('/(<img[^>]+usemap="####IMAGEMAP_USEMAP###"[^>]*\/>)/',$result,$matches)) {
-            return 'No Image rendered from TSFE. :(';
-        }
-		$result = str_replace('src="','src="'.$this->backPath,$matches[1]);
+			return 'No Image rendered from TSFE. :(<br/>Error was:'.$t3env->get_lastError();
+		}
+		$result = str_replace('src="','src="'.($this->backPath),$matches[1]);
 		return $result;
 	}
 
+    public function renderThumbnail($maxSize=200) {
 
+		$img = $this->renderImage();
+		$matches = array();
+		if(preg_match('/width="(\d+)" height="(\d+)"/',$img,$matches)) {
+			$width = intval($matches[1]);
+			$height = intval($matches[2]);
+			if(($width > $maxSize) && ($width >= $height)) {
+				$height = ($maxSize/$width)*$height;
+				$width = $maxSize;
+			} else if($height > $maxSize) {
+				$width = ($maxSize/$height)*$width;	
+				$height = $maxSize;
+			}
+			return preg_replace('/width="(\d+)" height="(\d+)"/','width="'.$width.'" height="'.$height.'"',$img);
+			
+		} else {
+			return '';
+		}
+    }
+    
+    public function getThumbnailScale($maxSize=200) {
+        $ret = 1;
+		$img = $this->renderImage();
+		$matches = array();
+		if(preg_match('/width="(\d+)" height="(\d+)"/',$img,$matches)) {
+			$width = intval($matches[1]);
+			$height = intval($matches[2]);
+			if(($width > $maxSize) && ($width >= $height)) {
+				$ret = ($maxSize/$width);
+			} else if($height > $maxSize) {
+				$ret = ($maxSize/$height);
+			}
+		}
+		return $ret;
+    }
+    
+    
 	public function listAreas($template="") {
 		if(!is_array($this->map["#"])) return '';
 		$result = '';
@@ -98,19 +137,30 @@ class tx_imagemapwizard_dataObject {
 		}
 		return $result;
 	}
-    
+
     protected function getLivePid() {
         return $this->row['pid']>0?$this->row['pid']:$this->liveRow['pid'];
     }
-    
+
     protected function getLiveUid() {
-        return ($GLOBALS['BE_USER']->workspace===0)?$this->row['uid']:$this->row['t3ver_oid'];
+        return (($GLOBALS['BE_USER']->workspace===0) || ($this->row['t3ver_oid']==0))?$this->row['uid']:$this->row['t3ver_oid'];
     }
 
 	protected function determineImageFieldName() {
 		return isset($GLOBALS['TCA'][$this->table]['columns'][$this->mapField]['config']['userImageField'])?$GLOBALS['TCA'][$this->table]['columns'][$this->mapField]['config']['userImageField']:'image';
 	}
 
+    public function getTablename() {
+        return $this->table;
+    }
+
+    public function getFieldname() {
+        return $this->mapField;
+    }
+
+    public function getRow() {
+        return $this->row;
+    }
 }
 
 ?>

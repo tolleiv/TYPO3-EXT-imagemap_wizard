@@ -1,51 +1,51 @@
 <?php
 $this->addExternalJS("templates/js/jquery-1.2.6.js");
-$this->addExternalJs("templates/js/ui.core.js");
-$this->addExternalJs("templates/js/ui.sortable.js");
-$this->addExternalJs("templates/js/jquery.timers.js");
-$this->addExternalJs("templates/js/jquery.simpleColor.mod.js");
-$this->addExternalJs("templates/js/wz_jsgraphics.js");
-$this->addExternalJs("templates/js/im.canvasClass.js");
-$this->addExternalJs("templates/js/js.inheritance.js");
-$this->addExternalJs("templates/js/im.areaClass.js");
-$this->addExternalJs("templates/js/im.areaRectClass.js");
-$this->addExternalJs("templates/js/im.areaCircleClass.js");
-$this->addExternalJs("templates/js/im.areaPolyClass.js");
+$this->addExternalJS("templates/js/ui.core.js");
+$this->addExternalJS("templates/js/ui.sortable.js");
+$this->addExternalJS("templates/js/jquery.timers.js");
+$this->addExternalJS("templates/js/jquery.simpleColor.mod.js");
+$this->addExternalJS("templates/js/wz_jsgraphics.js");
+$this->addExternalJS("templates/js/im.canvasClass.js");
+$this->addExternalJS("templates/js/js.inheritance.js");
+$this->addExternalJS("templates/js/im.areaClass.js");
+$this->addExternalJS("templates/js/im.areaRectClass.js");
+$this->addExternalJS("templates/js/im.areaCircleClass.js");
+$this->addExternalJS("templates/js/im.areaPolyClass.js");
 $this->addExternalCSS("templates/default.css");
 
 $existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape##Class(),'##coords##','##alt##','##link##','##color##',0);\n");
 
-$this->addInlineJs('
-
-$(document).ready(function(){
+$this->addInlineJS('
+jQuery.noConflict();
+jQuery(document).ready(function(){
     canvasObject = new canvasClass();
     canvasObject.init("canvas","picture","areaForms");
 	'.$existingFields.'
 
 
-    $("#addRect").click(function(event) {
+    jQuery("#addRect").click(function(event) {
         canvasObject.addArea(new areaRectClass(),\'100,100,50,50\',\'\',\'\',\'\',1);
     });
-    $("#addPoly").click(function(event) {
+    jQuery("#addPoly").click(function(event) {
         canvasObject.addArea(new areaPolyClass(),\'100,100,75,75,50,100\',\'\',\'\',\'\',1);
     });
-    $("#addCirc").click(function(event) {
+    jQuery("#addCirc").click(function(event) {
         canvasObject.addArea(new areaCircleClass(),\'100,100,50\',\'\',\'\',\'\',1);
     });
-    $(".niy").click(function(event) {
+    jQuery(".niy").click(function(event) {
     	alert("Not implemented yet - but would be cool to have it :)");
     });
-    $("#submit").click(function(event) {
+    jQuery("#submit").click(function(event) {
     	setValue("<map>" + canvasObject.persistanceXML() + "\n</map>");
     	close();
     });
-    $("#canvas").mousedown(function(e){
+    jQuery("#canvas").mousedown(function(e){
         canvasObject.mousedown(e);
     });
-    $(document).mouseup(function(e){
+    jQuery(document).mouseup(function(e){
         canvasObject.mouseup(e);
     });
-    $(document).mousemove(function(e){       
+    jQuery(document).mousemove(function(e){       
         canvasObject.mousemove(e);
     });
 });

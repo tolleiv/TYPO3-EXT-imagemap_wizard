@@ -38,6 +38,7 @@ require_once(PATH_tslib.'class.tslib_content.php') ;
 require_once(PATH_t3lib.'class.t3lib_tstemplate.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
 require_once(PATH_t3lib.'class.t3lib_timetrack.php');
+require_once(t3lib_extMgm::extPath('css_styled_content').'pi1/class.tx_cssstyledcontent_pi1.php');
 
 class tx_imagemapwizard_typo3env {
     protected $lastError;
@@ -50,6 +51,9 @@ class tx_imagemapwizard_typo3env {
 	 * @return	Boolean		returns success of the operation
 	 */
 	function initTSFE($pid = 1,$ws = 0){
+    
+        $tca = $GLOBALS['TCA'];
+    
 		$TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
 		$GLOBALS['TSFE'] = new $TSFEclassName($GLOBALS['TYPO3_CONF_VARS'], $pid, '0', 0, '','','','');
         $GLOBALS['TSFE']->ADMCMD_preview_postInit(array('BEUSER_uid'=>$GLOBALS['BE_USER']->user['uid']));
@@ -101,8 +105,17 @@ class tx_imagemapwizard_typo3env {
 		$GLOBALS['TSFE']->clear_preview();
 		$GLOBALS['TSFE']->determineId();
 		$GLOBALS['TSFE']->newCObj();
+        $GLOBALS['TCA'] = $tca; //todo: check why TCA is lost sometimes...
+        
 		return true;
 	}
+ 
+    protected $envStack = array();
+ 
+ 
+    function pushEnv() {
+        array_push($this->envStack,array('workDir'=>getcwd(),'BE_USER'=>$GLOBALS['BE_USER']));
+    }
  
     /**
     * prepares Frontend-like-Rendering 
@@ -110,12 +123,14 @@ class tx_imagemapwizard_typo3env {
     *
     * @see releaseEnv()
     */ 
-	function prepareEnv() {
+	function setEnv($backPath='') {
 		if($this->BE_USER==NULL) {
 			$this->initMyBE_USER();
 		}
-        chdir(self::getBackPath());
-		$this->BE_USER_GLOBAL = $GLOBALS['BE_USER'];	
+        if($backPath && is_dir($backPath)) {
+            chdir($backPath);
+        }
+		//$this->BE_USER_GLOBAL = $GLOBALS['BE_USER'];	
 		$GLOBALS['BE_USER'] = $this->BE_USER;
 	}	
 
@@ -123,11 +138,14 @@ class tx_imagemapwizard_typo3env {
     * closes Frontend-like-Rendering 
     * and it also really sucks that this is needed
     *
-    * @see prepareEnv()
+    * @see setEnv()
     */ 	
-	function releaseEnv() {
-		$GLOBALS['BE_USER'] = $this->BE_USER_GLOBAL;
-        chdir(t3lib_extMgm::extPath('imagemap_wizard'));
+	function popEnv($curPath='') {    
+        $env = array_pop($this->envStack);    
+		$GLOBALS['BE_USER'] = $env['BE_USER'];
+        if($env['workDir'] && is_dir($env['workDir'])) {
+            chdir($env['workDir']);
+        }
 	}
 
     
@@ -158,8 +176,9 @@ class tx_imagemapwizard_typo3env {
         return $this->lastError;
     }
     
-    public static function getBackPath() {
-        return str_replace(TYPO3_mainDir,'',$GLOBALS['BACK_PATH']);
+    public static function getBackPath() {    
+        //return str_replace(TYPO3_mainDir,'',$GLOBALS['BACK_PATH']);
+        return preg_replace('/([^\/]+)\//','../',str_replace(array(PATH_site,basename(PATH_thisScript)),array('',''),PATH_thisScript));
     }
     
 }

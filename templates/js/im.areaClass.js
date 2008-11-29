@@ -26,6 +26,8 @@ var areaClass = Class.extend({
     _link:-1,
     _label:'',
     _canvas:-1,
+    _scale:1,
+    _edges:true,
     _moreOptionsInitFlag:false,
     _moreOptionsVisible:false,
 	_colors:    ['990033','ff9999','993366','ff66cc','ff0066','ff00cc','cc0099','cc99ff','cc00cc','cc99cc','9933cc','9966cc','6600cc','6633ff','6666cc','333399','3333ff',		
@@ -44,7 +46,7 @@ var areaClass = Class.extend({
     },
     
     remove: function() {
-        $("#" + this.getFormId()).remove();
+        jQuery("#" + this.getFormId()).remove();
         this.getCanvas().removeArea(this.getId());
     },
     
@@ -68,6 +70,10 @@ var areaClass = Class.extend({
         return this._link;
     },
     
+    setScale: function(factor) {
+        this._scale = factor;
+    },
+    
     _color:-1,
     setColor: function(color) {    
         this._color = ((typeof color =='string') && color.match(/^#\S{6}$/g))?color:("#" + this._colors[parseInt(Math.random()*57)])    
@@ -75,8 +81,8 @@ var areaClass = Class.extend({
 
     updateColor: function(color,updateCanvas) {
   		        this.setColor(color);
-		        $("#" + this.getFormId() + "_main > .colorPreview > div").css("backgroundColor", color);
-		        $("#" + this.getFormId() + "_color > .colorBox > div").css("backgroundColor", color);
+		        jQuery("#" + this.getFormId() + "_main > .colorPreview > div").css("backgroundColor", color);
+		        jQuery("#" + this.getFormId() + "_color > .colorBox > div").css("backgroundColor", color);
 		        if(updateCanvas==1) this.getCanvas().updateCanvas(this.getId());
     },
     
@@ -85,59 +91,64 @@ var areaClass = Class.extend({
     },
 
     drawEdge: function(vectorsObj,x,y) {
+        if(!this._edges) { return; }
         vectorsObj.setColor(this.getColor());    
         vectorsObj.fillRect(x-3,y-3,7,7);
         vectorsObj.setColor("#ffffff");
         vectorsObj.fillRect(x-2,y-2,5,5);      
     },
 
+    disableEdges: function() {
+        this._edges=false;
+    },
+
     // called from canvasClass
 	// most of the operations can't be called earlier since we need the form-markup to be loaded
     applyBasicAreaActions: function() {
     	this._moreOptionsInitFlag = false;
-        $("#" + this.getFormId() + "_upd").data("area",this).click(function(event) {
-            $(this).data("area").updateCoordsFromForm();
+        jQuery("#" + this.getFormId() + "_upd").data("area",this).click(function(event) {
+            jQuery(this).data("area").updateCoordsFromForm();
         });
-        $("#" + this.getFormId() + "_del").data("area",this).click(function(event) {
-            $(this).data("area").remove();
+        jQuery("#" + this.getFormId() + "_del").data("area",this).click(function(event) {
+            jQuery(this).data("area").remove();
         });
-        $("#" + this.getFormId() + " > .basicOptions > .exp > img")
+        jQuery("#" + this.getFormId() + " > .basicOptions > .exp > img")
         	.data("obj",this)
         	.data("rel","#" + this.getFormId() +" > .moreOptions")
         	.click(function(event) {
-               // if ($($(this).data("rel")).is(":hidden")) {
-               if(!$(this).data("obj").isMoreOptionsVisible()) {
-                    $(this).data("obj").applyAdditionalAreaActions();
-                    $($(this).data("rel")).slideDown("fast");
+               // if (jQuery(jQuery(this).data("rel")).is(":hidden")) {
+               if(!jQuery(this).data("obj").isMoreOptionsVisible()) {
+                    jQuery(this).data("obj").applyAdditionalAreaActions();
+                    jQuery(jQuery(this).data("rel")).slideDown("fast");
                 } else {
-                    $($(this).data("rel")).slideUp("fast");
+                    jQuery(jQuery(this).data("rel")).slideUp("fast");
                 }
-                $(this).data("obj").toogleMoreOptionsFlag();        
+                jQuery(this).data("obj").toogleMoreOptionsFlag();        
         });
-        $("#" + this.getFormId() + " > .basicOptions > .colorPreview")
+        jQuery("#" + this.getFormId() + " > .basicOptions > .colorPreview")
         	.data("pseudo","#" + this.getFormId() + " > .basicOptions > .exp > img")
             .click(function(event) {
-                $($(this).data("pseudo")).click();
+                jQuery(jQuery(this).data("pseudo")).click();
             });
-        $("#" + this.getFormId() + "_link")
+        jQuery("#" + this.getFormId() + "_link")
            	.data("obj",this)
     	    .change(function(event) {
-    	        $(this).data("obj").updateStatesFromForm();
+    	        jQuery(this).data("obj").updateStatesFromForm();
     	    });
-        $("#" + this.getFormId() + "_up")
+        jQuery("#" + this.getFormId() + "_up")
            	.data("obj",this)
             .click(function(event) {
-            $(this).data("obj").getCanvas().areaUp($(this).data("obj").getId());
+            jQuery(this).data("obj").getCanvas().areaUp(jQuery(this).data("obj").getId());
         });
-        $("#" + this.getFormId() + "_down")
+        jQuery("#" + this.getFormId() + "_down")
            	.data("obj",this)
             .click(function(event) {
-            $(this).data("obj").getCanvas().areaDown($(this).data("obj").getId());
+            jQuery(this).data("obj").getCanvas().areaDown(jQuery(this).data("obj").getId());
         });
         
         this.applyBasicTypeActions();
         
-        if(!this._moreOptionsVisible)	$("#" + this.getFormId() + " > .moreOptions").hide();
+        if(!this._moreOptionsVisible)	jQuery("#" + this.getFormId() + " > .moreOptions").hide();
 		else						this.applyAdditionalAreaActions();
 
         this.updateColor(this.getColor(),0);
@@ -147,17 +158,17 @@ var areaClass = Class.extend({
     updateStatesFromForm: function() {
 		this.setLink(document.forms[0].elements[this.getFormId() + "_link"].value);
         this.setLabel(document.forms[0].elements[this.getFormId() + "_label"].value);
-		//this._moreOptionsVisible = $("#" + this.getFormId() +" > .moreOptions").is(":visible");
+		//this._moreOptionsVisible = jQuery("#" + this.getFormId() +" > .moreOptions").is(":visible");
     },
 
     applyAdditionalAreaActions: function() {
     	if(this._moreOptionsInitFlag==true) return;
-        $("#" + this.getFormId() + "_color > .colorPicker")
+        jQuery("#" + this.getFormId() + "_color > .colorPicker")
         		.data("area",this)
         		.simpleColor({colors:this._colors})
         		.click(function(event,data) {
         			if(typeof data == 'undefined') return;
-        			$(this).data("area").updateColor(data,1);
+        			jQuery(this).data("area").updateColor(data,1);
         		});
 		
          this.applyAdditionalTypeActions();
@@ -166,11 +177,11 @@ var areaClass = Class.extend({
     },
 
     refreshExpandButtons: function()    {
-        $("#" + this.getFormId() + " > .basicOptions > .exp > img").hide();    
+        jQuery("#" + this.getFormId() + " > .basicOptions > .exp > img").hide();    
         if(this.isMoreOptionsVisible()) {
-            $("#" + this.getFormId() + " > .basicOptions > .exp > img.up").show();
+            jQuery("#" + this.getFormId() + " > .basicOptions > .exp > img.up").show();
         } else {
-            $("#" + this.getFormId() + " > .basicOptions > .exp > img.down").show();       
+            jQuery("#" + this.getFormId() + " > .basicOptions > .exp > img.down").show();       
         }
     },
 

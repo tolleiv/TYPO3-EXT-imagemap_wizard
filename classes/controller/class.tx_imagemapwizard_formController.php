@@ -28,11 +28,19 @@
  */
 
 require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_dataObject.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_imagemapwizard_formView.php');
 
 class tx_imagemapwizard_formController {
 
-    protected $TCEForms;
-
+    protected $view;
+    
+	/**
+	 * Initialize Context and required View
+	 */
+    public function __construct() {
+        $this->view = t3lib_div::makeInstance("tx_imagemapwizard_formView");
+        $this->view->init();
+    }
 	/**
 	 * Generate the Form
 	 *
@@ -40,18 +48,18 @@ class tx_imagemapwizard_formController {
 	 * @param	Object		fobj
 	 * @return	String		HTMLCode with form-field
 	 */
-    function renderForm($PA, $fobj) {
+    function renderForm($PA, t3lib_TCEforms $fobj) {
 		$dataClass = t3lib_div::makeInstanceClassName('tx_imagemapwizard_dataObject');
 		$data = new $dataClass($PA['table'],$PA['field'],$PA['row']['uid']);
-
-		if(!$data->hasValidImageFile()) {
-			//TODO: implement ajax reload thing
-			return 'no targetimage defined yet';
-		}
-
-        return $PA['pObj']->getSingleField_typeText($PA['table'],$PA['field'],$PA['row'],$PA);
-     	$content = $PA['pObj']->getSingleHiddenField($PA['table'],$PA['field'],$PA['row'],$PA);
-        return $PA['pObj']->renderWizards(array($content,'..altItem..?'),$PA['fieldConf']['config']['wizards'],$PA['table'],$PA['row'],$PA['field'],$PA,$PA['itemFormElName'],array(),1);
+		$this->view->setTCEForm($PA['pObj']);
+		$this->view->setData($data);
+        
+       // $fobj->additionalCode_pre[] = '<script type="text/javascript" src="'.t3lib_extMgm::extRelPath('imagemap_wizard').'templates/js/wz_jsgraphics.js"></script>';
+        return $this->view->renderContent($PA['itemFormElName'],$PA['fieldConf']['config']['wizards']);
+    }
+    
+    function renderSimpleTextForm() {
+    	return $fobj->getSingleField_typeText($PA['table'],$PA['field'],$PA['row'],$PA);
     }
 }
 
