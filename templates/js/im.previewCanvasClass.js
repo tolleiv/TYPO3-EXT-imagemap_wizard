@@ -21,7 +21,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-canvasClass = function () {
+previewCanvasClass = function () {
 
     var canvasId,canvasVectors,areaCount,areaObjects,areaObjectList,scale;
     this.init = function (id,scaleFactor){
@@ -33,13 +33,17 @@ canvasClass = function () {
         areaObjectList = new Array();
     }
 
-    this.addArea = function(obj,coords,labelValue,linkValue,colorValue) {
+    this.addArea = function(obj,coords,labelValue,linkValue,colorValue,prepend) {
         obj.init(this,this.getNextId(),coords,labelValue,linkValue,colorValue);
         obj.disableEdges();
         obj.setScale(scale);
         areaObjects[obj.getId()] = obj;
-        areaObjectList.push(obj.getId());
-        this.updateCanvas(obj.getId());
+        if(prepend) {
+            areaObjectList.push(obj.getId());
+        } else {
+            areaObjectList.unshift(obj.getId());
+        }
+        this.updateCanvas();
     }
     
     /**
@@ -48,9 +52,12 @@ canvasClass = function () {
     * @param id     the object-id
     * @usage area*Classes
     */
-    this.updateCanvas = function(id) {       
-            areaObjects[id].drawSelection(canvasVectors);
-            canvasVectors.paint();
+    this.updateCanvas = function() {      
+        canvasVectors.clear();
+        jQuery.each(areaObjectList, function(i, objId) {
+            areaObjects[objId].drawSelection(canvasVectors);
+        });    
+        canvasVectors.paint();
     }    
     
     

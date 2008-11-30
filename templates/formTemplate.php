@@ -10,12 +10,12 @@ $this->addExternalJS("templates/js/im.areaCircleClass.js");
 $this->addExternalJS("templates/js/im.areaPolyClass.js");
 
 
-$existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape##Class(),'##coords##','##alt##','##link##','##color##');\n");
+$existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape##Class(),'##coords##','##alt##','##link##','##color##',0);\n");
 
 $this->addInlineJS('
 jQuery.noConflict();
 jQuery(document).ready(function(){
-    canvasObject = new canvasClass();
+    canvasObject = new previewCanvasClass();
     canvasObject.init("'.$this->getId().'","'.$this->data->getThumbnailScale().'");
 	'.$existingFields.'
 });
