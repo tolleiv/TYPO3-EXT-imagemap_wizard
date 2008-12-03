@@ -34,16 +34,19 @@ require_once(PATH_tslib.'class.tslib_gifbuilder.php');
 
 class tx_imagemapwizard_dataObject {
 	protected $row,$liveRow,$table,$mapField,$imageField,$backPath;
-	public function __construct($table,$field,$uid) {
+	public function __construct($table,$field,$uid,$currentValue=NULL) {
 	    $this->table = $table;
 	    t3lib_div::loadTCA($this->table);
 		$this->imageField = $this->determineImageFieldName();
-		$this->row = t3lib_BEfunc::getRecordWSOL($table,$uid);
+	    $this->mapField = $field;
+        $this->row = t3lib_BEfunc::getRecordWSOL($table,$uid);
+        if($currentValue) { $this->useCurrentData($currentValue); }        
         $this->liveRow = $this->row;
         t3lib_BEfunc::fixVersioningPid($table,$this->liveRow);
-	    $this->mapField = $field;
+
 	    $this->map = t3lib_div::makeInstance("tx_imagemapwizard_mapper")->map2array($this->row[$this->mapField]);
 
+        //eval for the XCLASSes
 	    $this->backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getBackPath();');
     }
 
@@ -65,7 +68,6 @@ class tx_imagemapwizard_dataObject {
 		if(!$t3env->initTSFE($this->getLivePid(),$GLOBALS['BE_USER']->workspace,$GLOBALS['BE_USER']->user['uid'])) {
 			return 'Can\'t render image since TYPO3 Environment is not ready.<br/>Error was:'.$t3env->get_lastError();
 		}
-
 		$conf = array('table'=>$this->table,'select.'=>array('uidInList'=>$this->getLiveUid()));
 
 		//render like in FE with WS-preview etc...
@@ -161,6 +163,15 @@ class tx_imagemapwizard_dataObject {
     public function getRow() {
         return $this->row;
     }
+    
+    public function getUid() {
+        return $this->row['uid'];
+    }
+    
+    public function useCurrentData($value) {
+        $this->row[$this->mapField] = $value;
+    }   
+    
 }
 
 ?>

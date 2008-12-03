@@ -32,7 +32,6 @@ require($BACK_PATH.'init.php');
 require($BACK_PATH.'template.php');
 
 require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/controller/class.tx_imagemapwizard_wizardController.php');
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_imagemapwizard_backendView.php');
 
 $GLOBALS['LANG']->includeLLFile('EXT:lang/locallang_wizards.xml');
 $GLOBALS['LANG']->includeLLFile('EXT:imagemap_wizard/locallang.xml');

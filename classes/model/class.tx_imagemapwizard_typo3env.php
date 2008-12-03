@@ -176,9 +176,12 @@ class tx_imagemapwizard_typo3env {
         return $this->lastError;
     }
     
-    public static function getBackPath() {    
-        //return str_replace(TYPO3_mainDir,'',$GLOBALS['BACK_PATH']);
+    public static function getBackPath() {
         return preg_replace('/([^\/]+)\//','../',str_replace(array(PATH_site,basename(PATH_thisScript)),array('',''),PATH_thisScript));
+    }
+    
+    public static function getExtBackPath($extKey='imagemap_wizard') {
+        return self::getBackPath().str_replace(PATH_site,'',t3lib_extMgm::extPath($extKey));    
     }
     
 }

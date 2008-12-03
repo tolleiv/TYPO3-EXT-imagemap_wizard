@@ -50,9 +50,9 @@ class tx_imagemapwizard_formView extends tx_imagemapwizard_abstractView {
 			$this->form->additionalCode_pre[] = $this->getExternalJSIncludes();
 			$this->form->additionalCode_pre[] = $this->getInlineJSIncludes();
 		}
-		$a = array();
+		$a = array('fieldChangeFunc'=>array('imagemapwizard_valueChanged(field);'));
 		$content .= $this->form->getSingleHiddenField($this->data->getTablename(),$this->data->getFieldname(),$this->data->getRow());
-		return $this->form->renderWizards(array($content,''),$wizardConf,$this->data->getTablename(),$this->data->getRow(),$this->data->getFieldname(),$a,$formName,array(),1);
+		return '<div id="'.$this->getId().'">'.$this->form->renderWizards(array($content,''),$wizardConf,$this->data->getTablename(),$this->data->getRow(),$this->data->getFieldname(),$a,$formName,array(),1).'</div>';
 	}
 }
 

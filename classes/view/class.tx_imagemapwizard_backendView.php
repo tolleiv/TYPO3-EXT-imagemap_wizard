@@ -48,15 +48,13 @@ class tx_imagemapwizard_backendView extends tx_imagemapwizard_abstractView {
    */
 	public function renderContent() {
 		$this->params = t3lib_div::_GP('P');
-		// t3lib_div::debug($this->params);
 		// Setting field-change functions:
 		$fieldChangeFuncArr = $this->params['fieldChangeFunc'];
 		$update = '';
 		if (is_array($fieldChangeFuncArr))	{
 			unset($fieldChangeFuncArr['alert']);
 			foreach($fieldChangeFuncArr as $v)	{
-				$update.= '
-				parent.opener.'.$v;
+				$update.= 'parent.opener.'.$v;
 			}
 		}
 

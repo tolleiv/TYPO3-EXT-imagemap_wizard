@@ -116,19 +116,20 @@ var areaClass = Class.extend({
         	.data("obj",this)
         	.data("rel","#" + this.getFormId() +" > .moreOptions")
         	.click(function(event) {
-               // if (jQuery(jQuery(this).data("rel")).is(":hidden")) {
+                event.stopPropagation();
                if(!jQuery(this).data("obj").isMoreOptionsVisible()) {
                     jQuery(this).data("obj").applyAdditionalAreaActions();
                     jQuery(jQuery(this).data("rel")).slideDown("fast");
                 } else {
                     jQuery(jQuery(this).data("rel")).slideUp("fast");
                 }
-                jQuery(this).data("obj").toogleMoreOptionsFlag();        
+                jQuery(this).data("obj").toogleMoreOptionsFlag();
+
         });
-        jQuery("#" + this.getFormId() + " > .basicOptions > .colorPreview")
-        	.data("pseudo","#" + this.getFormId() + " > .basicOptions > .exp > img")
+        jQuery("#" + this.getFormId() + " > .basicOptions > .colorPreview > div")
+        	.data("pseudo","#" + this.getFormId() + " > .basicOptions > .exp > img:visible")
             .click(function(event) {
-                jQuery(jQuery(this).data("pseudo")).click();
+                jQuery(jQuery(this).data("pseudo")).trigger('click');
             });
         jQuery("#" + this.getFormId() + "_link")
            	.data("obj",this)

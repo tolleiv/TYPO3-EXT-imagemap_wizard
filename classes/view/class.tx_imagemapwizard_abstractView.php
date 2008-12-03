@@ -85,9 +85,9 @@ abstract class tx_imagemapwizard_abstractView {
       }
     }
     
-    protected function getExternalJSIncludes() {
-        $backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getBackPath();');
-        $extPath = str_replace(PATH_site,'',t3lib_extMgm::extPath('imagemap_wizard'));
+    protected function getExternalJSIncludes() {      
+        $extPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtBackPath(\'imagemap_wizard\');');
+        
         if(is_array($this->jsFiles)) {
             foreach($this->jsFiles as $file) {
                 $ret .= "\n<script type=\"text/javascript\" src=\"".$backPath.$extPath.$file."\"></script>";
@@ -119,6 +119,9 @@ abstract class tx_imagemapwizard_abstractView {
         return $ret;
     }
 
+    protected function getAjaxURL($script) {
+        return eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtBackPath(\'imagemap_wizard\');').$script;
+    }
 
 }
 
