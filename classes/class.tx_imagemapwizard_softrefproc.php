@@ -75,4 +75,10 @@ class tx_imagemapwizard_softrefproc extends t3lib_softrefproc {
     return array("content"=>$conv->array2map($data),"elements"=>$elements);
   }
 }
+
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/class.tx_imagemapwizard_softrefproc.php'])    {
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/class.tx_imagemapwizard_softrefproc.php']);
+}
+
 ?>

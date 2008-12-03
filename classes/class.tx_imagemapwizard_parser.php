@@ -47,4 +47,8 @@ require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_im
  }
 
 
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/class.tx_imagemapwizard_parser.php'])    {
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/class.tx_imagemapwizard_parser.php']);
+}
+
 ?>

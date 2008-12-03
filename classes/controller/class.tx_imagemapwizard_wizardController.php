@@ -29,7 +29,7 @@
 
 require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_dataObject.php');
 
-class tx_imagemapwizard_wizardcontroller {
+class tx_imagemapwizard_wizardController {
     protected $view;
     protected $context;
     protected $params;
@@ -148,6 +148,10 @@ class tx_imagemapwizard_wizardcontroller {
         return $this->triggerAction();
 
     }
+}
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/controller/class.tx_imagemapwizard_wizardController.php'])    {
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/controller/class.tx_imagemapwizard_wizardController.php']);
 }
 
 ?>

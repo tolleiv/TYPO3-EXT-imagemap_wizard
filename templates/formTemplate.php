@@ -39,7 +39,7 @@ function imagemapwizard_valueChanged(field) {
 ');
 
 ?>
-<div class="imagemap_wiz" style="padding:5px;">
+<div class="imagemap_wiz" style="padding:5px;overflow:hidden">
     <div id="<?php echo $this->getId(); ?>-canvas" style="position:relative">
     <?php
         echo $this->data->renderThumbnail();

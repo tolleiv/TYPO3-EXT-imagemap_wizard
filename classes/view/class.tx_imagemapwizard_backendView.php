@@ -151,4 +151,7 @@ class tx_imagemapwizard_backendView extends tx_imagemapwizard_abstractView {
 
 }
 
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_backendView.php'])    {
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_backendView.php']);
+}
 ?>

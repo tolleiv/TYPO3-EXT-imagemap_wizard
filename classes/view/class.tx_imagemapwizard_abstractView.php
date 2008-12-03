@@ -122,7 +122,10 @@ abstract class tx_imagemapwizard_abstractView {
     protected function getAjaxURL($script) {
         return eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtBackPath(\'imagemap_wizard\');').$script;
     }
-
 }
 
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_abstractView.php'])    {
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_abstractView.php']);
+}
 ?>
