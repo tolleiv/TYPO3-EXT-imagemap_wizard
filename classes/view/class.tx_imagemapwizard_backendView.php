@@ -145,9 +145,15 @@ class tx_imagemapwizard_backendView extends tx_imagemapwizard_abstractView {
 	 * @param String attr additional required attributes
 	 * @return String HTML-img-tag
 	 */
-	protected function getIcon($skinPath,$attr='') {
-		return "<img ".t3lib_iconWorks::skinImg($this->doc->backPath,$skinPath).($attr?' '.$attr:'')." />";
-	}
+    protected function getIcon($skinPath,$attr='') {
+        $source = t3lib_iconWorks::skinImg($this->doc->backPath,$skinPath);        
+        $match=array();
+        if(preg_match('/src="(\S+)"/',$source,$match) && !is_file($match[1])) {
+            $source='src ="'.eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtBackPath(\'imagemap_wizard\');').'templates/'.$skinPath.'"';
+        }
+        return "<img ".$source.($attr?' '.$attr:'')." />";
+    }
+
 
 }
 
