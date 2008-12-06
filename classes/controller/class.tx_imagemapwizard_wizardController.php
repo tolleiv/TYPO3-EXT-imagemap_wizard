@@ -83,6 +83,7 @@ class tx_imagemapwizard_wizardController {
         $this->params['table'] = t3lib_div::_GP('table');
         $this->params['field'] = t3lib_div::_GP('field');
         $this->params['uid'] = t3lib_div::_GP('uid');        
+        require_once(PATH_t3lib."class.t3lib_tceforms.php");
 		$this->params['pObj'] = t3lib_div::makeInstance('t3lib_TCEforms');
 		$this->params['pObj']->initDefaultBEMode();
         $this->params['itemFormElName'] = t3lib_div::_GP('formField');
