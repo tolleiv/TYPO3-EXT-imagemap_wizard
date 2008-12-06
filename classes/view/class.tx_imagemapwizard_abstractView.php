@@ -122,6 +122,14 @@ abstract class tx_imagemapwizard_abstractView {
     protected function getAjaxURL($script) {
         return eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtBackPath(\'imagemap_wizard\');').$script;
     }
+    
+    protected function getLL($label,$printIt=false) {
+        $value = $GLOBALS['LANG']->getLL($label);
+        if($printIt) {
+            echo $value;
+        }
+        return $value;
+    }
 }
 
 

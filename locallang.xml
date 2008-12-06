@@ -8,6 +8,23 @@
             <label index="imagemap.title">ImageMap</label>
             <label index="imagemap.description">Adds a Imagemap element.</label>
             <label index="imagemap_wizard.title">ImageMap Wizard</label>
+            <label index="imagemap_wizard.form.addrect">Add Rect-Area</label>
+            <label index="imagemap_wizard.form.addcirc">Add Circ-Area</label>
+            <label index="imagemap_wizard.form.addpoly">Add Poly-Area</label>
+            <label index="imagemap_wizard.form.submit">Save &amp; Close</label>
+            <label index="imagemap_wizard.form.area.label">Label</label>
+            <label index="imagemap_wizard.form.area.link">Link</label>
+            <label index="imagemap_wizard.form.area.linkwizard">Open LinkWizard</label>
+            <label index="imagemap_wizard.form.area.up">move up</label>
+            <label index="imagemap_wizard.form.area.down">move down</label>
+            <label index="imagemap_wizard.form.area.remove">remove</label>
+            <label index="imagemap_wizard.form.area.refresh">Update Coords</label>
+            <label index="imagemap_wizard.form.area.expand">show more options</label>
+            <label index="imagemap_wizard.form.area.collapse">hide more options</label>
+            <label index="imagemap_wizard.form.poly.add">add new edge to polygone</label>
+            <label index="imagemap_wizard.form.poly.addEdgeBefore">add edge before current</label>
+            <label index="imagemap_wizard.form.poly.addEdgeAfter">add edge after current</label>
+            <label index="imagemap_wizard.form.poly.removeEdge">remove edge</label>
             <label index="form.no_image">No Image defined for current record (maybe you need to save your changes first).</label>
             <label index="tt_content.tx_imagemapwizard_links">ImageMap Configuration</label>            
         </languageKey>
@@ -17,6 +34,23 @@
             <label index="imagemap.title">ImageMap</label>
             <label index="imagemap.description">Fügt eine Imagemap ein.</label>
             <label index="imagemap_wizard.title">ImageMap Wizard</label>
+            <label index="imagemap_wizard.form.addrect">Neue Rect-Area</label>
+            <label index="imagemap_wizard.form.addcirc">Neue Circ-Area</label>
+            <label index="imagemap_wizard.form.addpoly">Neue Poly-Area</label>
+            <label index="imagemap_wizard.form.submit">Speichern &amp; Schliessen</label>
+            <label index="imagemap_wizard.form.area.label">Label</label>
+            <label index="imagemap_wizard.form.area.link">Link</label>
+            <label index="imagemap_wizard.form.area.linkwizard">Öffne LinkWizard</label>
+            <label index="imagemap_wizard.form.area.up">nach oben</label>
+            <label index="imagemap_wizard.form.area.down">nach unten</label>
+            <label index="imagemap_wizard.form.area.remove">löschen</label>
+            <label index="imagemap_wizard.form.area.refresh">Koordinaten aktualisieren</label>
+            <label index="imagemap_wizard.form.area.expand">Weitere Optionen anzeigen</label>
+            <label index="imagemap_wizard.form.area.collapse">Weitere Optionen verbergen</label>
+            <label index="imagemap_wizard.form.poly.add">Neue Ecke an Polygon anfügen</label>
+            <label index="imagemap_wizard.form.poly.addEdgeBefore">Neue Ecke vor Dieser</label>
+            <label index="imagemap_wizard.form.poly.addEdgeAfter">Neue Ecke nach Dieser</label>
+            <label index="imagemap_wizard.form.poly.removeEdge">Ecke löschen</label>
             <label index="form.no_image">Es ist kein Bild für den aktuellen Datensatz vorhanden (eventuell müssen Sie Änderung speichern bevor Sie weiterarbeiten könne).</label>
             <label index="tt_content.tx_imagemapwizard_links">ImageMap Konfiguration</label> 
         </languageKey>
