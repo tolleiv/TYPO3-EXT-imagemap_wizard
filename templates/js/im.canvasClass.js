@@ -76,6 +76,7 @@ canvasClass = function () {
                 }
             } 
         });          
+        return false;
     }    
  
     /**
@@ -112,7 +113,7 @@ canvasClass = function () {
             this.updateForm(mouseCurrentObjectDrag);
             event.stopPropagation();
         }
-        return false;
+       // return false;
     }
 
     /**

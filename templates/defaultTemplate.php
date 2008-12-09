@@ -40,13 +40,13 @@ jQuery(document).ready(function(){
     	close();
     });
     jQuery("#canvas").mousedown(function(e){
-        canvasObject.mousedown(e);
+        return canvasObject.mousedown(e);
     });
     jQuery(document).mouseup(function(e){
-        canvasObject.mouseup(e);
+        return canvasObject.mouseup(e);
     });
     jQuery(document).mousemove(function(e){       
-        canvasObject.mousemove(e);
+        return canvasObject.mousemove(e);
     });
 });
 ');
