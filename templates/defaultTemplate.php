@@ -48,6 +48,9 @@ jQuery(document).ready(function(){
     jQuery(document).mousemove(function(e){       
         return canvasObject.mousemove(e);
     });
+    jQuery(document).dblclick(function(e){       
+        return canvasObject.dblclick(e);
+    });
 });
 ');
 

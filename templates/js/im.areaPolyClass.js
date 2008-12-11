@@ -162,6 +162,11 @@ var areaPolyClass = areaClass.extend({
 		return border;	
 	},
 
+    borderWasHit: function(border,x,y) {        
+        this._coords.splice(border+1,0, {x:parseInt(x), y:parseInt(y)});     
+        return true;
+    },
+
     
     addCoord: function(cX,cY) {
         this._coords.push({x:parseInt(cX), y:parseInt(cY)});

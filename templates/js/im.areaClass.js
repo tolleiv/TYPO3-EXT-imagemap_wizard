@@ -216,8 +216,18 @@ var areaClass = Class.extend({
     },
     
     hitBorder: function(x1,y1,x2,y2,mX,mY,size) {
-        var d = (mX*y1+x2*mY+x1*y2-x2*y1-mX*y2-x1*mY)/Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
-        return (Math.abs(d)<(size/2))?true:false;
+	var s2 = (size/2);	
+	var xIn = (x1>x2)?((mX<=x1+s2) && (mX>=x2-s2)):((mX>=x1-s2) && (mX<=x2+s2));	
+	var yIn = (y1>y2)?((mY<=y1+s2) && (mY>=y2-s2)):((mY>=y1-s2) && (mY<=y2+s2));	
+        if(xIn && yIn) {
+		var d = (mX*y1+x2*mY+x1*y2-x2*y1-mX*y2-x1*mY)/Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
+		return (Math.abs(d)<(s2))?true:false;
+	}
+	return false;
+    },
+
+    borderWasHit: function(border,x,y) {
+    
     }
 
 });

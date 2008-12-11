@@ -135,6 +135,21 @@ canvasClass = function () {
        return false;
     }
 
+    this.dblclick = function(event) {   
+        var x = event.pageX - jQuery(canvasId).offset().left;
+        var y = event.pageY - jQuery(canvasId).offset().top;
+        var cv = this;
+        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
+            var tmp = areaObjects[jQuery(this).attr("id")].hitOnObjectBorder(x,y,5);
+            if(tmp != -1) {
+                if(areaObjects[jQuery(this).attr("id")].borderWasHit(tmp,x,y)) {
+                    cv.updateCanvas(jQuery(this).attr("id"));     
+                    cv.updateForm(jQuery(this).attr("id"));                
+                }
+            }   
+        });
+    }
+
     /**
     *  Adds a Area Object and do all the coupling-stuff with the environment
     * 
