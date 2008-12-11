@@ -103,7 +103,6 @@ var areaRectClass = areaClass.extend({
         return result;
     },
     
-       
     performResizeAction: function(edge,x,y) {
         var tx = this.getLeftX();
         var ty = this.getTopY();
@@ -137,6 +136,31 @@ var areaRectClass = areaClass.extend({
         this.setX(tx,tx+tw);
         this.setY(ty,ty+th);
         return edge;
+    },  
+
+    hitOnObjectBorder: function(mX,mY,size) { 
+        var result = -1;
+        if(this.hitBorder(this.getLeftX(),this.getTopY(),this.getRightX(),this.getTopY(),mX,mY,size)) {
+            result = 1;
+        }
+        if(this.hitBorder(this.getRightX(),this.getTopY(),this.getRightX(),this.getBottomY(),mX,mY,size)) {
+            result = 2;
+        }
+        if(this.hitBorder(this.getLeftX(),this.getBottomY(),this.getRightX(),this.getBottomY(),mX,mY,size)) {
+            result = 3;
+        }
+        if(this.hitBorder(this.getLeftX(),this.getTopY(),this.getLeftX(),this.getBottomY(),mX,mY,size)) {
+            result = 4;
+        }
+        return result;
+    },   
+   
+    performDragAction: function(border,dX,dY){
+	var x = this.getLeftX();
+	var y = this.getTopY();
+        this.setX(x+dX,x+dX+this.getWidth());
+        this.setY(y+dY,y+dY+this.getHeight());
+	return border;
     },
     
     getLeftX: function()          {  return this._scale*parseInt(this._coords[0]); },

@@ -115,6 +115,26 @@ var areaCircleClass = areaClass.extend({
         return edge;
     },
 
+  
+    performDragAction: function(border,dX,dY){ 
+	this.setX(this.getX()+dX);
+	this.setY(this.getY()+dY);
+        return border;
+    },
+    
+    hitOnObjectBorder: function(x,y,s) { 
+        var result = -1;
+	if(this.hitBorder(this.getX(),this.getY(),this.getRadius(),this.getRadius(),x,y,s)) {
+		result = 1;
+	}
+	return result;
+    },
+    
+    hitBorder: function(x1,y1,r1,r2,mX,mY,size) {
+        var d = Math.sqrt(Math.pow(mX-x1,2)+Math.pow(mY-y1,2));
+        return (Math.abs(d)<(r1+(size/2)) && Math.abs(d)>(r1-(size/2)))?true:false;
+    },
+
     getX: function() {
         return this._scale*this._coords[0];
     },

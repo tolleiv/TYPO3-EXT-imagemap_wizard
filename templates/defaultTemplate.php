@@ -126,9 +126,9 @@ jQuery(document).ready(function(){
         </div>
         <div id="polyCoords" class="noIdWrap">
             <label for="MAPFORMID_xvN" class="XYlabel">XvN:</label><input type="text" class="formCoord" id="MAPFORMID_xvN" value="vX" /><label for="MAPFORMID_yvN" class="XYlabel">YvN:</label><input type="text" class="formCoord" id="MAPFORMID_yvN" value="vY" />
-             <? echo $this->getIcon("gfx/arrowup.png","id=\"MAPFORMID_beforevN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeBefore')."\" class=\"coordOpt addCoord ptr\""); ?>            
-             <? echo $this->getIcon("gfx/arrowdown.png","id=\"MAPFORMID_aftervN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeAfter')."\" class=\"coordOpt addCoord ptr\""); ?>            
-             <? echo $this->getIcon("gfx/close_gray.gif","id=\"MAPFORMID_rmvN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.removeEdge')."\" class=\"coordOpt rmCoord ptr\""); ?><br class="cc" />
+             <? echo $this->getIcon("gfx/arrowup.png","id=\"MAPFORMID_beforevN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeBefore')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeBefore')."\" class=\"coordOpt addCoord ptr\""); ?>            
+             <? echo $this->getIcon("gfx/arrowdown.png","id=\"MAPFORMID_aftervN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeAfter')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeAfter')."\" class=\"coordOpt addCoord ptr\""); ?>            
+             <? echo $this->getIcon("gfx/close_gray.gif","id=\"MAPFORMID_rmvN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.removeEdge')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.removeEdge')."\" class=\"coordOpt rmCoord ptr\""); ?><br class="cc" />
         </div>
     </div>
 

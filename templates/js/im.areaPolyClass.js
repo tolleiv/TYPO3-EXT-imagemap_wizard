@@ -142,6 +142,26 @@ var areaPolyClass = areaClass.extend({
         
         return edge;
     },
+
+	hitOnObjectBorder: function(mX,mY,size) { 
+		var result = -1;
+		for(var i=0;i<this._coords.length;i++) {
+			var j = ((i+1)==this._coords.length)?0:i+1;
+			    if((result == -1) && this.hitBorder(this._coords[i].x,this._coords[i].y,this._coords[j].x,this._coords[j].y,mX,mY,size)) {
+				result = i;
+			    }
+		}
+		return result;
+	},
+
+	performDragAction: function(border,dX,dY) {
+		for(var i=0;i<this._coords.length;i++) {
+			this._coords[i].x = this._coords[i].x+dX;
+			this._coords[i].y = this._coords[i].y+dY;
+		}	
+		return border;	
+	},
+
     
     addCoord: function(cX,cY) {
         this._coords.push({x:parseInt(cX), y:parseInt(cY)});

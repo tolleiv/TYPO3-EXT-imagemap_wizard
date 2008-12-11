@@ -29,6 +29,8 @@ canvasClass = function () {
     var mouseCurrentObjectDrag = -1;
     var mouseCurrentEdgeDrag = -1;
     var mouseCurrentBorderDrag = -1;
+    var mouseCurrentBorderDragX = -1;
+    var mouseCurrentBorderDragY = -1;
     /**
     *  Initialize basic-js Object which handles all the functionality
     * 
@@ -66,16 +68,25 @@ canvasClass = function () {
         var y = event.pageY - jQuery(canvasId).offset().top;
         mouseIsDown = true;
         jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
-            if(mouseCurrentObjectDrag==-1) {
+            if((mouseCurrentObjectDrag==-1) && (mouseCurrentEdgeDrag==-1))  {
                 var tmp = areaObjects[jQuery(this).attr("id")].hitOnObjectEdge(x,y,3);
                 if(tmp != -1) {
                     mouseCurrentObjectDrag=jQuery(this).attr("id");
                     mouseCurrentEdgeDrag=tmp;
                     event.stopPropagation();
-
                 }
-            } 
-        });          
+            }
+            if((mouseCurrentObjectDrag==-1) && (mouseCurrentBorderDrag==-1)) {
+                var tmp = areaObjects[jQuery(this).attr("id")].hitOnObjectBorder(x,y,5);
+                if(tmp != -1) {
+                    mouseCurrentObjectDrag=jQuery(this).attr("id");
+                    mouseCurrentBorderDrag=tmp;
+                    mouseCurrentBorderDragX = x;
+                    mouseCurrentBorderDragY = y;
+                    event.stopPropagation();
+                }
+            }
+        });
         return false;
     }    
  
@@ -89,6 +100,7 @@ canvasClass = function () {
         mouseIsDown = false;
         mouseCurrentObjectDrag = -1;
         mouseCurrentEdgeDrag = -1;
+	    mouseCurrentBorderDrag = -1;
     }    
 
     /**
@@ -107,13 +119,20 @@ canvasClass = function () {
         if(y<0)                   { y=0;                  mouseOverCanvas=false; }
         if(y>this.getMaxH())     { y=this.getMaxH();    mouseOverCanvas=false; }
         
-        if(mouseCurrentObjectDrag!=-1) {
+        if((mouseCurrentObjectDrag!=-1) && (mouseCurrentEdgeDrag!=-1)) {
             mouseCurrentEdgeDrag = areaObjects[mouseCurrentObjectDrag].performResizeAction(mouseCurrentEdgeDrag,x,y);
             this.updateCanvas(mouseCurrentObjectDrag);     
             this.updateForm(mouseCurrentObjectDrag);
             event.stopPropagation();
+        } else if((mouseCurrentObjectDrag!=-1) && (mouseCurrentBorderDrag!=-1)) {
+            mouseCurrentBorderDrag = areaObjects[mouseCurrentObjectDrag].performDragAction(mouseCurrentBorderDrag,x-mouseCurrentBorderDragX,y-mouseCurrentBorderDragY);
+		    mouseCurrentBorderDragX = x;
+		    mouseCurrentBorderDragY = y;
+            this.updateCanvas(mouseCurrentObjectDrag);     
+            this.updateForm(mouseCurrentObjectDrag);
+            event.stopPropagation();
         }
-       // return false;
+       return false;
     }
 
     /**

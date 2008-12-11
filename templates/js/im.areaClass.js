@@ -195,7 +195,29 @@ var areaClass = Class.extend({
     getId: function()         {   return this._id;  },
     getFormId: function()     {   return this.getId();   },
     
+    performResizeAction: function(edge,x,y){ 
+        // abstract
+    },
+    
+    hitOnObjectEdge: function(x,y,s) { 
+        return -1;
+    },    
+    
     hitEdge: function(mX,mY,bX,bY,edgeSize) {    
         return ((Math.abs(mX-bX)<=(edgeSize)) && (Math.abs(mY-bY)<=(edgeSize)));    
+    },
+   
+    performDragAction: function(border,x,y){ 
+        // abstract
+    },
+    
+    hitOnObjectBorder: function(x,y,s) { 
+        return -1;
+    },
+    
+    hitBorder: function(x1,y1,x2,y2,mX,mY,size) {
+        var d = (mX*y1+x2*mY+x1*y2-x2*y1-mX*y2-x1*mY)/Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
+        return (Math.abs(d)<(size/2))?true:false;
     }
+
 });
