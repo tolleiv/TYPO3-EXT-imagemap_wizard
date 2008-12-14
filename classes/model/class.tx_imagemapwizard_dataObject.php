@@ -50,13 +50,22 @@ class tx_imagemapwizard_dataObject {
 	    $this->backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getBackPath();');
     }
 
-	public function getFieldValue($field) {
-		if(array_key_exists($field,$this->row)) return $this->row[$field];
+	public function getFieldValue($field,$listNum=-1) {
+		if(array_key_exists($field,$this->row)) {
+            if($listNum == -1) {
+                return $this->row[$field];
+            } else {
+                $tmp = split(',',$this->row[$field]);
+                return $tmp[$listNum];
+            }
+        }
 		return NULL;
 	}
-
+    /**
+    *   retrives current imagelocation - if multiple files are stored in the field only the first is recognized
+    */
 	public function getImageLocation($abs=false) {
-		return ($abs?PATH_site:$this->backPath).$GLOBALS['TCA'][$this->table]['columns'][$this->imageField]['config']['uploadfolder'].'/'.$this->getFieldValue($this->imageField);
+		return ($abs?PATH_site:$this->backPath).$GLOBALS['TCA'][$this->table]['columns'][$this->imageField]['config']['uploadfolder'].'/'.$this->getFieldValue($this->imageField,0);
 	}
     
 	public function hasValidImageFile() {
@@ -73,6 +82,7 @@ class tx_imagemapwizard_dataObject {
 		//render like in FE with WS-preview etc...
 		$t3env->pushEnv();
 		$t3env->setEnv(PATH_site);
+        $t3env->resetEnableColumns($this->table);       // no fe_group, start/end, hidden restrictions needed :P
 		$result = $GLOBALS['TSFE']->cObj->CONTENT($conf);
 		$t3env->popEnv();
 

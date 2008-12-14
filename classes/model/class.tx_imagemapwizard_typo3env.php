@@ -50,7 +50,7 @@ class tx_imagemapwizard_typo3env {
 	 * @param	Integer		pid The pid if the page which is simulated
 	 * @return	Boolean		returns success of the operation
 	 */
-	function initTSFE($pid = 1,$ws = 0){
+	public function initTSFE($pid = 1,$ws = 0){
     
         $tca = $GLOBALS['TCA'];
     
@@ -112,18 +112,24 @@ class tx_imagemapwizard_typo3env {
  
     protected $envStack = array();
  
- 
-    function pushEnv() {
-        array_push($this->envStack,array('workDir'=>getcwd(),'BE_USER'=>$GLOBALS['BE_USER']));
+    /**
+    * Store relevant data - juat to be sure that nothing gets lost during FE-simulation
+    * and it really sucks that this is needed
+    *
+    * @see popEnv()
+    */
+    public function pushEnv() {
+        array_push($this->envStack,array('workDir'=>getcwd(),'BE_USER'=>$GLOBALS['BE_USER'],'TCA'=>$GLOBALS['TCA']));
     }
  
     /**
     * prepares Frontend-like-Rendering 
     * and it really sucks that this is needed
     *
-    * @see releaseEnv()
+    * @see pushEnv()
+    * @see popEnv()
     */ 
-	function setEnv($backPath='') {
+	public function setEnv($backPath='') {
 		if($this->BE_USER==NULL) {
 			$this->initMyBE_USER();
 		}
@@ -140,20 +146,39 @@ class tx_imagemapwizard_typo3env {
     *
     * @see setEnv()
     */ 	
-	function popEnv($curPath='') {    
-        $env = array_pop($this->envStack);    
-		$GLOBALS['BE_USER'] = $env['BE_USER'];
+	public function popEnv($curPath='') {    
+        if(!is_array($this->envStack) || !count($this->envStack)) { return false; }
+        $env = array_pop($this->envStack);
+        
+        if($env['TCA'] && is_array($env['TCA'])) {
+            $GLOBALS['TCA'] = $env['TCA'];
+        }
+        
+        if($env['BE_USER'] && is_object($env['BE_USER']))  {
+            $GLOBALS['BE_USER'] = $env['BE_USER'];
+        }
+		
         if($env['workDir'] && is_dir($env['workDir'])) {
             chdir($env['workDir']);
         }
 	}
 
+    /**
+    * reset/clear enableColumns - used to enable preview of access-restricted 
+    * elements - use only with stored Env!!!!!
+    */
+    public function resetEnableColumns($table,$newConf=NULL) {
+        if(!is_array($this->envStack) || !count($this->envStack)) { return false; }
+        if(!in_array($table,array_keys($GLOBALS['TCA']))) { return false; }        
+        $GLOBALS['TCA'][$table]['ctrl']['enablecolumns'] = $newConf;
+        return true;
+    }
     
     /**
     * lazyload the feBEUSER
     *
     */
-	function initMyBE_USER() {        
+	protected function initMyBE_USER() {        
 	    $this->BE_USER = t3lib_div::makeInstance('t3lib_tsfeBeUserAuth');     // New backend user object
         $this->BE_USER->userTS_dontGetCached = 1;
         $this->BE_USER->OS = TYPO3_OS;
@@ -164,7 +189,8 @@ class tx_imagemapwizard_typo3env {
                 $GLOBALS['TSFE']->beUserLogin = 1;
         } else {
                 $this->BE_USER = NULL;
-                $GLOBALS['TSFE']->beUserLogin = 0;
+                //die("Critical  ".__LINE__);
+                // ??? $GLOBALS['TSFE']->beUserLogin = 0;
         }
 	}
 
@@ -172,7 +198,7 @@ class tx_imagemapwizard_typo3env {
     * Enables external debugging ...
     *
     */
-   function get_lastError() {
+    public function get_lastError() {
         return $this->lastError;
     }
     
