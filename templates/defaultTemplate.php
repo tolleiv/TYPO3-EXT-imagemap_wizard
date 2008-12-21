@@ -58,7 +58,7 @@ jQuery(document).ready(function(){
 <div id="root">
 
     <div id="picture">
-        <div id="image"><? echo $this->data->renderImage(); ?></div>
+        <div id="image"><?php echo $this->data->renderImage(); ?></div>
         <div id="canvas" class="canvas"><!-- --></div>
     </div>
 	<div id="actions">
@@ -73,18 +73,18 @@ jQuery(document).ready(function(){
             <div id="MAPFORMID_main" class="basicOptions">
             	<div class="colorPreview ptr"><div><!-- --></div></div>
                 <label for="MAPFORMID_label"><?php $this->getLL('imagemap_wizard.form.area.label',1); ?>:</label><input type="text" id="MAPFORMID_label" value="..." />
-            	<label for="MAPFORMID_link"><?php $this->getLL('imagemap_wizard.form.area.link',1); ?>:</label><input type="text" id="MAPFORMID_link" value="..." /> <?  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
-            	<? echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"".$this->getLL('imagemap_wizard.form.area.up')."\" title=\"".$this->getLL('imagemap_wizard.form.area.up')."\" class=\"ptr sortbtn upbtn\""); ?>
-            	<? echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"".$this->getLL('imagemap_wizard.form.area.down')."\" title=\"".$this->getLL('imagemap_wizard.form.area.down')."\" class=\"ptr sortbtn downbtn\""); ?>
-            	<? echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"".$this->getLL('imagemap_wizard.form.area.remove')."\" title=\"".$this->getLL('imagemap_wizard.form.area.remove')."\""); ?>                
-            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); ?><? echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
+            	<label for="MAPFORMID_link"><?php $this->getLL('imagemap_wizard.form.area.link',1); ?>:</label><input type="text" id="MAPFORMID_link" value="..." /> <?php  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
+            	<?php echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"".$this->getLL('imagemap_wizard.form.area.up')."\" title=\"".$this->getLL('imagemap_wizard.form.area.up')."\" class=\"ptr sortbtn upbtn\""); ?>
+            	<?php echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"".$this->getLL('imagemap_wizard.form.area.down')."\" title=\"".$this->getLL('imagemap_wizard.form.area.down')."\" class=\"ptr sortbtn downbtn\""); ?>
+            	<?php echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"".$this->getLL('imagemap_wizard.form.area.remove')."\" title=\"".$this->getLL('imagemap_wizard.form.area.remove')."\""); ?>                
+            	<div class="arrow exp ptr"><?php echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
             </div>
             <div id="MAPFORMID_more" class="moreOptions">            	
                 <div class="halfLine">
             	    <div id="MAPFORMID_color" class="colors"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
                     <div id="MAPFORMID_stroke" class="colors"><div class="strokeBox"><div><!-- --></div></div><div class="strokePicker"><!-- --></div><div class="cc""><!-- --></div></div>
                 </div>
-                <div class="positionOptions halfLine"><? echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\" class=\"ptr refresh\" alt=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\" title=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\""); ?><label for="MAPFORMID_x1" class="XYlabel XYlabel-first">X1:</label><input type="text" class="formCoord" id="MAPFORMID_x1" value="x" /><label for="MAPFORMID_y1" class="XYlabel">Y1:</label><input type="text" class="formCoord" id="MAPFORMID_y1" value="y" /><br class="cc"/><label for="MAPFORMID_x2" class="XYlabel XYlabel-first">X2:</label><input type="text" class="formCoord" id="MAPFORMID_x2" value="x" /><label for="MAPFORMID_y2" class="XYlabel">Y2:</label><input type="text" class="formCoord" id="MAPFORMID_y2" value="y" /><div class="cc"><!-- --></div></div>
+                <div class="positionOptions halfLine"><?php echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\" class=\"ptr refresh\" alt=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\" title=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\""); ?><label for="MAPFORMID_x1" class="XYlabel XYlabel-first">X1:</label><input type="text" class="formCoord" id="MAPFORMID_x1" value="x" /><label for="MAPFORMID_y1" class="XYlabel">Y1:</label><input type="text" class="formCoord" id="MAPFORMID_y1" value="y" /><br class="cc"/><label for="MAPFORMID_x2" class="XYlabel XYlabel-first">X2:</label><input type="text" class="formCoord" id="MAPFORMID_x2" value="x" /><label for="MAPFORMID_y2" class="XYlabel">Y2:</label><input type="text" class="formCoord" id="MAPFORMID_y2" value="y" /><div class="cc"><!-- --></div></div>
                 <div class="cc"><!-- --></div>
             </div>
         </div>
@@ -92,18 +92,18 @@ jQuery(document).ready(function(){
             <div id="MAPFORMID_main" class="basicOptions">
             	<div class="colorPreview ptr"><div><!-- --></div></div>
                 <label for="MAPFORMID_label"><?php $this->getLL('imagemap_wizard.form.area.label',1); ?>:</label><input type="text" id="MAPFORMID_label" value="..." />
-            	<label for="MAPFORMID_link"><?php $this->getLL('imagemap_wizard.form.area.link',1); ?>:</label><input type="text" id="MAPFORMID_link" value="..." /> <?  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
-            	<? echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"".$this->getLL('imagemap_wizard.form.area.up')."\" title=\"".$this->getLL('imagemap_wizard.form.area.up')."\" class=\"ptr sortbtn upbtn\""); ?>
-            	<? echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"".$this->getLL('imagemap_wizard.form.area.down')."\" title=\"".$this->getLL('imagemap_wizard.form.area.down')."\" class=\"ptr sortbtn downbtn\""); ?>
-            	<? echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"".$this->getLL('imagemap_wizard.form.area.remove')."\" title=\"".$this->getLL('imagemap_wizard.form.area.remove')."\""); ?>                
-            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); ?><? echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
+            	<label for="MAPFORMID_link"><?php $this->getLL('imagemap_wizard.form.area.link',1); ?>:</label><input type="text" id="MAPFORMID_link" value="..." /> <?php  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
+            	<?php echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"".$this->getLL('imagemap_wizard.form.area.up')."\" title=\"".$this->getLL('imagemap_wizard.form.area.up')."\" class=\"ptr sortbtn upbtn\""); ?>
+            	<?php echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"".$this->getLL('imagemap_wizard.form.area.down')."\" title=\"".$this->getLL('imagemap_wizard.form.area.down')."\" class=\"ptr sortbtn downbtn\""); ?>
+            	<?php echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"".$this->getLL('imagemap_wizard.form.area.remove')."\" title=\"".$this->getLL('imagemap_wizard.form.area.remove')."\""); ?>                
+            	<div class="arrow exp ptr"><?php echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
             </div>
             <div id="MAPFORMID_more" class="moreOptions">            	
                 <div class="halfLine">
             	    <div id="MAPFORMID_color" class="colors"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
                     <div id="MAPFORMID_stroke" class="colors"><div class="strokeBox"><div><!-- --></div></div><div class="strokePicker"><!-- --></div><div class="cc""><!-- --></div></div>
                 </div>
-                <div class="positionOptions halfLine"><? echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\" class=\"ptr refresh\" alt=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\" title=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\""); ?><label for="MAPFORMID_x" class="XYlabel XYlabel-first">X:</label><input type="text" class="formCoord" id="MAPFORMID_x" value="x" /><label for="MAPFORMID_y1" class="XYlabel">Y:</label><input type="text" class="formCoord" id="MAPFORMID_y" value="y" /><br class="cc"/><label for="MAPFORMID_radius" class="XYlabel XYlabel-first">R:</label><input type="text" class="formCoord" id="MAPFORMID_radius" value="r" /><div class="cc"><!-- --></div></div>
+                <div class="positionOptions halfLine"><?php echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\" class=\"ptr refresh\" alt=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\" title=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\""); ?><label for="MAPFORMID_x" class="XYlabel XYlabel-first">X:</label><input type="text" class="formCoord" id="MAPFORMID_x" value="x" /><label for="MAPFORMID_y1" class="XYlabel">Y:</label><input type="text" class="formCoord" id="MAPFORMID_y" value="y" /><br class="cc"/><label for="MAPFORMID_radius" class="XYlabel XYlabel-first">R:</label><input type="text" class="formCoord" id="MAPFORMID_radius" value="r" /><div class="cc"><!-- --></div></div>
                 <div class="cc"><!-- --></div>
             </div>
         </div>
@@ -111,27 +111,27 @@ jQuery(document).ready(function(){
             <div id="MAPFORMID_main" class="basicOptions">
             	<div class="colorPreview ptr"><div><!-- --></div></div>
                 <label for="MAPFORMID_label"><?php $this->getLL('imagemap_wizard.form.area.label',1); ?>:</label><input type="text" id="MAPFORMID_label" value="..." />
-            	<label for="MAPFORMID_link"><?php $this->getLL('imagemap_wizard.form.area.link',1); ?>:</label><input type="text" id="MAPFORMID_link" value="..." /> <?  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
-            	<? echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"".$this->getLL('imagemap_wizard.form.area.up')."\" title=\"".$this->getLL('imagemap_wizard.form.area.up')."\" class=\"ptr sortbtn upbtn\""); ?>
-            	<? echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"".$this->getLL('imagemap_wizard.form.area.down')."\" title=\"".$this->getLL('imagemap_wizard.form.area.down')."\" class=\"ptr sortbtn downbtn\""); ?>
-            	<? echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"".$this->getLL('imagemap_wizard.form.area.remove')."\" title=\"".$this->getLL('imagemap_wizard.form.area.remove')."\""); ?>                
-                <? echo $this->getIcon("gfx/add.gif","id=\"MAPFORMID_add\" alt=\"".$this->getLL('imagemap_wizard.form.poly.add')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.add')."\" class=\"ptr add\""); ?>
-            	<div class="arrow exp ptr"><? echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); ?><? echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
+            	<label for="MAPFORMID_link"><?php $this->getLL('imagemap_wizard.form.area.link',1); ?>:</label><input type="text" id="MAPFORMID_link" value="..." /> <?php  echo $this->linkWizardIcon("MAPFORMID_linkwizard","MAPFORMID_link","MAPAREAVALUE_URL","canvasObject.triggerAreaLinkUpdate(\"OBJID\")"); ?>
+            	<?php echo $this->getIcon("gfx/button_up.gif","id=\"MAPFORMID_up\" alt=\"".$this->getLL('imagemap_wizard.form.area.up')."\" title=\"".$this->getLL('imagemap_wizard.form.area.up')."\" class=\"ptr sortbtn upbtn\""); ?>
+            	<?php echo $this->getIcon("gfx/button_down.gif","id=\"MAPFORMID_down\" alt=\"".$this->getLL('imagemap_wizard.form.area.down')."\" title=\"".$this->getLL('imagemap_wizard.form.area.down')."\" class=\"ptr sortbtn downbtn\""); ?>
+            	<?php echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"".$this->getLL('imagemap_wizard.form.area.remove')."\" title=\"".$this->getLL('imagemap_wizard.form.area.remove')."\""); ?>                
+                <?php echo $this->getIcon("gfx/add.gif","id=\"MAPFORMID_add\" alt=\"".$this->getLL('imagemap_wizard.form.poly.add')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.add')."\" class=\"ptr add\""); ?>
+            	<div class="arrow exp ptr"><?php echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
             </div>
             <div id="MAPFORMID_more" class="moreOptions">            	
                 <div class="halfLine">
             	    <div id="MAPFORMID_color" class="colors"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
                     <div id="MAPFORMID_stroke" class="colors"><div class="strokeBox"><div><!-- --></div></div><div class="strokePicker"><!-- --></div><div class="cc""><!-- --></div></div>
                 </div>
-                <div class="positionOptions halfLine"><? echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\"class=\"ptr refresh\" alt=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\" title=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\""); ?>POLYCOORDS<div class="cc"><!-- --></div></div>
+                <div class="positionOptions halfLine"><?php echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\"class=\"ptr refresh\" alt=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\" title=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\""); ?>POLYCOORDS<div class="cc"><!-- --></div></div>
                 <div class="cc"><!-- --></div>
             </div>
         </div>
         <div id="polyCoords" class="noIdWrap">
             <label for="MAPFORMID_xvN" class="XYlabel">XvN:</label><input type="text" class="formCoord" id="MAPFORMID_xvN" value="vX" /><label for="MAPFORMID_yvN" class="XYlabel">YvN:</label><input type="text" class="formCoord" id="MAPFORMID_yvN" value="vY" />
-             <? echo $this->getIcon("gfx/arrowup.png","id=\"MAPFORMID_beforevN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeBefore')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeBefore')."\" class=\"coordOpt addCoord ptr\""); ?>            
-             <? echo $this->getIcon("gfx/arrowdown.png","id=\"MAPFORMID_aftervN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeAfter')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeAfter')."\" class=\"coordOpt addCoord ptr\""); ?>            
-             <? echo $this->getIcon("gfx/close_gray.gif","id=\"MAPFORMID_rmvN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.removeEdge')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.removeEdge')."\" class=\"coordOpt rmCoord ptr\""); ?><br class="cc" />
+             <?php echo $this->getIcon("gfx/arrowup.png","id=\"MAPFORMID_beforevN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeBefore')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeBefore')."\" class=\"coordOpt addCoord ptr\""); ?>            
+             <?php echo $this->getIcon("gfx/arrowdown.png","id=\"MAPFORMID_aftervN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeAfter')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.addEdgeAfter')."\" class=\"coordOpt addCoord ptr\""); ?>            
+             <?php echo $this->getIcon("gfx/close_gray.gif","id=\"MAPFORMID_rmvN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.removeEdge')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.removeEdge')."\" class=\"coordOpt rmCoord ptr\""); ?><br class="cc" />
         </div>
     </div>
 

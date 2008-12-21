@@ -37,21 +37,39 @@ function imagemapwizard_valueChanged(field) {
     jQuery.ajax();    
 }
 ');
-
+$additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChanged(field);'));
 ?>
-<div class="imagemap_wiz" style="padding:5px;overflow:hidden">
-    <div id="<?php echo $this->getId(); ?>-canvas" style="position:relative">
+<div id="<?php echo $this->getId(); ?>">
+    
     <?php
-        echo $this->data->renderThumbnail();
+        ob_start();
     ?>
+    <div class="imagemap_wiz" style="padding:5px;overflow:hidden">
+        <div id="<?php echo $this->getId(); ?>-canvas" style="position:relative">
+        <?php
+            echo $this->data->renderThumbnail();
+        ?>
+        </div>
     </div>
+    <?php
+        $imagepreview = ob_get_contents();
+        ob_end_clean();
+        echo $this->form->renderWizards(array($imagepreview,''),$this->wizardConf,$this->data->getTablename(),$this->data->getRow(),$this->data->getFieldname(),$additionalWizardConf,$this->formName,array(),1)
+    ?>
+    <div class="imagemap_wiz_message" style="width:180px;padding:4px;border:2px solid #ff6666;background:#ffdddd;"><?php
+        if($this->data->hasDirtyState()) {
+            $this->getLL('form.is_dirty',1);
+        }
+    ?></div>
+    <script type="text/javascript">
+
+    jQuery(document).ready(function(){
+        canvasObject = new previewCanvasClass();
+        canvasObject.init("<?php echo $this->getId(); ?>-canvas","<?php echo $this->data->getThumbnailScale() ?>");
+        <?php echo $existingFields; ?>
+        jQuery(".imagemap_wiz_message").fadeOut(4000);
+    });
+
+    </script>
+    <?php echo $this->form->getSingleHiddenField($this->data->getTablename(),$this->data->getFieldname(),$this->data->getRow()); ?>
 </div>
-<script type="text/javascript">
-
-jQuery(document).ready(function(){
-    canvasObject = new previewCanvasClass();
-    canvasObject.init("<?php echo $this->getId(); ?>-canvas","<?php echo $this->data->getThumbnailScale() ?>");
-	<?php echo $existingFields; ?>
-});
-
-</script>

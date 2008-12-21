@@ -34,6 +34,7 @@ require_once(PATH_tslib.'class.tslib_gifbuilder.php');
 
 class tx_imagemapwizard_dataObject {
 	protected $row,$liveRow,$table,$mapField,$imageField,$backPath;
+    protected $modifiedFlag = false;
 	public function __construct($table,$field,$uid,$currentValue=NULL) {
 	    $this->table = $table;
 	    t3lib_div::loadTCA($this->table);
@@ -178,8 +179,15 @@ class tx_imagemapwizard_dataObject {
         return $this->row['uid'];
     }
     
-    public function useCurrentData($value) {
+    public function useCurrentData($value) {        
+        if(!t3lib_div::makeInstance("tx_imagemapwizard_mapper")->compareMaps($this->row[$this->mapField],$value)) {
+            $this->modifiedFlag = true;
+        }
         $this->row[$this->mapField] = $value;
+    }
+    
+    public function hasDirtyState() {
+        return $this->modifiedFlag;
     }
 }
 

@@ -33,7 +33,7 @@ class tx_imagemapwizard_wizardController {
     protected $view;
     protected $context;
     protected $params;
-    protected $forceValue   ;
+    protected $forceValue;
 	/**
 	 * Initialize Context and required View
 	 */
@@ -50,7 +50,7 @@ class tx_imagemapwizard_wizardController {
         $currentValue = $GLOBALS['BE_USER']->getSessionData ('imagemap_wizard.value');
 		//TODO: use-Flex-DataObject if needed
 		$dataClass = t3lib_div::makeInstanceClassName('tx_imagemapwizard_dataObject');
-		$data = new $dataClass($params['table'],$params['field'],$params['uid'],$currentValue); //,$params['currentValue']);
+		$data = new $dataClass($params['table'],$params['field'],$params['uid'],$currentValue);
 
 		$this->view->setData($data);
         $this->view->renderContent();
@@ -67,13 +67,11 @@ class tx_imagemapwizard_wizardController {
         
         $this->view->setData($data);            
         $this->view->setTCEForm($this->params['pObj']);
-    
+        $this->view->setFormName($this->params['itemFormElName']);
+        $this->view->setWizardConf($GLOBALS['TCA'][$this->params['table']]['columns'][$this->params['field']]['config']['wizards']);
         t3lib_div::loadTCA($this->params['table']);
         
-        
-        $wizConf = $GLOBALS['TCA'][$this->params['table']]['columns'][$this->params['field']]['config']['wizards'];
-    
-        return $this->view->renderContent($this->params['itemFormElName'],$wizConf);            
+        return $this->view->renderContent();            
     }
     
 	/**

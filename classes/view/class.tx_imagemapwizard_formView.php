@@ -33,7 +33,7 @@ require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_ima
 
 class tx_imagemapwizard_formView extends tx_imagemapwizard_abstractView {
 
-	protected $form;
+	protected $form,$formName,$wizardConf;
 
 	public function setTCEForm($form) {
 		$this->form = $form;    	
@@ -42,7 +42,7 @@ class tx_imagemapwizard_formView extends tx_imagemapwizard_abstractView {
   /**
    * Renders Content and prints it to the screen (or any active output buffer)
    */
-	public function renderContent($formName,$wizardConf) {    
+	public function renderContent() {    
 		if(!$this->data->hasValidImageFile()) {
 			$content = $this->form->sL('LLL:EXT:imagemap_wizard/locallang.xml:form.no_image');
 		} else {
@@ -50,10 +50,17 @@ class tx_imagemapwizard_formView extends tx_imagemapwizard_abstractView {
 			$this->form->additionalCode_pre[] = $this->getExternalJSIncludes();
 			$this->form->additionalCode_pre[] = $this->getInlineJSIncludes();
 		}
-		$a = array('fieldChangeFunc'=>array('imagemapwizard_valueChanged(field);'));
-		$content .= $this->form->getSingleHiddenField($this->data->getTablename(),$this->data->getFieldname(),$this->data->getRow());
-		return '<div id="'.$this->getId().'">'.$this->form->renderWizards(array($content,''),$wizardConf,$this->data->getTablename(),$this->data->getRow(),$this->data->getFieldname(),$a,$formName,array(),1).'</div>';
-	}
+        return $content;
+    }
+    
+    public function setWizardConf($wConf) {
+        $this->wizardConf = $wConf;
+    }
+    
+    public function setFormName($name) {
+        $this->formName = $name;
+    }
+    
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_formView.php'])    {

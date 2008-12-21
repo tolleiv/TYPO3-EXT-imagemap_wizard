@@ -11,7 +11,7 @@
             <label index="imagemap_wizard.form.addrect">Add Rect-Area</label>
             <label index="imagemap_wizard.form.addcirc">Add Circ-Area</label>
             <label index="imagemap_wizard.form.addpoly">Add Poly-Area</label>
-            <label index="imagemap_wizard.form.submit">Save &amp; Close</label>
+            <label index="imagemap_wizard.form.submit">Apply &amp; Close</label>
             <label index="imagemap_wizard.form.area.label">Label</label>
             <label index="imagemap_wizard.form.area.link">Link</label>
             <label index="imagemap_wizard.form.area.linkwizard">Open LinkWizard</label>
@@ -26,6 +26,7 @@
             <label index="imagemap_wizard.form.poly.addEdgeAfter">add edge after current</label>
             <label index="imagemap_wizard.form.poly.removeEdge">remove edge</label>
             <label index="form.no_image">No Image defined for current record (maybe you need to save your changes first).</label>
+            <label index="form.is_dirty">The imagemap was changed, please save this record otherwise the imagemap might be lost.</label>
             <label index="tt_content.tx_imagemapwizard_links">ImageMap Configuration</label>            
         </languageKey>
         <languageKey index="dk" type="array">
@@ -37,7 +38,7 @@
             <label index="imagemap_wizard.form.addrect">Neue Rect-Area</label>
             <label index="imagemap_wizard.form.addcirc">Neue Circ-Area</label>
             <label index="imagemap_wizard.form.addpoly">Neue Poly-Area</label>
-            <label index="imagemap_wizard.form.submit">Speichern &amp; Schliessen</label>
+            <label index="imagemap_wizard.form.submit">Übernehmen &amp; Schliessen</label>
             <label index="imagemap_wizard.form.area.label">Label</label>
             <label index="imagemap_wizard.form.area.link">Link</label>
             <label index="imagemap_wizard.form.area.linkwizard">Öffne LinkWizard</label>

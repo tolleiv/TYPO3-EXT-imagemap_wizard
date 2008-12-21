@@ -141,6 +141,16 @@ class tx_imagemapwizard_mapper {
 		return $ret;
 	}
 
+    /**
+    *
+    */
+    public function compareMaps($map1,$map2) {
+        $arrayMap1 = self::map2array($map1);
+        $arrayMap2 = self::map2array($map2);
+        return self::arrays_match($arrayMap1,$arrayMap2);
+    }
+
+
 	/**
 	 * Encapsulate the extraction of Attributes out of the SimpleXML-Structure
 	 *
@@ -178,6 +188,17 @@ class tx_imagemapwizard_mapper {
 		}
 		return $ret;
 	}
+    
+    protected static function arrays_match($a,$b) {
+        if(!is_array($a) && !is_array($b)) {        
+            return $a==$b;
+        }
+        $match = true;
+        foreach($a as $key=>$value) {
+            $match = $match && self::arrays_match($a[$key],$b[$key]);
+        }
+        return $match;
+    }
 }
 
 
