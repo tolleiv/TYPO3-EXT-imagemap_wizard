@@ -36,8 +36,11 @@ class tx_imagemapwizard_mapper {
 	 * @param String mapping the XML_pseudo-imagemap
 	 * @return String the valid HTML-imagemap (hopefully valid)
 	 */
-	public function generateMap(tslib_cObj &$cObj,$name,$mapping=NULL) {
-
+	public function generateMap(tslib_cObj &$cObj,$name,$mapping=NULL,$whitelist=NULL) {
+        $useWhitelist = is_array($whitelist);
+        if($useWhitelist) {
+            $whitelist = array_flip($whitelist);
+        }
 		//$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapconverter');
 		$mapArray = self::map2array($mapping);
 		$mapArray['@']['name']=$this->createValidNameAttribute($name);
@@ -48,11 +51,15 @@ class tx_imagemapwizard_mapper {
 			if(is_array($tmp['@'])) {
 				unset($mapArray['#'][$key]['@']['href']);
 				$mapArray['#'][$key]['@'] = array_merge($tmp['@'],$mapArray['#'][$key]['@']);
+                
+                if($useWhitelist) {
+                    $mapArray['#'][$key]['@'] = array_intersect_key($mapArray['#'][$key]['@'],$whitelist);
+                }
+                
 				// if(!isset($mapArray['#'][$key]['@']['href']))... what to do here???
 			}
 			unset($mapArray['#'][$key]['value']);
 		}
-
 		return self::array2map($mapArray);
 	}
 
@@ -196,6 +203,9 @@ class tx_imagemapwizard_mapper {
         $match = true;
         foreach($a as $key=>$value) {
             $match = $match && self::arrays_match($a[$key],$b[$key]);
+        }
+        foreach($b as $key=>$value) {
+            $match = $match && self::arrays_match($b[$key],$a[$key]);
         }
         return $match;
     }
