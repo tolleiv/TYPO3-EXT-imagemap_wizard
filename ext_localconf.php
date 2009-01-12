@@ -10,6 +10,7 @@ if (TYPO3_MODE=='BE') {
 		includeLibs.imagemap_wizard = EXT:imagemap_wizard/classes/class.tx_imagemapwizard_parser.php
 		tt_content.imagemap_wizard < tt_content.image
 		tt_content.imagemap_wizard.20.imgMax = 1
+        tt_content.imagemap_wizard.20.maxW >
 		tt_content.imagemap_wizard.20.1.imageLinkWrap >
 		tt_content.imagemap_wizard.20.1.params = usemap="####IMAGEMAP_USEMAP###"
 		tt_content.imagemap_wizard.20.1.stdWrap.postUserFunc = tx_imagemapwizard_parser->applyImageMap
