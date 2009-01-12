@@ -56,11 +56,14 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
         ob_end_clean();
         echo $this->form->renderWizards(array($imagepreview,''),$this->wizardConf,$this->data->getTablename(),$this->data->getRow(),$this->data->getFieldname(),$additionalWizardConf,$this->formName,array(),1)
     ?>
-    <div class="imagemap_wiz_message" style="width:180px;padding:4px;border:2px solid #ff6666;background:#ffdddd;"><?php
+    
+    <?php
         if($this->data->hasDirtyState()) {
+            echo '<div class="imagemap_wiz_message" style="width:180px;padding:4px;border:2px solid #ff6666;background:#ffdddd;">';
             $this->getLL('form.is_dirty',1);
+            echo '</div>';
         }
-    ?></div>
+    ?>
     <script type="text/javascript">
 
     jQuery(document).ready(function(){

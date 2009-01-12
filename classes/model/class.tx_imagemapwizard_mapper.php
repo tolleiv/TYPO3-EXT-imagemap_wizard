@@ -197,7 +197,7 @@ class tx_imagemapwizard_mapper {
 	}
     
     protected static function arrays_match($a,$b) {
-        if(!is_array($a) && !is_array($b)) {        
+        if(!is_array($a) || !is_array($b)) {        
             return $a==$b;
         }
         $match = true;

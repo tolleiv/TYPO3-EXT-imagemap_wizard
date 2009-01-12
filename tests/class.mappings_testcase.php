@@ -104,6 +104,12 @@ class mappings_testcase extends tx_phpunit_testcase {
     $this->assertEquals(true,$this->mapper->compareMaps($map1,$map1),'Equal maps are not recognized when compared...');
   }
   
+  function test_compairingDifferentStructures() {
+    $map1 = '<map></map>';
+    $map2 = '<map><area xxx="abc" color="green">1</area></map>';
+    $this->assertEquals(false,$this->mapper->compareMaps($map1,$map2),'Different structured maps are not processed as supposed');
+  }
+  
   
   function setUp() {
     require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_mapper.php');
