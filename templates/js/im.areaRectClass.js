@@ -32,6 +32,12 @@ var areaRectClass = areaClass.extend({
         this.setY(tmpCoords[1],tmpCoords[3]);    
     },
 
+    getStartupCoords: function(coords,dimensions) {
+        var w = (dimensions.w>200)?100:(dimensions.w/2);
+        var h = (dimensions.h>200)?100:(dimensions.h/2);
+        return (coords.x-(w/2)) + ',' + (coords.y-(h/2)) + ',' + (coords.x+(w/2)) + ',' + (coords.y+(h/2));
+    },
+
     // called from canvasClass
 	persistanceXML: function() {
 		return "<area shape=\"rect\" coords=\""+this.getLeftX()+","+this.getTopY()+","+this.getRightX()+","+this.getBottomY()+"\" alt=\"" + this.getLabel() + "\" color=\""+this.getColor()+"\">"+this.getLink()+"</area>";

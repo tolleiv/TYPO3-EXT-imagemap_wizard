@@ -5,8 +5,8 @@ $this->addExternalJS("templates/js/ui.sortable.js");
 $this->addExternalJS("templates/js/jquery.timers.js");
 $this->addExternalJS("templates/js/jquery.simpleColor.mod.js");
 $this->addExternalJS("templates/js/wz_jsgraphics.js");
-$this->addExternalJS("templates/js/im.canvasClass.js");
 $this->addExternalJS("templates/js/js.inheritance.js");
+$this->addExternalJS("templates/js/im.canvasClass.js");
 $this->addExternalJS("templates/js/im.areaClass.js");
 $this->addExternalJS("templates/js/im.areaRectClass.js");
 $this->addExternalJS("templates/js/im.areaCircleClass.js");
@@ -16,6 +16,7 @@ $this->addExternalCSS("templates/default.css");
 $existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape##Class(),'##coords##','##alt##','##link##','##color##',0);\n");
 
 $this->addInlineJS('
+var canvaseObject;
 jQuery.noConflict();
 jQuery(document).ready(function(){
     canvasObject = new canvasClass();
@@ -24,16 +25,13 @@ jQuery(document).ready(function(){
 
 
     jQuery("#addRect").click(function(event) {
-        canvasObject.addArea(new areaRectClass(),\'100,100,50,50\',\'\',\'\',\'\',1);
+        canvasObject.addArea(new areaRectClass(),\'\',\'\',\'\',\'\',1);
     });
     jQuery("#addPoly").click(function(event) {
-        canvasObject.addArea(new areaPolyClass(),\'100,100,75,75,50,100\',\'\',\'\',\'\',1);
+        canvasObject.addArea(new areaPolyClass(),\'\',\'\',\'\',\'\',1);
     });
     jQuery("#addCirc").click(function(event) {
-        canvasObject.addArea(new areaCircleClass(),\'100,100,50\',\'\',\'\',\'\',1);
-    });
-    jQuery(".niy").click(function(event) {
-    	alert("Not implemented yet - but would be cool to have it :)");
+        canvasObject.addArea(new areaCircleClass(),\'\',\'\',\'\',\'\',1);
     });
     jQuery("#submit").click(function(event) {
     	setValue("<map>" + canvasObject.persistanceXML() + "\n</map>");
@@ -56,7 +54,6 @@ jQuery(document).ready(function(){
 
  ?>
 <div id="root">
-
     <div id="picture">
         <div id="image"><?php echo $this->data->renderImage(); ?></div>
         <div id="canvas" class="canvas"><!-- --></div>

@@ -21,16 +21,26 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-canvasClass = function () {
-    var canvasId,canvasVectors,pictureId,boxId,formsId,boxMarkerCount,areaCount,areaObjects,areaObjectList,formBlueprints,maxW,maxH;
-    
-    var mouseIsDown = false;
-    var mouseOverCanvas = false;
-    var mouseCurrentObjectDrag = -1;
-    var mouseCurrentEdgeDrag = -1;
-    var mouseCurrentBorderDrag = -1;
-    var mouseCurrentBorderDragX = -1;
-    var mouseCurrentBorderDragY = -1;
+var canvasClass = Class.extend({
+    canvasId:null,
+    canvasVectors:null,
+    pictureId:null,
+    boxId:null,
+    formsId:null,
+    boxMarkerCount:null,
+    areaCount:null,
+    areaObjects:null,
+    areaObjectList:null,
+    formBlueprints:null,
+    maxW:null,
+    maxH:null,    
+    mouseIsDown:false,
+    mouseOverCanvas:false,
+    mouseCurrentObjectDrag:-1,
+    mouseCurrentEdgeDrag:-1,
+    mouseCurrentBorderDrag:-1,
+    mouseCurrentBorderDragX:-1,
+    mouseCurrentBorderDragY:-1,
     /**
     *  Initialize basic-js Object which handles all the functionality
     * 
@@ -40,21 +50,22 @@ canvasClass = function () {
     * @param formid container which holds form-blueprints and which is supposed to containe the real forms aswell
     * @usage  external
     */
-    this.init = function (id,picid,formid){
-        canvasId = "#" + id;
-        pictureId = "#" + picid;
-        formsId = "#" + formid;
-        boxMarkerCount = 0;
-        areaCount = 0;
-        canvasVectors = new Array();
-        areaObjects = new Array();
-        areaObjectList = new Array();
-        maxW = jQuery(pictureId).width();
-        maxH = jQuery(pictureId).height();
-        formBlueprints = this.parseFormToBluePrint(formsId);
-        jQuery(formsId).empty();
-        jQuery(canvasId).width(jQuery(pictureId).width()).height(jQuery(pictureId).height());        
-    }
+    init: function (id,picid,formid) {
+        if(id == undefined || picid == undefined || formid == undefined) return false;
+        this.canvasId = "#" + id;
+        this.pictureId = "#" + picid;
+        this.formsId = "#" + formid;
+        this.boxMarkerCount = 0;
+        this.areaCount = 0;
+        this.canvasVectors = new Object();
+        this.areaObjects = new Object();
+        this.areaObjectList = new Array();
+        this.maxW = jQuery(this.pictureId).width();
+        this.maxH = jQuery(this.pictureId).height();
+        this.formBlueprints = this.parseFormToBluePrint(this.formsId);
+        jQuery(this.formsId).empty();
+        jQuery(this.canvasId).width(jQuery(this.pictureId).width()).height(jQuery(this.pictureId).height());        
+    },
     
     
     /**
@@ -63,32 +74,33 @@ canvasClass = function () {
     *
     * @param Event
     */
-    this.mousedown = function(event) {
-        var x = event.pageX - jQuery(canvasId).offset().left;
-        var y = event.pageY - jQuery(canvasId).offset().top;
-        mouseIsDown = true;
-        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
-            if((mouseCurrentObjectDrag==-1) && (mouseCurrentEdgeDrag==-1))  {
-                var tmp = areaObjects[jQuery(this).attr("id")].hitOnObjectEdge(x,y,3);
+    mousedown: function(event) {
+        var x = event.pageX - jQuery(this.canvasId).offset().left;
+        var y = event.pageY - jQuery(this.canvasId).offset().top;
+        this.mouseIsDown = true;
+        var that = this;
+        jQuery.each(jQuery(this.formsId + " > div"), function(i, obj) {
+            if((that.mouseCurrentObjectDrag==-1) && (that.mouseCurrentEdgeDrag==-1))  {
+                var tmp = that.areaObjects[jQuery(this).attr("id")].hitOnObjectEdge(x,y,3);
                 if(tmp != -1) {
-                    mouseCurrentObjectDrag=jQuery(this).attr("id");
-                    mouseCurrentEdgeDrag=tmp;
+                    that.mouseCurrentObjectDrag=jQuery(this).attr("id");
+                    that.mouseCurrentEdgeDrag=tmp;
                     event.stopPropagation();
                 }
             }
-            if((mouseCurrentObjectDrag==-1) && (mouseCurrentBorderDrag==-1)) {
-                var tmp = areaObjects[jQuery(this).attr("id")].hitOnObjectBorder(x,y,5);
+            if((that.mouseCurrentObjectDrag==-1) && (that.mouseCurrentBorderDrag==-1)) {
+                var tmp = that.areaObjects[jQuery(this).attr("id")].hitOnObjectBorder(x,y,5);
                 if(tmp != -1) {
-                    mouseCurrentObjectDrag=jQuery(this).attr("id");
-                    mouseCurrentBorderDrag=tmp;
-                    mouseCurrentBorderDragX = x;
-                    mouseCurrentBorderDragY = y;
+                    that.mouseCurrentObjectDrag=jQuery(this).attr("id");
+                    that.mouseCurrentBorderDrag=tmp;
+                    that.mouseCurrentBorderDragX = x;
+                    that.mouseCurrentBorderDragY = y;
                     event.stopPropagation();
                 }
             }
         });
         return false;
-    }    
+    },    
  
     /**
     * triggered form the outside whenever the mouse was release
@@ -96,12 +108,12 @@ canvasClass = function () {
     *
     * @param Event
     */
-    this.mouseup = function(event){
-        mouseIsDown = false;
-        mouseCurrentObjectDrag = -1;
-        mouseCurrentEdgeDrag = -1;
-	    mouseCurrentBorderDrag = -1;
-    }    
+    mouseup: function(event){
+        this.mouseIsDown = false;
+        this.mouseCurrentObjectDrag = -1;
+        this.mouseCurrentEdgeDrag = -1;
+	    this.mouseCurrentBorderDrag = -1;
+    },
 
     /**
     * triggered form the outside whenever the mouse was moved
@@ -109,46 +121,46 @@ canvasClass = function () {
     *
     * @param Event
     */
-    this.mousemove = function(event){       
-        var x = event.pageX - jQuery(canvasId).offset().left;
-        var y = event.pageY - jQuery(canvasId).offset().top;
+    mousemove: function(event){       
+        var x = event.pageX - jQuery(this.canvasId).offset().left;
+        var y = event.pageY - jQuery(this.canvasId).offset().top;
         
-        mouseOverCanvas = true;        
-        if(x<0)                   { x=0;                  mouseOverCanvas=false; }
-        if(x>this.getMaxW())     { x=this.getMaxW();    mouseOverCanvas=false; }
-        if(y<0)                   { y=0;                  mouseOverCanvas=false; }
-        if(y>this.getMaxH())     { y=this.getMaxH();    mouseOverCanvas=false; }
+        this.mouseOverCanvas = true;        
+        if(x<0)                   { x=0;                  this.mouseOverCanvas=false; }
+        if(x>this.getMaxW())     { x=this.getMaxW();    this.mouseOverCanvas=false; }
+        if(y<0)                   { y=0;                  this.mouseOverCanvas=false; }
+        if(y>this.getMaxH())     { y=this.getMaxH();    this.mouseOverCanvas=false; }
         
-        if((mouseCurrentObjectDrag!=-1) && (mouseCurrentEdgeDrag!=-1)) {
-            mouseCurrentEdgeDrag = areaObjects[mouseCurrentObjectDrag].performResizeAction(mouseCurrentEdgeDrag,x,y);
-            this.updateCanvas(mouseCurrentObjectDrag);     
-            this.updateForm(mouseCurrentObjectDrag);
+        if((this.mouseCurrentObjectDrag!=-1) && (this.mouseCurrentEdgeDrag!=-1)) {
+            this.mouseCurrentEdgeDrag = this.areaObjects[this.mouseCurrentObjectDrag].performResizeAction(this.mouseCurrentEdgeDrag,x,y);
+            this.updateCanvas(this.mouseCurrentObjectDrag);     
+            this.updateForm(this.mouseCurrentObjectDrag);
             event.stopPropagation();
-        } else if((mouseCurrentObjectDrag!=-1) && (mouseCurrentBorderDrag!=-1)) {
-            mouseCurrentBorderDrag = areaObjects[mouseCurrentObjectDrag].performDragAction(mouseCurrentBorderDrag,x-mouseCurrentBorderDragX,y-mouseCurrentBorderDragY);
-		    mouseCurrentBorderDragX = x;
-		    mouseCurrentBorderDragY = y;
-            this.updateCanvas(mouseCurrentObjectDrag);     
-            this.updateForm(mouseCurrentObjectDrag);
+        } else if((this.mouseCurrentObjectDrag!=-1) && (this.mouseCurrentBorderDrag!=-1)) {
+            this.mouseCurrentBorderDrag = this.areaObjects[this.mouseCurrentObjectDrag].performDragAction(this.mouseCurrentBorderDrag,x-this.mouseCurrentBorderDragX,y-this.mouseCurrentBorderDragY);
+		    this.mouseCurrentBorderDragX = x;
+		    this.mouseCurrentBorderDragY = y;
+            this.updateCanvas(this.mouseCurrentObjectDrag);     
+            this.updateForm(this.mouseCurrentObjectDrag);
             event.stopPropagation();
         }
        return false;
-    }
+    },
 
-    this.dblclick = function(event) {   
-        var x = event.pageX - jQuery(canvasId).offset().left;
-        var y = event.pageY - jQuery(canvasId).offset().top;
-        var cv = this;
-        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
-            var tmp = areaObjects[jQuery(this).attr("id")].hitOnObjectBorder(x,y,5);
+    dblclick: function(event) {   
+        var x = event.pageX - jQuery(this.canvasId).offset().left;
+        var y = event.pageY - jQuery(this.canvasId).offset().top;
+        var that = this;
+        jQuery.each(jQuery(this.formsId + " > div"), function(i, obj) {
+            var tmp = that.areaObjects[jQuery(this).attr("id")].hitOnObjectBorder(x,y,5);
             if(tmp != -1) {
-                if(areaObjects[jQuery(this).attr("id")].borderWasHit(tmp,x,y)) {
-                    cv.updateCanvas(jQuery(this).attr("id"));     
-                    cv.updateForm(jQuery(this).attr("id"));                
+                if(that.areaObjects[jQuery(this).attr("id")].borderWasHit(tmp,x,y)) {
+                    that.updateCanvas(jQuery(this).attr("id"));     
+                    that.updateForm(jQuery(this).attr("id"));                
                 }
             }   
         });
-    }
+    },
 
     /**
     *  Adds a Area Object and do all the coupling-stuff with the environment
@@ -159,16 +171,19 @@ canvasClass = function () {
     * @param colorValue the hex-value of the color
     * @usage external
     */    
-    this.addArea = function(obj,coords,labelValue,linkValue,colorValue,prepend) {
-        obj.init(this,this.getNextId(),coords,labelValue,linkValue,colorValue);
-        areaObjects[obj.getId()] = obj;
-        areaObjectList.push(obj.getId());
-        if(prepend) {
-            jQuery(formsId).prepend(obj.formMarkup().replace(/OBJID/g,obj.getId()));
-        } else {
-            jQuery(formsId).append(obj.formMarkup().replace(/OBJID/g,obj.getId()));        
+    addArea: function(obj,coords,labelValue,linkValue,colorValue,prepend) {
+        if(coords == '') {
+            coords = obj.getStartupCoords(this.getCenterCoords(),this.getDimensions())
         }
-        jQuery(formsId).data("parent",this).sortable({
+        obj.init(this,this.getNextId(),coords,labelValue,linkValue,colorValue);
+        this.areaObjects[obj.getId()] = obj;
+        this.areaObjectList.push(obj.getId());
+        if(prepend) {
+            jQuery(this.formsId).prepend(obj.formMarkup().replace(/OBJID/g,obj.getId()));
+        } else {
+            jQuery(this.formsId).append(obj.formMarkup().replace(/OBJID/g,obj.getId()));        
+        }
+        jQuery(this.formsId).data("parent",this).sortable({
             distance:3, 
             start:function(e) {
                 jQuery("#" + jQuery(e.target).attr("id") + " > .sortbtn").css("visibility","hidden");  
@@ -179,13 +194,13 @@ canvasClass = function () {
                 jQuery(this).data("parent").fixSortbtnVisibility();
             }
         });
-		areaObjects[obj.getId()].applyBasicAreaActions();
+		this.areaObjects[obj.getId()].applyBasicAreaActions();
         this.updateForm(obj.getId());        
         this.addCanvasLayer(obj.getId());
         this.updateCanvas(obj.getId());
         this.updateCanvasLayerOrder();
         this.fixSortbtnVisibility();    
-    }
+    },
     
     
     /**
@@ -194,25 +209,25 @@ canvasClass = function () {
     * @param id the area-id which should be removed
     * @usage area*Classes
     */ 
-    this.removeArea = function (id) {
+    removeArea: function (id) {
         var tmpArr = new Array();
-        jQuery.each(areaObjectList, function(i, objId) {
+        jQuery.each(this.areaObjectList, function(i, objId) {
             if(objId!=id) { tmpArr.push(objId); }
         });
-        areaObjectList=tmpArr;
+        this.areaObjectList=tmpArr;
         this.removeCanvasLayer(id);
         this.fixSortbtnVisibility();
-    }
+    },
 
     /**
     * triggered to move a single areaObject manually up - for assistance of sortable
     *
     * @param id ObjectID
     */
-    this.areaUp = function(id) {
+    areaUp: function(id) {
         var prev = -1;
         var self = -1;
-        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
+        jQuery.each(jQuery(this.formsId + " > div"), function(i, obj) {
             if(jQuery(obj).attr("id")==id) {
                 self = jQuery(obj).attr("id");                
             }
@@ -225,17 +240,17 @@ canvasClass = function () {
             this.updateCanvasLayerOrder();
         }
         this.fixSortbtnVisibility();
-    }
+    },
 
     /**
     * triggered to move a single areaObject manually down - for assistance of sortable
     *
     * @param id ObjectID
     */
-    this.areaDown = function(id) {
+    areaDown: function(id) {
         var next = -1;
         var self = -1;
-        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
+        jQuery.each(jQuery(this.formsId + " > div"), function(i, obj) {
             if((self != -1) && (next == -1)) {
                 next = jQuery(obj).attr("id");
             }              
@@ -248,17 +263,25 @@ canvasClass = function () {
             this.updateCanvasLayerOrder();            
         }        
         this.fixSortbtnVisibility();
-    }
+    },
+
+    getCenterCoords: function() {
+        return {x:(this.getMaxW()/2),y:(this.getMaxH()/2)};
+    },
+
+    getDimensions: function() {
+        return {w:this.getMaxW(),h:this.getMaxH()};
+    },
 
     /**
     * triggered to show/hide the buttons for manuell sorting (hide if options not available etc..)
     *
     */    
-    this.fixSortbtnVisibility = function() {
-        jQuery(formsId + " > div > .basicOptions > .sortbtn").css("visibility","visible");
-        jQuery(formsId + " > div:first > .basicOptions > .upbtn").css("visibility","hidden");
-        jQuery(formsId + " > div:last > .basicOptions > .downbtn").css("visibility","hidden");    
-    }
+    fixSortbtnVisibility: function() {
+        jQuery(this.formsId + " > div > .basicOptions > .sortbtn").css("visibility","visible");
+        jQuery(this.formsId + " > div:first > .basicOptions > .upbtn").css("visibility","hidden");
+        jQuery(this.formsId + " > div:last > .basicOptions > .downbtn").css("visibility","hidden");    
+    },
 
     /**
     *  Creates valid XML from the current Area-Objects
@@ -266,17 +289,18 @@ canvasClass = function () {
     * @returns XML-String
     * @usage external
     */
-	this.persistanceXML = function() {
+	persistanceXML: function() {
 		var result = "";
         var tmpArr = new Array();
-        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
-            if(typeof areaObjects[jQuery(obj).attr("id")] != 'undefined') {
-                areaObjects[jQuery(obj).attr("id")].updateStatesFromForm();
-                result = result + "\n" + areaObjects[jQuery(obj).attr("id")].persistanceXML();
+        var that = this;
+        jQuery.each(jQuery(this.formsId + " > div"), function(i, obj) {
+            if(typeof that.areaObjects[jQuery(obj).attr("id")] != 'undefined') {
+                that.areaObjects[jQuery(obj).attr("id")].updateStatesFromForm();
+                result = result + "\n" + that.areaObjects[jQuery(obj).attr("id")].persistanceXML();
             }
         });
         return result;
-	}
+	},
 
     /**
     * Add a new canvas-layer and create a new Graphics-Objects.
@@ -285,10 +309,10 @@ canvasClass = function () {
     * @param id     the canvasId
     * @usage internal
     */
-    this.addCanvasLayer = function(id) {
-        jQuery(canvasId).append('<div id="' + id + '_canvas" class="canvas"><!-- --></div>');       
-        canvasVectors[id] = new jsGraphics(id + '_canvas');
-    } 
+    addCanvasLayer: function(id) {
+        jQuery(this.canvasId).append('<div id="' + id + '_canvas" class="canvas"><!-- --></div>');       
+        this.canvasVectors[id] = new jsGraphics(id + '_canvas');
+    } ,
 
     /**
     *  Re-Paint a canvas-layer for a single Area-Object.
@@ -296,11 +320,11 @@ canvasClass = function () {
     * @param id     the object-id
     * @usage area*Classes
     */
-    this.updateCanvas = function(id) {        
-            canvasVectors[id].clear();
-            areaObjects[id].drawSelection(canvasVectors[id]);
-            canvasVectors[id].paint();
-    }
+    updateCanvas: function(id) {        
+            this.canvasVectors[id].clear();
+            this.areaObjects[id].drawSelection(this.canvasVectors[id]);
+            this.canvasVectors[id].paint();
+    },
 
     /**
     * Remove a canvas-layer and make sure that nothing is displayed anymore.
@@ -308,24 +332,25 @@ canvasClass = function () {
     * @param id     the canvasId
     * @usage internal
     */    
-    this.removeCanvasLayer = function(id) {
-        canvasVectors[id].clear();
+    removeCanvasLayer: function(id) {
+        this.canvasVectors[id].clear();
         jQuery('#' + id + '_canvas').remove();
-    }
+    },
 
     /**
     * Adjust canvas-layer order analog to the order of the forms
     *
     * @usage internal
     */
-    this.updateCanvasLayerOrder = function() {
+    updateCanvasLayerOrder: function() {
         var z = 100;
-        jQuery.each(jQuery(formsId + " > div"), function(i, obj) {
-            if(typeof areaObjects[jQuery(obj).attr("id")] != 'undefined') {
+        var that = this;
+        jQuery.each(jQuery(this.formsId + " > div"), function(i, obj) {
+            if(typeof that.areaObjects[jQuery(obj).attr("id")] != "undefined") {
                 jQuery('#' + jQuery(obj).attr("id") + '_canvas').css("z-index",z--);
             }
         });
-    }
+    },
 
     /**
     * Re-Sync the form-data with the Area-Object
@@ -333,20 +358,20 @@ canvasClass = function () {
     * @param id     the object-id
     * @usage area*Classes
     */    
-    this.updateForm = function(id) {
-        var data = areaObjects[id].formUpdate();
+    updateForm: function(id) {
+        var data = this.areaObjects[id].formUpdate();
         jQuery.each(data.split(";"), function(elem, value) {
             var item = value.split("=");
             jQuery("#" + item[0]).attr("value",item[1]);
         });
-    }    
+    },
 
-    this.refreshForm = function(id) {
-		areaObjects[id].updateStatesFromForm();
-        jQuery("#" + areaObjects[id].getFormId()).replaceWith(areaObjects[id].formMarkup().replace(/OBJID/g,id));
-		areaObjects[id].applyBasicAreaActions(jQuery("#" + id));
-        this.updateForm(areaObjects[id].getId());        
-    }
+    refreshForm: function(id) {
+		this.areaObjects[id].updateStatesFromForm();
+        jQuery("#" + this.areaObjects[id].getFormId()).replaceWith(this.areaObjects[id].formMarkup().replace(/OBJID/g,id));
+		this.areaObjects[id].applyBasicAreaActions(jQuery("#" + id));
+        this.updateForm(this.areaObjects[id].getId());        
+    },
 
     /**
     * Reload form from blueprint after the linkvalue was updated (Required since Link-Wizard URL need to change).
@@ -354,29 +379,29 @@ canvasClass = function () {
     * @param id     the object-id
     * @usage external
     */ 
-	this.triggerAreaLinkUpdate = function(id)  {
+	triggerAreaLinkUpdate: function(id)  {
 		this.refreshForm(id);
-	}
+	},
 
     /**
     * Generate a new object-id
     *
     * @usage internal
     */ 
-    this.getNextId = function() {
-        areaCount = areaCount + 1;
-        return "Object" + areaCount;
-    }
+    getNextId: function() {
+        this.areaCount = this.areaCount + 1;
+        return "Object" + this.areaCount;
+    },
 
     /**
     * Generate a new markerpoint-id
     *
     * @usage internal
     */ 
-    this.getNextMarkerPointId = function() {
-        boxMarkerCount = boxMarkerCount + 1;
-        return "markerPoint" + boxMarkerCount
-    }
+    getNextMarkerPointId: function() {
+        this.boxMarkerCount = this.boxMarkerCount + 1;
+        return "markerPoint" + this.boxMarkerCount
+    },
     
     /**
     * Provides access to the form-blueprints
@@ -384,7 +409,7 @@ canvasClass = function () {
     * @param id     the form-id
     * @usage area*Classes
     */ 
-    this.getFormBlueprint = function(id) { return formBlueprints[id]; }
+    getFormBlueprint: function(id) { return this.formBlueprints[id]; },
     
     /**
     * Parses form-blueprints which contain the basic structur of the different Area-Forms.
@@ -392,7 +417,7 @@ canvasClass = function () {
     * @param id     the form-id
     * @usage internal
     */ 
-    this.parseFormToBluePrint = function(id) {
+    parseFormToBluePrint: function(id) {
         var result = new Array();
         jQuery(id + " > div").each(function(elem) {
             if(jQuery(this).attr("class") == "noIdWrap") {
@@ -402,11 +427,13 @@ canvasClass = function () {
             }
         });
         return result;
+    },
+    
+    getMaxW: function() {
+        return this.maxW;
+    },
+    
+    getMaxH: function() {
+        return this.maxH;
     }
-    this.getMaxW = function() {
-        return maxW;
-    }
-    this.getMaxH = function() {
-        return maxH;
-    }
-};
+});

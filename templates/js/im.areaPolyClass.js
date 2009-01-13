@@ -33,6 +33,12 @@ var areaPolyClass = areaClass.extend({
         }
     },
 
+    getStartupCoords: function(coords,dimensions) {
+        var w = (dimensions.w>200)?100:(dimensions.w/2);
+        var h = (dimensions.h>200)?100:(dimensions.h/2);
+        return coords.x + ',' + (coords.y-(h/2)) + ',' + (coords.x-(w/2)) + ',' + (coords.y+(h/2)) + ',' + (coords.x+(w/2)) + ',' + (coords.y+(h/2));
+    },
+
     // called from canvasClass
 	persistanceXML: function() {
 		return "<area shape=\"poly\" coords=\""+this.joinCoords()+"\" alt=\"" + this.getLabel() + "\" color=\""+this.getColor()+"\">"+this.getLink()+"</area>";

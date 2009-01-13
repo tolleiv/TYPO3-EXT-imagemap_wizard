@@ -33,6 +33,12 @@ var areaCircleClass = areaClass.extend({
         this.setRadius(tmpCoords[2]);
     },
 
+    getStartupCoords: function(coords,dimensions) {
+        var w = (dimensions.w>200)?100:(dimensions.w/2);
+        var h = (dimensions.h>200)?100:(dimensions.h/2);
+        return coords.x + ',' + coords.y + ',' + ((w>h)?h/2:w/2);
+    },
+
     // called from canvasClass
 	persistanceXML: function() {
 		return "<area shape=\"circle\" coords=\""+this.getX()+","+this.getY()+","+this.getRadius()+"\" alt=\"" + this.getLabel() + "\" color=\""+this.getColor()+"\">"+this.getLink()+"</area>";
