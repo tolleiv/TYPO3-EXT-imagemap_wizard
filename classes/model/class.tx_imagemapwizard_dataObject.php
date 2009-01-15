@@ -96,8 +96,8 @@ class tx_imagemapwizard_dataObject {
 		return $result;
 	}
 
-    public function renderThumbnail($maxSize=200) {
-
+    public function renderThumbnail() {
+        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue('previewImageMaxWH');
 		$img = $this->renderImage();
 		$matches = array();
 		if(preg_match('/width="(\d+)" height="(\d+)"/',$img,$matches)) {
@@ -117,7 +117,8 @@ class tx_imagemapwizard_dataObject {
 		}
     }
     
-    public function getThumbnailScale($maxSize=200) {
+    public function getThumbnailScale() {
+        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue('previewImageMaxWH');    
         $ret = 1;
 		$img = $this->renderImage();
 		$matches = array();
@@ -132,8 +133,7 @@ class tx_imagemapwizard_dataObject {
 		}
 		return $ret;
     }
-    
-    
+  
 	public function listAreas($template="") {
 		if(!is_array($this->map["#"])) return '';
 		$result = '';

@@ -1,0 +1,9 @@
+#cat=basic//10; type=boolean; label = store wizard settings: (not used yet) determines whether wizard-settings should be stored in the user-session
+storeWindowSettings = 1
+
+#cat=basic//10; type=int ; label = maximal image width/height: whenever the image width or height is larger than this value it's scaled down and the zoom option is displayed
+imageMaxWH = 700
+
+#cat=basic//10; type=int ; label = maximal preview-image width/height: maximal size for the preview image
+previewImageMaxWH = 200
+

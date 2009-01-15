@@ -2,15 +2,15 @@
 .cc { clear:both; }
 .ptr { cursor:pointer; }
 #pic { position:relative; float:left; overflow:visible; }
-#picture { float:left; position:relative; overflow:hidden; padding:4px; margin-right:25px; background:#ffffff; }
-#magnify { position:absolute; right:0px; top:10px; cursor:pointer; }
+#picture { float:left; position:relative; overflow:hidden; padding:4px; margin-right:35px; background:#ffffff; }
+#magnify { position:absolute; right:10px; top:10px; cursor:pointer; }
 #image { }
 #boundingbox { z-index:101; position:absolute; left:-4px; top:-4px; }
 #canvas, .canvas { position:absolute; display:block; width:100%; height:100%; left:0px; top:0px; }
 #canvas { z-index:100; left:4px; top:4px; }
  .point { width:5px; height:5px; background:#ffffff; border:1px solid #000000; position:absolute; left:0px; top:0px; }
 #actions { float:left; padding:10px 20px 0 20px; width:100%; clear:left; }
-#areaForms { padding:20px 5px 50px 5px; width:480px; float:left; }
+#areaForms { padding:20px 5px 50px 5px; width:480px; float:left; clear:left; }
 .areaForm { position:relative; width: 450px; float:left; clear:left; margin:3px; padding:10px; border:1px solid gray; }
 .areaForm .formCoord { width: 35px; text-align:right; margin-right:5px; float:left; }
 .arrow { position:absolute; right:10px; top:15px; }

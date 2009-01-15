@@ -63,22 +63,22 @@ var canvasClass = Class.extend({
         this.canvasVectors = new Object();
         this.areaObjects = new Object();
         this.areaObjectList = new Array();
-        this.maxW = jQuery(this.pictureId).width();        
-        this.maxH = jQuery(this.pictureId).height();
+        this.setMaxW(jQuery(this.pictureId).width());        
+        this.setMaxH(jQuery(this.pictureId).height());
         this.formBlueprints = this.parseFormToBluePrint(this.formsId);
         jQuery(this.formsId).empty();
         jQuery(this.canvasId).width(jQuery(this.pictureId).width()).height(jQuery(this.pictureId).height());        
     },
     
-    
-    initializeScaling: function(img) {   
+    initializeScaling: function(img,maxWH) {
         this.imageId = img;    
         this.imageOrigW = parseInt(jQuery(img).attr("width"));
         this.imageOrigH = parseInt(jQuery(img).attr("height"));
-        
-        var factW = this.maxW/this.imageOrigW;
-        var factH = this.maxH/this.imageOrigH;
-        
+        this.setMaxW(maxWH);
+        this.setMaxH(maxWH);                
+        var factW = this.getMaxW()/this.imageOrigW;
+        var factH = this.getMaxH()/this.imageOrigH;
+        // we're not scaling the image directly because there might be some session-interaction afterwards...
         return (factW>factH)?factH:factW;
     },
     
@@ -455,8 +455,17 @@ var canvasClass = Class.extend({
         return result;
     },
     
+    
+    setMaxW: function(maxW) {
+        this.maxW = parseInt(maxW);
+    },
+    
     getMaxW: function() {
         return this.maxW;
+    },
+    
+    setMaxH: function(maxH) {
+        this.maxH = parseInt(maxH);
     },
     
     getMaxH: function() {

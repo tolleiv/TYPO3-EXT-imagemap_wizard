@@ -210,6 +210,11 @@ class tx_imagemapwizard_typo3env {
         return self::getBackPath().str_replace(PATH_site,'',t3lib_extMgm::extPath($extKey));    
     }
     
+    public static function getExtConfValue($confKey) {
+        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['imagemap_wizard']);
+        return $conf[$confKey];
+    }
+    
 }
 
 
