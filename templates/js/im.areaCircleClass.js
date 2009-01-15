@@ -41,19 +41,19 @@ var areaCircleClass = areaClass.extend({
 
     // called from canvasClass
 	persistanceXML: function() {
-		return "<area shape=\"circle\" coords=\""+this.getX()+","+this.getY()+","+this.getRadius()+"\" alt=\"" + this.getLabel() + "\" color=\""+this.getColor()+"\">"+this.getLink()+"</area>";
+		return "<area shape=\"circle\" coords=\""+this.getX(0)+","+this.getY(0)+","+this.getRadius(0)+"\" alt=\"" + this.getLabel() + "\" color=\""+this.getColor()+"\">"+this.getLink()+"</area>";
 	},
 
     // called from canvasClass
     drawSelection: function(vectorsObj) {
             vectorsObj.setColor(this.getColor());            
             vectorsObj.setStroke(1);
-            vectorsObj.drawEllipse(this.getX()-this.getRadius(),this.getY()-this.getRadius(),2*this.getRadius(),2*this.getRadius());  
-            this.drawEdge(vectorsObj,this.getX(),this.getY());
-            if((this.getX()-this.getRadius()) > 0) {  this.drawEdge(vectorsObj,this.getX()-this.getRadius(),this.getY()); }
-            if((this.getX()+this.getRadius()) < this.getCanvas().getMaxW()) { this.drawEdge(vectorsObj,this.getX()+this.getRadius(),this.getY()); }
-            if((this.getY()-this.getRadius()) > 0) {  this.drawEdge(vectorsObj,this.getX(),this.getY()-this.getRadius()); }
-            if((this.getY()+this.getRadius()) < this.getCanvas().getMaxH()) { this.drawEdge(vectorsObj,this.getX(),this.getY()+this.getRadius()); }
+            vectorsObj.drawEllipse(this.getX(1)-this.getRadius(1),this.getY(1)-this.getRadius(1),2*this.getRadius(1),2*this.getRadius(1));  
+            this.drawEdge(vectorsObj,this.getX(1),this.getY(1));
+            if((this.getX(1)-this.getRadius(1)) > 0) {  this.drawEdge(vectorsObj,this.getX(1)-this.getRadius(1),this.getY(1)); }
+            if((this.getX(1)+this.getRadius(1)) < this.getCanvas().getMaxW()) { this.drawEdge(vectorsObj,this.getX(1)+this.getRadius(1),this.getY(1)); }
+            if((this.getY(1)-this.getRadius(1)) > 0) {  this.drawEdge(vectorsObj,this.getX(1),this.getY(1)-this.getRadius(1)); }
+            if((this.getY(1)+this.getRadius(1)) < this.getCanvas().getMaxH()) { this.drawEdge(vectorsObj,this.getX(1),this.getY(1)+this.getRadius(1)); }
     },
 
     // called from canvasClass
@@ -65,9 +65,9 @@ var areaCircleClass = areaClass.extend({
 
     // called from canvasClass
     formUpdate: function() {
-        var result = this.getFormId() + "_x=" + this.getX() + ";" 
-                    + this.getFormId() + "_y=" + this.getY() + ";"
-                    + this.getFormId() + "_radius=" + this.getRadius() + ";"
+        var result = this.getFormId() + "_x=" + this.getX(0) + ";" 
+                    + this.getFormId() + "_y=" + this.getY(0) + ";"
+                    + this.getFormId() + "_radius=" + this.getRadius(0) + ";"
         
         result = result  + this.getFormId() + "_link=" + this.getLink() + ";";
         result = result  + this.getFormId() + "_label=" + this.getLabel() + ";";
@@ -93,44 +93,45 @@ var areaCircleClass = areaClass.extend({
  
     hitOnObjectEdge: function(mouseX,mouseY,edgeSize) {
         var result = -1;
-        if(this.hitEdge(mouseX,mouseY,this.getX(),this.getY(),edgeSize)) {
+        if(this.hitEdge(mouseX,mouseY,this.getX(1),this.getY(1),edgeSize)) {
             result = 0;
-        } else if(this.hitEdge(mouseX,mouseY,this.getX()-this.getRadius(),this.getY(),edgeSize)) {
+        } else if(this.hitEdge(mouseX,mouseY,this.getX(1)-this.getRadius(1),this.getY(1),edgeSize)) {
             result = 1;
-        } else if(this.hitEdge(mouseX,mouseY,this.getX()+this.getRadius(),this.getY(),edgeSize)) {
+        } else if(this.hitEdge(mouseX,mouseY,this.getX(1)+this.getRadius(1),this.getY(1),edgeSize)) {
             result = 2;
-        } else if(this.hitEdge(mouseX,mouseY,this.getX(),this.getY()-this.getRadius(),edgeSize)) {
+        } else if(this.hitEdge(mouseX,mouseY,this.getX(1),this.getY(1)-this.getRadius(1),edgeSize)) {
             result = 3;
-        } else if(this.hitEdge(mouseX,mouseY,this.getX(),this.getY()+this.getRadius(),edgeSize)) {
+        } else if(this.hitEdge(mouseX,mouseY,this.getX(1),this.getY(1)+this.getRadius(1),edgeSize)) {
             result = 4;
         }
         return result;
     },
     
        
-    performResizeAction: function(edge,x,y) {
-    
+    performResizeAction: function(edge,sx,sy) {
+        var x = this.reverseScale(sx);
+        var y = this.reverseScale(sy);    
         if(edge==0) {
             this.setX(x);
             this.setY(y);
         } else if(edge==1 || edge==2) {
-            this.setRadius(this.getX()-x);
+            this.setRadius(this.getX(0)-x);
         } else if(edge==3 || edge==4) {
-            this.setRadius(this.getY()-y);
+            this.setRadius(this.getY(0)-y);
         }
         return edge;
     },
 
   
     performDragAction: function(border,dX,dY){ 
-	this.setX(this.getX()+dX);
-	this.setY(this.getY()+dY);
+    	this.setX(this.getX(0)+this.reverseScale(dX));
+	    this.setY(this.getY(0)+this.reverseScale(dY));
         return border;
     },
     
     hitOnObjectBorder: function(x,y,s) { 
         var result = -1;
-	if(this.hitBorder(this.getX(),this.getY(),this.getRadius(),this.getRadius(),x,y,s)) {
+	if(this.hitBorder(this.getX(1),this.getY(1),this.getRadius(1),this.getRadius(1),x,y,s)) {
 		result = 1;
 	}
 	return result;
@@ -141,20 +142,20 @@ var areaCircleClass = areaClass.extend({
         return (Math.abs(d)<(r1+(size/2)) && Math.abs(d)>(r1-(size/2)))?true:false;
     },
 
-    getX: function() {
-        return this._scale*this._coords[0];
+    getX: function(performScale) {
+        return this.applyScale(this._coords[0],performScale);
     },
     setX: function(x)   {
         this._coords[0] = parseInt(x);
     },
-    getY: function() {
-        return this._scale*this._coords[1];
+    getY: function(performScale) {
+        return this.applyScale(this._coords[1],performScale);
     },
     setY: function(x)   {
         this._coords[1] = parseInt(x);
     },
-    getRadius: function() {
-        return this._scale*this._coords[2];
+    getRadius: function(performScale) {
+        return this.applyScale(this._coords[2],performScale);
     },
     setRadius: function(r)   {
           this._coords[2] = Math.abs(parseInt(r));

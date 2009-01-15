@@ -74,6 +74,14 @@ var areaClass = Class.extend({
         this._scale = factor;
     },
     
+    applyScale: function(value, performScale) {
+        return ((performScale)?this._scale:1)*parseInt(value);
+    },
+    
+    reverseScale: function(value) {
+        return (1/this._scale)*parseInt(value);
+    },
+    
     _color:-1,
     setColor: function(color) {    
         this._color = ((typeof color =='string') && color.match(/^#\S{6}$/g))?color:("#" + this._colors[parseInt(Math.random()*57)])    

@@ -53,11 +53,11 @@ var areaPolyClass = areaClass.extend({
                 var x2 = this._coords[((i>0)?i:this._coords.length)-1].x;
                 var y2 = this._coords[((i>0)?i:this._coords.length)-1].y;
                 vectorsObj.setColor(this.getColor());
-                vectorsObj.drawLine(this._scale*x1,this._scale*y1,this._scale*x2,this._scale*y2);
+                vectorsObj.drawLine(this.applyScale(x1,1),this.applyScale(y1,1),this.applyScale(x2,1),this.applyScale(y2,1));
             }
             
             for(var i=0;i<this._coords.length;i++) {
-                this.drawEdge(vectorsObj,this._scale*this._coords[i].x,this._scale*this._coords[i].y);
+                this.drawEdge(vectorsObj,this.applyScale(this._coords[i].x,1),this.applyScale(this._coords[i].y,1));
             }
     },
     
@@ -85,8 +85,8 @@ var areaPolyClass = areaClass.extend({
     formUpdate: function() {    
         var result = "";
         for(var i=0;i<this._coords.length;i++) {
-            result = result  + this.getFormId() + "_x" + i + "=" + this._coords[i].x + ";";
-            result = result  + this.getFormId() + "_y" + i + "=" + this._coords[i].y + ";";
+            result = result  + this.getFormId() + "_x" + i + "=" + parseInt(this._coords[i].x) + ";";
+            result = result  + this.getFormId() + "_y" + i + "=" + parseInt(this._coords[i].y) + ";";
         }    
         result = result  + this.getFormId() + "_link=" + this.getLink() + ";";
         result = result  + this.getFormId() + "_label=" + this.getLabel() + ";";
@@ -131,7 +131,7 @@ var areaPolyClass = areaClass.extend({
     hitOnObjectEdge: function(mouseX,mouseY,edgeSize) {
         var result = -1;
         for(var i=0;i<this._coords.length;i++) {
-            if((result == -1) && this.hitEdge(mouseX,mouseY,this._coords[i].x,this._coords[i].y,edgeSize)) {
+            if((result == -1) && this.hitEdge(mouseX,mouseY,this.applyScale(this._coords[i].x,1),this.applyScale(this._coords[i].y,1),edgeSize)) {
                 result = i;
             }
         } 
@@ -139,13 +139,13 @@ var areaPolyClass = areaClass.extend({
     },
     
        
-    performResizeAction: function(edge,x,y) {
-        
+    performResizeAction: function(edge,sx,sy) {
+        var x = this.reverseScale(sx);
+        var y = this.reverseScale(sy);        
         if(edge>=0 && edge<this._coords.length) {
             this._coords[edge].x=x;
             this._coords[edge].y=y;
-        }
-        
+        }        
         return edge;
     },
 
@@ -153,17 +153,17 @@ var areaPolyClass = areaClass.extend({
 		var result = -1;
 		for(var i=0;i<this._coords.length;i++) {
 			var j = ((i+1)==this._coords.length)?0:i+1;
-			    if((result == -1) && this.hitBorder(this._coords[i].x,this._coords[i].y,this._coords[j].x,this._coords[j].y,mX,mY,size)) {
-				result = i;
-			    }
+            if((result == -1) && this.hitBorder(this.applyScale(this._coords[i].x,1),this.applyScale(this._coords[i].y,1),this.applyScale(this._coords[j].x,1),this.applyScale(this._coords[j].y,1),mX,mY,size)) {
+                result = i;
+            }
 		}
 		return result;
 	},
 
 	performDragAction: function(border,dX,dY) {
 		for(var i=0;i<this._coords.length;i++) {
-			this._coords[i].x = this._coords[i].x+dX;
-			this._coords[i].y = this._coords[i].y+dY;
+			this._coords[i].x = this._coords[i].x+this.reverseScale(dX);
+			this._coords[i].y = this._coords[i].y+this.reverseScale(dY);
 		}	
 		return border;	
 	},
@@ -217,7 +217,7 @@ var areaPolyClass = areaClass.extend({
     joinCoords: function() {
         var result = "";
         for(var i=0;i<this._coords.length;i++) {
-            result = result + (result.length?",":"") + this._coords[i].x + "," + this._coords[i].y;
+            result = result + (result.length?",":"") + parseInt(this._coords[i].x) + "," + parseInt(this._coords[i].y);
         }
         return result;
     }

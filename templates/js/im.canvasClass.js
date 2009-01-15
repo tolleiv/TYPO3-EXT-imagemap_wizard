@@ -25,6 +25,7 @@ var canvasClass = Class.extend({
     canvasId:null,
     canvasVectors:null,
     pictureId:null,
+    imageId:null,
     boxId:null,
     formsId:null,
     boxMarkerCount:null,
@@ -33,7 +34,9 @@ var canvasClass = Class.extend({
     areaObjectList:null,
     formBlueprints:null,
     maxW:null,
-    maxH:null,    
+    maxH:null,
+    imageOrigW:null,
+    imageOrigH:null,
     mouseIsDown:false,
     mouseOverCanvas:false,
     mouseCurrentObjectDrag:-1,
@@ -60,13 +63,36 @@ var canvasClass = Class.extend({
         this.canvasVectors = new Object();
         this.areaObjects = new Object();
         this.areaObjectList = new Array();
-        this.maxW = jQuery(this.pictureId).width();
+        this.maxW = jQuery(this.pictureId).width();        
         this.maxH = jQuery(this.pictureId).height();
         this.formBlueprints = this.parseFormToBluePrint(this.formsId);
         jQuery(this.formsId).empty();
         jQuery(this.canvasId).width(jQuery(this.pictureId).width()).height(jQuery(this.pictureId).height());        
     },
     
+    
+    initializeScaling: function(img) {   
+        this.imageId = img;    
+        this.imageOrigW = parseInt(jQuery(img).attr("width"));
+        this.imageOrigH = parseInt(jQuery(img).attr("height"));
+        
+        var factW = this.maxW/this.imageOrigW;
+        var factH = this.maxH/this.imageOrigH;
+        
+        return (factW>factH)?factH:factW;
+    },
+    
+    scale: function(scale) {
+        jQuery(this.imageId).width(scale*this.imageOrigW);
+        jQuery(this.imageId).height(scale*this.imageOrigH);
+        jQuery(this.pictureId).width(scale*this.imageOrigW);
+        jQuery(this.pictureId).height(scale*this.imageOrigH);
+        var that = this;
+        jQuery.each(this.areaObjectList, function(i, objId) {
+            that.areaObjects[objId].setScale(scale);
+            that.updateCanvas(objId);
+        });        
+    },
     
     /**
     * triggered form the outside whenever the mouse was clicked

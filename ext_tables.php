@@ -19,7 +19,7 @@ $tempColumns = array (
                     'type' => 'popup',
                     'script' => 'EXT:imagemap_wizard/wizard.php',
                     'title' => 'ImageMap',
-                    'JSopenParams' => 'height=700,width=800,status=0,menubar=0,scrollbars=1',
+                    'JSopenParams' => 'height=700,width=780,status=0,menubar=0,scrollbars=1',
                     'icon' => 'link_popup.gif',
                 ),
             ),

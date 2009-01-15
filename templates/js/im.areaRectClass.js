@@ -40,23 +40,23 @@ var areaRectClass = areaClass.extend({
 
     // called from canvasClass
 	persistanceXML: function() {
-		return "<area shape=\"rect\" coords=\""+this.getLeftX()+","+this.getTopY()+","+this.getRightX()+","+this.getBottomY()+"\" alt=\"" + this.getLabel() + "\" color=\""+this.getColor()+"\">"+this.getLink()+"</area>";
+		return "<area shape=\"rect\" coords=\""+this.getLeftX(0)+","+this.getTopY(0)+","+this.getRightX(0)+","+this.getBottomY(0)+"\" alt=\"" + this.getLabel() + "\" color=\""+this.getColor()+"\">"+this.getLink()+"</area>";
 	},
 
     // called from canvasClass
     drawSelection: function(vectorsObj) {
             vectorsObj.setColor(this.getColor());            
             vectorsObj.setStroke(1);
-            vectorsObj.drawRect(this.getLeftX(),this.getTopY(),this.getWidth(),this.getHeight());
+            vectorsObj.drawRect(this.getLeftX(1),this.getTopY(1),this.getWidth(1),this.getHeight(1));
             /*vectorsObj.setStroke(Stroke.DOTTED);
             vectorsObj.setColor("#ffffff");         
             vectorsObj.drawRect(this.getLeftX(),this.getTopY(),this.getWidth(),this.getHeight());
             vectorsObj.setColor(_color);         */
             
-            this.drawEdge(vectorsObj,this.getLeftX(),this.getTopY());
-            this.drawEdge(vectorsObj,this.getRightX(),this.getTopY());
-            this.drawEdge(vectorsObj,this.getRightX(),this.getBottomY());
-            this.drawEdge(vectorsObj,this.getLeftX(),this.getBottomY());          
+            this.drawEdge(vectorsObj,this.getLeftX(1),this.getTopY(1));
+            this.drawEdge(vectorsObj,this.getRightX(1),this.getTopY(1));
+            this.drawEdge(vectorsObj,this.getRightX(1),this.getBottomY(1));
+            this.drawEdge(vectorsObj,this.getLeftX(1),this.getBottomY(1));          
     },
 
     // called from canvasClass
@@ -68,10 +68,10 @@ var areaRectClass = areaClass.extend({
 
     // called from canvasClass
     formUpdate: function() {
-        var result = this.getFormId() + "_x1=" + this.getLeftX() + ";" 
-                    + this.getFormId() + "_y1=" + this.getTopY() + ";"
-                    + this.getFormId() + "_x2=" + this.getRightX() + ";"
-                    + this.getFormId() + "_y2=" + this.getBottomY() +  ";";
+        var result = this.getFormId() + "_x1=" + this.getLeftX(0) + ";" 
+                    + this.getFormId() + "_y1=" + this.getTopY(0) + ";"
+                    + this.getFormId() + "_x2=" + this.getRightX(0) + ";"
+                    + this.getFormId() + "_y2=" + this.getBottomY(0) +  ";";
         
         
         result = result  + this.getFormId() + "_link=" + this.getLink() + ";";
@@ -97,23 +97,25 @@ var areaRectClass = areaClass.extend({
  
     hitOnObjectEdge: function(mouseX,mouseY,edgeSize) {
         var result = -1;
-        if(this.hitEdge(mouseX,mouseY,this.getLeftX(),this.getTopY(),edgeSize)) {
+        if(this.hitEdge(mouseX,mouseY,this.getLeftX(1),this.getTopY(1),edgeSize)) {
             result = 0;
-        } else if(this.hitEdge(mouseX,mouseY,this.getRightX(),this.getTopY(),edgeSize)) {
+        } else if(this.hitEdge(mouseX,mouseY,this.getRightX(1),this.getTopY(1),edgeSize)) {
             result = 1;
-        } else if(this.hitEdge(mouseX,mouseY,this.getRightX(),this.getBottomY(),edgeSize)) {
+        } else if(this.hitEdge(mouseX,mouseY,this.getRightX(1),this.getBottomY(1),edgeSize)) {
             result = 2;
-        } else if(this.hitEdge(mouseX,mouseY,this.getLeftX(),this.getBottomY(),edgeSize)) {
+        } else if(this.hitEdge(mouseX,mouseY,this.getLeftX(1),this.getBottomY(1),edgeSize)) {
             result = 3;
         }
         return result;
     },
     
-    performResizeAction: function(edge,x,y) {
-        var tx = this.getLeftX();
-        var ty = this.getTopY();
-        var tw = this.getWidth();
-        var th = this.getHeight();
+    performResizeAction: function(edge,sx,sy) {
+        var x = this.reverseScale(sx);
+        var y = this.reverseScale(sy);
+        var tx = this.getLeftX(0);
+        var ty = this.getTopY(0);
+        var tw = this.getWidth(0);
+        var th = this.getHeight(0);
         /* calculate new size */
         if(edge==0 || edge==3) {    tw = tw-(x-tx);   }
         if(edge==0 || edge==1) {    th = th-(y-ty);   }
@@ -146,36 +148,38 @@ var areaRectClass = areaClass.extend({
 
     hitOnObjectBorder: function(mX,mY,size) { 
         var result = -1;
-        if(this.hitBorder(this.getLeftX(),this.getTopY(),this.getRightX(),this.getTopY(),mX,mY,size)) {
+        if(this.hitBorder(this.getLeftX(1),this.getTopY(1),this.getRightX(1),this.getTopY(1),mX,mY,size)) {
             result = 1;
         }
-        if(this.hitBorder(this.getRightX(),this.getTopY(),this.getRightX(),this.getBottomY(),mX,mY,size)) {
+        if(this.hitBorder(this.getRightX(1),this.getTopY(1),this.getRightX(1),this.getBottomY(1),mX,mY,size)) {
             result = 2;
         }
-        if(this.hitBorder(this.getLeftX(),this.getBottomY(),this.getRightX(),this.getBottomY(),mX,mY,size)) {
+        if(this.hitBorder(this.getLeftX(1),this.getBottomY(1),this.getRightX(1),this.getBottomY(1),mX,mY,size)) {
             result = 3;
         }
-        if(this.hitBorder(this.getLeftX(),this.getTopY(),this.getLeftX(),this.getBottomY(),mX,mY,size)) {
+        if(this.hitBorder(this.getLeftX(1),this.getTopY(1),this.getLeftX(1),this.getBottomY(1),mX,mY,size)) {
             result = 4;
         }
         return result;
     },   
    
     performDragAction: function(border,dX,dY){
-	var x = this.getLeftX();
-	var y = this.getTopY();
-        this.setX(x+dX,x+dX+this.getWidth());
-        this.setY(y+dY,y+dY+this.getHeight());
-	return border;
+        var x = this.getLeftX(0);
+        var y = this.getTopY(0);
+        var tdX = this.reverseScale(dX);
+        var tdY = this.reverseScale(dY);
+        this.setX(x+tdX,x+tdX+this.getWidth(0));
+        this.setY(y+tdY,y+tdY+this.getHeight(0));
+        return border;
     },
     
-    getLeftX: function()          {  return this._scale*parseInt(this._coords[0]); },
-    getTopY: function()          {  return this._scale*parseInt(this._coords[1]);  },
-    getRightX: function()      {  return this._scale*parseInt(this._coords[2]);  },
-    getBottomY: function()      {  return this._scale*parseInt(this._coords[3]); },
+    getLeftX: function(performScale)        {  return this.applyScale(this._coords[0],performScale); },
+    getTopY: function(performScale)         {  return this.applyScale(this._coords[1],performScale); },
+    getRightX: function(performScale)       {  return this.applyScale(this._coords[2],performScale); },
+    getBottomY: function(performScale)      {  return this.applyScale(this._coords[3],performScale); },
 
-	getWidth: function()	{ return this.getRightX()-this.getLeftX(); },
-	getHeight: function()	{ return this.getBottomY()-this.getTopY(); },
+	getWidth: function(performScale)	{ return this.applyScale(this.getRightX(0)-this.getLeftX(0),performScale); },
+	getHeight: function(performScale)	{ return this.applyScale(this.getBottomY(0)-this.getTopY(0),performScale); },
     
     setX: function(x1,x2)   {
           this._coords[0] = parseInt(parseInt(x1)>parseInt(x2)?x2:x1);
@@ -185,7 +189,7 @@ var areaRectClass = areaClass.extend({
           this._coords[1] = parseInt(parseInt(y1)>parseInt(y2)?y2:y1);
           this._coords[3] = parseInt(parseInt(y1)>parseInt(y2)?y1:y2);  
     },
-    setW: function(value)     {   var x = this.getLeftX();    this.setX(x,x+value);     },
-    setH: function(value)     {   var y = this.getTopY();    this.setY(y,y+value);     }
+    setW: function(value)     {   var x = this.getLeftX(0);    this.setX(x,x+value);     },
+    setH: function(value)     {   var y = this.getTopY(0);    this.setY(y,y+value);     }
 });
 

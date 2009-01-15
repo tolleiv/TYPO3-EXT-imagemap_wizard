@@ -17,14 +17,25 @@ $existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape
 
 $this->addInlineJS('
 var canvaseObject;
+var scaleFactor = 1;
 jQuery.noConflict();
 jQuery(document).ready(function(){
     canvasObject = new canvasClass();
     canvasObject.init("canvas","picture","areaForms");
 	'.$existingFields.'
 
+    scaleFactor = canvasObject.initializeScaling("#image > img");
+    canvasObject.scale(scaleFactor);        // todo: store last used scale per Image...
 
-    jQuery("#addRect").click(function(event) {
+    if(scaleFactor < 1) {
+        jQuery("#magnify > .zout").hide();    
+    } else { 
+        jQuery("#magnify > .zin").hide();    
+        jQuery("#magnify > .zout").hide();
+    }
+
+
+    jQuery("#addRect").click(function(event) {      
         canvasObject.addArea(new areaRectClass(),\'\',\'\',\'\',\'\',1);
     });
     jQuery("#addPoly").click(function(event) {
@@ -49,22 +60,35 @@ jQuery(document).ready(function(){
     jQuery(document).dblclick(function(e){       
         return canvasObject.dblclick(e);
     });
+    jQuery("#magnify > .zin").click(function(event){
+        canvasObject.scale(1);
+        jQuery(this).hide();
+        jQuery("#magnify > .zout").show();
+    });
+    jQuery("#magnify > .zout").click(function(event){
+        canvasObject.scale(scaleFactor);
+        jQuery(this).hide();
+        jQuery("#magnify > .zin").show();
+    });
+
 });
 ');
 
  ?>
 <div id="root">
-    <div id="picture">
-        <div id="image"><?php echo $this->data->renderImage(); ?></div>
-        <div id="canvas" class="canvas"><!-- --></div>
+    <div id="pic">
+        <div id="magnify"><?php echo $this->getIcon("gfx/zoom_in.gif","class=\"zin\" alt=\"".$this->getLL('imagemap_wizard.form.zoomin')."\" title=\"".$this->getLL('imagemap_wizard.form.zoomin')."\""); echo $this->getIcon("gfx/zoom_out.gif","class=\"zout\" alt=\"".$this->getLL('imagemap_wizard.form.zoomout')."\" title=\"".$this->getLL('imagemap_wizard.form.zoomout')."\""); ?></div>
+        <div id="picture">
+            <div id="image"><?php echo $this->data->renderImage(); ?></div>
+            <div id="canvas" class="canvas"><!-- --></div>
+        </div>
     </div>
 	<div id="actions">
-    <input type="button" id="addRect" value="<?php $this->getLL('imagemap_wizard.form.addrect',1); ?>" />
-    <input type="button" id="addCirc" value="<?php $this->getLL('imagemap_wizard.form.addcirc',1); ?>" />
-    <input type="button" id="addPoly" value="<?php $this->getLL('imagemap_wizard.form.addpoly',1); ?>" />
-    <input type="button" id="submit" value="<?php $this->getLL('imagemap_wizard.form.submit',1); ?>" />
+        <input type="button" id="addRect" value="<?php $this->getLL('imagemap_wizard.form.addrect',1); ?>" />
+        <input type="button" id="addCirc" value="<?php $this->getLL('imagemap_wizard.form.addcirc',1); ?>" />
+        <input type="button" id="addPoly" value="<?php $this->getLL('imagemap_wizard.form.addpoly',1); ?>" />
+        <input type="button" id="submit" value="<?php $this->getLL('imagemap_wizard.form.submit',1); ?>" />
     </div>
-    <div id="info"><!-- --></div>
     <div id="areaForms">
         <div id="rectForm" class="areaForm bgColor5">
             <div id="MAPFORMID_main" class="basicOptions">
@@ -131,6 +155,5 @@ jQuery(document).ready(function(){
              <?php echo $this->getIcon("gfx/close_gray.gif","id=\"MAPFORMID_rmvN\" alt=\"".$this->getLL('imagemap_wizard.form.poly.removeEdge')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.removeEdge')."\" class=\"coordOpt rmCoord ptr\""); ?><br class="cc" />
         </div>
     </div>
-
 	<span class="cc"><!-- --></span>
 </div>

@@ -12,6 +12,8 @@
             <label index="imagemap_wizard.form.addcirc">Add Circ-Area</label>
             <label index="imagemap_wizard.form.addpoly">Add Poly-Area</label>
             <label index="imagemap_wizard.form.submit">Apply &amp; Close</label>
+            <label index="imagemap_wizard.form.zoomin">Zoom image to 100%</label>
+            <label index="imagemap_wizard.form.zoomout">Zoom image to fit the Wizard popup.</label>
             <label index="imagemap_wizard.form.area.label">Label</label>
             <label index="imagemap_wizard.form.area.link">Link</label>
             <label index="imagemap_wizard.form.area.linkwizard">Open LinkWizard</label>
@@ -39,6 +41,8 @@
             <label index="imagemap_wizard.form.addcirc">Neue Circ-Area</label>
             <label index="imagemap_wizard.form.addpoly">Neue Poly-Area</label>
             <label index="imagemap_wizard.form.submit">Übernehmen &amp; Schliessen</label>
+            <label index="imagemap_wizard.form.zoomin">Bild auf 100% zoomen.</label>
+            <label index="imagemap_wizard.form.zoomout">Bild an Fenstergröße anpassen.</label>
             <label index="imagemap_wizard.form.area.label">Label</label>
             <label index="imagemap_wizard.form.area.link">Link</label>
             <label index="imagemap_wizard.form.area.linkwizard">Öffne LinkWizard</label>
