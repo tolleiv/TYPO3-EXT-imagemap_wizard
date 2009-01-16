@@ -96,8 +96,8 @@ class tx_imagemapwizard_dataObject {
 		return $result;
 	}
 
-    public function renderThumbnail() {
-        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue('previewImageMaxWH');
+    public function renderThumbnail($confKey,$defaultMaxWH) {
+        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue($confKey,$defaultMaxWH);
 		$img = $this->renderImage();
 		$matches = array();
 		if(preg_match('/width="(\d+)" height="(\d+)"/',$img,$matches)) {
@@ -117,8 +117,8 @@ class tx_imagemapwizard_dataObject {
 		}
     }
     
-    public function getThumbnailScale() {
-        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue('previewImageMaxWH');    
+    public function getThumbnailScale($confKey,$defaultMaxWH) {
+        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue($confKey,$defaultMaxWH);    
         $ret = 1;
 		$img = $this->renderImage();
 		$matches = array();

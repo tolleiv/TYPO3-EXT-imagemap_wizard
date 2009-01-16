@@ -33,8 +33,7 @@ var canvasClass = Class.extend({
     areaObjects:null,
     areaObjectList:null,
     formBlueprints:null,
-    maxW:null,
-    maxH:null,
+    scaleFactor:1,
     imageOrigW:null,
     imageOrigH:null,
     mouseIsDown:false,
@@ -63,35 +62,32 @@ var canvasClass = Class.extend({
         this.canvasVectors = new Object();
         this.areaObjects = new Object();
         this.areaObjectList = new Array();
-        this.setMaxW(jQuery(this.pictureId).width());        
-        this.setMaxH(jQuery(this.pictureId).height());
+        this.imageOrigW = parseInt(jQuery(this.pictureId + " > #image > img").attr("width"));
+        this.imageOrigH = parseInt(jQuery(this.pictureId + " > #image > img").attr("height"));
         this.formBlueprints = this.parseFormToBluePrint(this.formsId);
         jQuery(this.formsId).empty();
-        jQuery(this.canvasId).width(jQuery(this.pictureId).width()).height(jQuery(this.pictureId).height());        
+        this.setScale(1);
     },
     
-    initializeScaling: function(img,maxWH) {
-        this.imageId = img;    
-        this.imageOrigW = parseInt(jQuery(img).attr("width"));
-        this.imageOrigH = parseInt(jQuery(img).attr("height"));
-        this.setMaxW(maxWH);
-        this.setMaxH(maxWH);                
-        var factW = this.getMaxW()/this.imageOrigW;
-        var factH = this.getMaxH()/this.imageOrigH;
+    initializeScaling: function(maxWH) {
+        var factW = maxWH/this.imageOrigW;
+        var factH = maxWH/this.imageOrigH;
         // we're not scaling the image directly because there might be some session-interaction afterwards...
         return (factW>factH)?factH:factW;
     },
     
-    scale: function(scale) {
-        jQuery(this.imageId).width(scale*this.imageOrigW);
-        jQuery(this.imageId).height(scale*this.imageOrigH);
-        jQuery(this.pictureId).width(scale*this.imageOrigW);
-        jQuery(this.pictureId).height(scale*this.imageOrigH);
+    setScale: function(scale) {
+        this.scaleFactor = (scale>1)?1:scale;        
+        jQuery(this.pictureId + " > #image > img").width(this.getMaxW());
+        jQuery(this.pictureId + " > #image > img").height(this.getMaxH());
+        jQuery(this.pictureId).width(this.getMaxW());
+        jQuery(this.pictureId).height(this.getMaxH());
         var that = this;
         jQuery.each(this.areaObjectList, function(i, objId) {
             that.areaObjects[objId].setScale(scale);
             that.updateCanvas(objId);
-        });        
+        });      
+        jQuery(this.canvasId).width(this.getMaxW()).height(this.getMaxH());                
     },
     
     /**
@@ -202,6 +198,7 @@ var canvasClass = Class.extend({
             coords = obj.getStartupCoords(this.getCenterCoords(),this.getDimensions())
         }
         obj.init(this,this.getNextId(),coords,labelValue,linkValue,colorValue);
+        obj.setScale(this.scaleFactor);
         this.areaObjects[obj.getId()] = obj;
         this.areaObjectList.push(obj.getId());
         if(prepend) {
@@ -292,11 +289,11 @@ var canvasClass = Class.extend({
     },
 
     getCenterCoords: function() {
-        return {x:(this.getMaxW()/2),y:(this.getMaxH()/2)};
+        return {x:(this.imageOrigW/2),y:(this.imageOrigH/2)};
     },
 
     getDimensions: function() {
-        return {w:this.getMaxW(),h:this.getMaxH()};
+        return {w:this.imageOrigW,h:this.imageOrigH};
     },
 
     /**
@@ -455,20 +452,12 @@ var canvasClass = Class.extend({
         return result;
     },
     
-    
-    setMaxW: function(maxW) {
-        this.maxW = parseInt(maxW);
-    },
-    
     getMaxW: function() {
-        return this.maxW;
-    },
-    
-    setMaxH: function(maxH) {
-        this.maxH = parseInt(maxH);
+        return this.scaleFactor*this.imageOrigW;
     },
     
     getMaxH: function() {
-        return this.maxH;
+        return this.scaleFactor*this.imageOrigH;
     }
+    
 });

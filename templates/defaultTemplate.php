@@ -24,8 +24,8 @@ jQuery(document).ready(function(){
     canvasObject.init("canvas","picture","areaForms");
 	'.$existingFields.'
 
-    scaleFactor = canvasObject.initializeScaling("#image > img",'.t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue('imageMaxWH').');
-    canvasObject.scale(scaleFactor);        // todo: store last used scale per Image...
+    scaleFactor = canvasObject.initializeScaling('.t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue('imageMaxWH',700).');
+    canvasObject.setScale(scaleFactor);        // todo: store last used scale per Image...
 
     if(scaleFactor < 1) {
         jQuery("#magnify > .zout").hide();    
@@ -61,12 +61,12 @@ jQuery(document).ready(function(){
         return canvasObject.dblclick(e);
     });
     jQuery("#magnify > .zin").click(function(event){
-        canvasObject.scale(1);
+        canvasObject.setScale(1);
         jQuery(this).hide();
         jQuery("#magnify > .zout").show();
     });
     jQuery("#magnify > .zout").click(function(event){
-        canvasObject.scale(scaleFactor);
+        canvasObject.setScale(scaleFactor);
         jQuery(this).hide();
         jQuery("#magnify > .zin").show();
     });
