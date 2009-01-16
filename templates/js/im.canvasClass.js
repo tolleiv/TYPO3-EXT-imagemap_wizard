@@ -70,21 +70,21 @@ var canvasClass = Class.extend({
     },
     
     initializeScaling: function(maxWH) {
-        var factW = maxWH/this.imageOrigW;
-        var factH = maxWH/this.imageOrigH;
+        var factW = parseInt(maxWH)/this.imageOrigW;
+        var factH = parseInt(maxWH)/this.imageOrigH;
         // we're not scaling the image directly because there might be some session-interaction afterwards...
         return (factW>factH)?factH:factW;
     },
     
     setScale: function(scale) {
-        this.scaleFactor = (scale>1)?1:scale;        
+        this.scaleFactor = ((scale>1)?1:scale);
         jQuery(this.pictureId + " > #image > img").width(this.getMaxW());
         jQuery(this.pictureId + " > #image > img").height(this.getMaxH());
         jQuery(this.pictureId).width(this.getMaxW());
         jQuery(this.pictureId).height(this.getMaxH());
         var that = this;
         jQuery.each(this.areaObjectList, function(i, objId) {
-            that.areaObjects[objId].setScale(scale);
+            that.areaObjects[objId].setScale(that.scaleFactor);
             that.updateCanvas(objId);
         });      
         jQuery(this.canvasId).width(this.getMaxW()).height(this.getMaxH());                

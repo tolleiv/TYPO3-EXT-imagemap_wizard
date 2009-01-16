@@ -71,6 +71,7 @@ var areaClass = Class.extend({
     },
     
     setScale: function(factor) {
+        if(factor<0 || factor>1) return;       
         this._scale = factor;
     },
     
