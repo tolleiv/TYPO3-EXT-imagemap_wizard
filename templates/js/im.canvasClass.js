@@ -174,6 +174,13 @@ var canvasClass = Class.extend({
         var y = event.pageY - jQuery(this.canvasId).offset().top;
         var that = this;
         jQuery.each(jQuery(this.formsId + " > div"), function(i, obj) {
+            var tmp = that.areaObjects[jQuery(this).attr("id")].hitOnObjectEdge(x,y,3);
+            if(tmp != -1) {
+                if(that.areaObjects[jQuery(this).attr("id")].edgeWasHit(tmp)) {
+                    that.updateCanvas(jQuery(this).attr("id"));     
+                    that.updateForm(jQuery(this).attr("id"));                
+                }
+            }
             var tmp = that.areaObjects[jQuery(this).attr("id")].hitOnObjectBorder(x,y,5);
             if(tmp != -1) {
                 if(that.areaObjects[jQuery(this).attr("id")].borderWasHit(tmp,x,y)) {

@@ -168,8 +168,16 @@ var areaPolyClass = areaClass.extend({
 		return border;	
 	},
 
+    edgeWasHit: function(edge) {
+        this.removeCoord(edge);
+        return true;
+    },
+
     borderWasHit: function(border,x,y) {        
-        this._coords.splice(border+1,0, {x:parseInt(x), y:parseInt(y)});     
+        // add new edge
+        this._coords.splice(border+1,0, {x:parseInt(x), y:parseInt(y)});  
+        this.getCanvas().updateCanvas(this.getId());
+        this.getCanvas().refreshForm(this.getId());
         return true;
     },
 

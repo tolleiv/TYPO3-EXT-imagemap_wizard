@@ -235,6 +235,10 @@ var areaClass = Class.extend({
 	return false;
     },
 
+    edgeWasHit: function(border,x,y) {
+    
+    },
+    
     borderWasHit: function(border,x,y) {
     
     }

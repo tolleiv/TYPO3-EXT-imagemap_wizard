@@ -32,6 +32,8 @@ t3lib_extMgm::addTCAcolumns("tt_content",$tempColumns,1);
 
 $GLOBALS['TCA']['tt_content']['types']['imagemap_wizard'] = $GLOBALS['TCA']['tt_content']['types']['image'];
 t3lib_extMgm::addToAllTCAtypes('tt_content','tx_imagemapwizard_links', 'imagemap_wizard','after:image');
+// CSH context sensitive help
+t3lib_extMgm::addLLrefForTCAdescr('tt_content','EXT:imagemap_wizard/locallang_csh.xml');
 
 if (TYPO3_MODE=='BE')    {
     $GLOBALS['TBE_MODULES_EXT']['xMOD_db_new_content_el']['addElClasses']['tx_imagemapwizard_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'classes/class.tx_imagemapwizard_wizicon.php';
