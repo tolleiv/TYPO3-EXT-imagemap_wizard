@@ -52,7 +52,7 @@ class tx_imagemapwizard_dataObject {
     }
 
 	public function getFieldValue($field,$listNum=-1) {
-		if(array_key_exists($field,$this->row)) {
+		if(is_array($this->row) && array_key_exists($field,$this->row)) {
             if($listNum == -1) {
                 return $this->row[$field];
             } else {
