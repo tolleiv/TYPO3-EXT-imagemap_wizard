@@ -175,7 +175,7 @@ var areaPolyClass = areaClass.extend({
 
     borderWasHit: function(border,x,y) {        
         // add new edge
-        this._coords.splice(border+1,0, {x:parseInt(x), y:parseInt(y)});  
+        this._coords.splice(border+1,0, {x:this.reverseScale(x), y:this.reverseScale(y)});  
         this.getCanvas().updateCanvas(this.getId());
         this.getCanvas().refreshForm(this.getId());
         return true;

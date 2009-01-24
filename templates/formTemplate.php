@@ -70,7 +70,7 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
         canvasObject = new previewCanvasClass();
         canvasObject.init("<?php echo $this->getId(); ?>-canvas","<?php echo $this->data->getThumbnailScale('previewImageMaxWH',200) ?>");
         <?php echo $existingFields; ?>
-        jQuery(".imagemap_wiz_message").fadeOut(4000);
+        jQuery(".imagemap_wiz_message").fadeOut(10000);
     });
 
     </script>
