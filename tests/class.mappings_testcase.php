@@ -37,14 +37,16 @@ class mappings_testcase extends tx_phpunit_testcase {
     $cObj = $this->getMock('tslib_cObj', array('typoLink'));
     $cObj->expects($this->never())->method('typoLink');
 
-    $regEx = '/^[a-zA-Z0-9\-_]+$/i';
+    $regEx = '/^[a-zA-Z][a-zA-Z0-9\-_]+$/i';
     $this->assertEquals(1,preg_match($regEx,$this->mapper->createValidNameAttribute('test name')),'Attribute is not cleaned as supposed...');
     $this->assertEquals(1,preg_match($regEx,$this->mapper->createValidNameAttribute('test näme')),'Attribute is not cleaned as supposed...');
     $this->assertEquals(1,preg_match($regEx,$this->mapper->createValidNameAttribute('ÄÖÜ..')),'Attribute is not cleaned as supposed...');
-    $regEx = '/^<map name="[a-zA-Z0-9\-_]+" \/>$/i';
+    $this->assertEquals(1,preg_match($regEx,$this->mapper->createValidNameAttribute('1234')),'Attribute is not cleaned as supposed...');
+    $regEx = '/^<map name="[a-zA-Z][a-zA-Z0-9\-_]+" \/>$/i';
     $this->assertEquals(1,preg_match($regEx,$this->mapper->generateMap($cObj,'test name')),'Name-attribute is not cleaned as supposed...');
     $this->assertEquals(1,preg_match($regEx,$this->mapper->generateMap($cObj,'test näme')),'Name-attribute is not cleaned as supposed...');
     $this->assertEquals(1,preg_match($regEx,$this->mapper->generateMap($cObj,'ÄÖÜ..')),'Name-attribute is not cleaned as supposed...');
+    $this->assertEquals(1,preg_match($regEx,$this->mapper->generateMap($cObj,'1234')),'Name-attribute is not cleaned as supposed...');
   }
 
     function test_emptyMapNameDoesnTHurt() {
@@ -90,6 +92,18 @@ class mappings_testcase extends tx_phpunit_testcase {
     $output = '<map name="test"><area href="http://www.foo.org" shape="rect" /></map>';
     $this->assertEquals($output,$this->mapper->generateMap($cObj,'test',$input),'Href-Attribute is not recognized for the area-link creation.');
   }
+  
+  // due to issue 2525
+  function test_xhtmlSwitchWorks() {
+    $cObj = $this->getMock('tslib_cObj', array('typoLink'));
+       
+    $name = "testname";
+    $htmlOutput = '<map name="'.$name.'" />';
+    $xhtmlOutput = '<map id="'.$name.'" />';
+    $this->assertEquals($htmlOutput,$this->mapper->generateMap($cObj,$name,'',array(),false),' HTML mapname is not generated as supposed');
+    $this->assertEquals($xhtmlOutput,$this->mapper->generateMap($cObj,$name,'',array(),true),' XHTML mapname is not generated as supposed');
+  }
+  
   
   function test_simpleComparingWorks() {
     $map1 = '<map><area>1</area></map>';

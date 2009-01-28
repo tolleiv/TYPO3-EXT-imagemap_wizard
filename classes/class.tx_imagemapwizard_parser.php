@@ -32,13 +32,17 @@ require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_im
  class tx_imagemapwizard_parser extends tslib_pibase {
 
 	public function applyImageMap($content,$conf) {
-        $attrlist = explode(',','shape,coords,href,target,nohref,alt,accesskey,tabindex,onfocus,onblur,id,class,style,lang,dir,onclick,ondblclick,onmousedown,onmouseup,onmouseover,onmousemove,onmouseout,onkeypressonkeydown,onkeyup');
+        $xhtml = preg_match('/^xhtml/',$GLOBALS['TSFE']->config['config']['doctype']);
+        $attrlist = explode(',','shape,coords,href,target,nohref,alt,title,accesskey,tabindex,onfocus,onblur,id,class,style,lang,dir,onclick,ondblclick,onmousedown,onmouseup,onmouseover,onmousemove,onmouseout,onkeypressonkeydown,onkeyup');
+        // remove target attribute to have xhtml-strict output
+        if(strcmp($GLOBALS['TSFE']->config['config']['doctype'],'xhtml_strict')===0) {
+            $attrlist =  array_diff($attrlist, array('target'));
+        }
+        $mapname = $this->cObj->stdWrap(preg_replace('/\s/','-',$this->cObj->getData($conf['map.']['name'],$this->cObj->data)),$conf['map.']['name.']);
 
 		$converter = t3lib_div::makeInstance('tx_imagemapwizard_mapper');
-		//$converter->init();
-        $mapname = $this->cObj->stdWrap(preg_replace('/\s/','-',$this->cObj->getData($conf['map.']['name'],$this->cObj->data)),$conf['map.']['name.']);
         $mapname = $converter->createValidNameAttribute($mapname);
-		$map = $converter->generateMap($this->cObj,$mapname,$this->cObj->getData($conf['map.']['data'],$this->cObj->data),$attrlist);
+		$map = $converter->generateMap($this->cObj,$mapname,$this->cObj->getData($conf['map.']['data'],$this->cObj->data),$attrlist,$xhtml);
 
 		return str_replace('###IMAGEMAP_USEMAP###',$mapname,$content).$map;
 	}

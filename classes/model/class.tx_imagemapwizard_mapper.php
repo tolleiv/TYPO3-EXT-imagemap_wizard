@@ -36,15 +36,17 @@ class tx_imagemapwizard_mapper {
 	 * @param String mapping the XML_pseudo-imagemap
 	 * @return String the valid HTML-imagemap (hopefully valid)
 	 */
-	public function generateMap(tslib_cObj &$cObj,$name,$mapping=NULL,$whitelist=NULL) {
+	public function generateMap(tslib_cObj &$cObj,$name,$mapping=NULL,$whitelist=NULL,$xhtml=NULL) {
         $useWhitelist = is_array($whitelist);
         if($useWhitelist) {
             $whitelist = array_flip($whitelist);
         }
 		//$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapconverter');
 		$mapArray = self::map2array($mapping);
-		$mapArray['@']['name']=$this->createValidNameAttribute($name);
-
+        
+        // use id-attribute if XHTML is required see issue #2525
+        $mapArray['@'][$xhtml?'id':'name']=$this->createValidNameAttribute($name);
+        
 		while(is_array($mapArray['#']) && (list($key,$node) = each($mapArray['#']))) {
 			if(!$node['value'] && !$node['@']['href']) continue;
 			$tmp = self::map2array($cObj->typolink('-',$this->getTypolinkSetup($node['value']?$node['value']:$node['@']['href'])),'a');
@@ -75,7 +77,12 @@ class tx_imagemapwizard_mapper {
         if(!preg_match('/\S+/',$value)) {
             $value = t3lib_div::shortMD5(rand(0,100));
         }
-		return preg_replace('/[^a-zA-Z0-9\-_]/i','-',$value);
+        $name = preg_replace('/[^a-zA-Z0-9\-_]/i','-',$value);
+        
+        if(!preg_match('/^[a-zA-Z]/',$name)) {
+            $name = chr(rand(97,122)).$name;
+        }        
+		return $name;
 	}
 
 	/**
