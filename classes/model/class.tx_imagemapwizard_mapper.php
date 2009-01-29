@@ -43,9 +43,14 @@ class tx_imagemapwizard_mapper {
         }
 		//$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapconverter');
 		$mapArray = self::map2array($mapping);
-        
+                
+        $mapArray['@']['name']=$this->createValidNameAttribute($name);
         // use id-attribute if XHTML is required see issue #2525
-        $mapArray['@'][$xhtml?'id':'name']=$this->createValidNameAttribute($name);
+        // name-attribute is still required due to browser compatibility ;(
+        if($xhtml) {
+            $mapArray['@']['id'] = $mapArray['@']['name'];
+        }
+        
         
 		while(is_array($mapArray['#']) && (list($key,$node) = each($mapArray['#']))) {
 			if(!$node['value'] && !$node['@']['href']) continue;
