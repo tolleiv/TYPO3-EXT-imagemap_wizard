@@ -99,9 +99,9 @@ class mappings_testcase extends tx_phpunit_testcase {
        
     $name = "testname";
     $htmlOutput = '<map name="'.$name.'" />';
-    $xhtmlOutput = '<map id="'.$name.'" />';
-    $this->assertEquals($htmlOutput,$this->mapper->generateMap($cObj,$name,'',array(),false),' HTML mapname is not generated as supposed');
-    $this->assertEquals($xhtmlOutput,$this->mapper->generateMap($cObj,$name,'',array(),true),' XHTML mapname is not generated as supposed');
+    $xhtmlOutput = '<map  id="'.$name.'" name="'.$name.'" />';
+    $this->assertEquals(true,$this->mapper->compareMaps($htmlOutput,$this->mapper->generateMap($cObj,$name,'',array(),false)),' HTML mapname is not generated as supposed');
+    $this->assertEquals(true,$this->mapper->compareMaps($xhtmlOutput,$this->mapper->generateMap($cObj,$name,'',array(),true)),' XHTML mapname is not generated as supposed');
   }
   
   
@@ -121,7 +121,10 @@ class mappings_testcase extends tx_phpunit_testcase {
   function test_compairingDifferentStructures() {
     $map1 = '<map></map>';
     $map2 = '<map><area xxx="abc" color="green">1</area></map>';
+    $map3 = '<map attr="value" />';
     $this->assertEquals(false,$this->mapper->compareMaps($map1,$map2),'Different structured maps are not processed as supposed');
+    $this->assertEquals(false,$this->mapper->compareMaps($map1,$map3),'Different structured maps are not processed as supposed');
+    $this->assertEquals(false,$this->mapper->compareMaps($map2,$map3),'Different structured maps are not processed as supposed');
   }
   
   
