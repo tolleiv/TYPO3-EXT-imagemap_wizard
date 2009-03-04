@@ -27,18 +27,6 @@
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
 define('PATH_tslib', PATH_site.'typo3/sysext/cms/tslib/');
-require_once(PATH_tslib.'class.tslib_fe.php');
-require_once(PATH_t3lib.'class.t3lib_userauth.php');
-require_once(PATH_t3lib.'class.t3lib_userauthgroup.php');
-require_once(PATH_t3lib.'class.t3lib_beuserauth.php');
-require_once(PATH_t3lib.'class.t3lib_tsfebeuserauth.php');        
-require_once(PATH_tslib.'class.tslib_feuserauth.php');
-require_once(PATH_t3lib.'class.t3lib_cs.php');
-require_once(PATH_tslib.'class.tslib_content.php') ;
-require_once(PATH_t3lib.'class.t3lib_tstemplate.php');
-require_once(PATH_t3lib.'class.t3lib_page.php');
-require_once(PATH_t3lib.'class.t3lib_timetrack.php');
-require_once(t3lib_extMgm::extPath('css_styled_content').'pi1/class.tx_cssstyledcontent_pi1.php');
 
 class tx_imagemapwizard_typo3env {
     protected $lastError;
@@ -51,7 +39,21 @@ class tx_imagemapwizard_typo3env {
 	 * @return	Boolean		returns success of the operation
 	 */
 	public function initTSFE($pid = 1,$ws = 0){
-    
+        /* local includes otherwise XCLASSES might be lost due to extension load order */
+        require_once(PATH_tslib.'class.tslib_fe.php');
+        require_once(PATH_t3lib.'class.t3lib_userauth.php');
+        require_once(PATH_t3lib.'class.t3lib_userauthgroup.php');
+        require_once(PATH_t3lib.'class.t3lib_beuserauth.php');
+        require_once(PATH_t3lib.'class.t3lib_tsfebeuserauth.php');        
+        require_once(PATH_tslib.'class.tslib_feuserauth.php');
+        require_once(PATH_t3lib.'class.t3lib_cs.php');
+        require_once(PATH_tslib.'class.tslib_content.php') ;
+        require_once(PATH_t3lib.'class.t3lib_tstemplate.php');
+        require_once(PATH_t3lib.'class.t3lib_page.php');
+        require_once(PATH_t3lib.'class.t3lib_timetrack.php');
+        require_once(t3lib_extMgm::extPath('css_styled_content').'pi1/class.tx_cssstyledcontent_pi1.php');
+
+
         $tca = $GLOBALS['TCA'];
     
 		$TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
