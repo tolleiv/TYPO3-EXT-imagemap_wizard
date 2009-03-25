@@ -133,8 +133,13 @@ class tx_imagemapwizard_wizardController {
 	 * @return	String		HTMLCode with form-field
 	 */
     function renderForm($PA, t3lib_TCEforms $fobj) {
-        
         $GLOBALS['BE_USER']->setAndSaveSessionData('imagemap_wizard.value',NULL);            
+        
+        if($GLOBALS['TCA']['tt_content']['columns'][$PA['field']]['config']['type'] == 'flex') {
+        t3lib_div::debug($PA); die();
+            return 'Flexform support not implemented yet';
+        }
+        
         
         $this->params['table'] = $PA['table'];
         $this->params['field'] = $PA['field'];

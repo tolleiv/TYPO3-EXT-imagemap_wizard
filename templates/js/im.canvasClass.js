@@ -200,11 +200,11 @@ var canvasClass = Class.extend({
     * @param colorValue the hex-value of the color
     * @usage external
     */    
-    addArea: function(obj,coords,labelValue,linkValue,colorValue,prepend) {
+    addArea: function(obj,coords,labelValue,linkValue,colorValue,prepend,attributes) {
         if(coords == '') {
             coords = obj.getStartupCoords(this.getCenterCoords(),this.getDimensions())
         }
-        obj.init(this,this.getNextId(),coords,labelValue,linkValue,colorValue);
+        obj.init(this,this.getNextId(),coords,labelValue,linkValue,colorValue,attributes);
         obj.setScale(this.scaleFactor);
         this.areaObjects[obj.getId()] = obj;
         this.areaObjectList.push(obj.getId());

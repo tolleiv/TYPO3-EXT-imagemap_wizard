@@ -82,9 +82,10 @@ class tx_imagemapwizard_mapper {
         if(!preg_match('/\S+/',$value)) {
             $value = t3lib_div::shortMD5(rand(0,100));
         }
-        $name = preg_replace('/[^a-zA-Z0-9\-_]/i','-',$value);
+        $name = preg_replace('/[^a-zA-Z0-9\-_]/i','-',$value);  // replace any special character with an dash
+        $name = preg_replace('/\-+$/','',$name);    // remove trailing dashes
         
-        if(!preg_match('/^[a-zA-Z]/',$name)) {
+        while(!preg_match('/^[a-zA-Z]{3}/',$name)) {
             $name = chr(rand(97,122)).$name;
         }        
 		return $name;
@@ -221,6 +222,15 @@ class tx_imagemapwizard_mapper {
         }
         return $match;
     }
+       
+    /**
+    *
+    */
+    public static function isEmptyMap($map) {
+        $arr = self::map2array($map);
+        return !(count($arr['#'])>0);
+    }
+    
 }
 
 

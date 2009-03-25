@@ -30,19 +30,21 @@ var areaClass = Class.extend({
     _edges:true,
     _moreOptionsInitFlag:false,
     _moreOptionsVisible:false,
+    _attr:{},
 	_colors:    ['990033','ff9999','993366','ff66cc','ff0066','ff00cc','cc0099','cc99ff','cc00cc','cc99cc','9933cc','9966cc','6600cc','6633ff','6666cc','333399','3333ff',		
 		        '3366ff','0000ff','336699','003366','0099cc','0099ff','66ffff','009999','33cccc','006666','33cc99','00ff99','669966','339933','33cc66','009933',		
 		        'ccff99','00ff00','009900','66cc00','99cc66','669900','ccff00','333300','666633','ffff99','ffcc00','996600','993300','ff6633','996633','cc9999',		
 		        'ff3333','990000','cc9966', 'eeeeee','999999','666666','333333','000000'],
     
     // called from canvasClass
-    init: function(canvas,id,coords,label,link,color) {
+    init: function(canvas,id,coords,label,link,color,attr) {
         this._canvas = canvas;
         this._id = id;
+        this._attr = (typeof attr == "object")?attr:{};
         this.setLabel(label);
         this.setLink(link);
 		this.setColor(color);
-        this.initCoords(coords);        
+        this.initCoords(coords);
     },
     
     remove: function() {
@@ -168,7 +170,35 @@ var areaClass = Class.extend({
     updateStatesFromForm: function() {
 		this.setLink(document.forms[0].elements[this.getFormId() + "_link"].value);
         this.setLabel(document.forms[0].elements[this.getFormId() + "_label"].value);
+        var that = this;
+        if(typeof this._attr != "object") return;
+        jQuery.each(this._attr, function(key, val) {
+            that._attr[key] = document.forms[0].elements[that.getFormId() + "_" + key].value;
+        });
+        
 		//this._moreOptionsVisible = jQuery("#" + this.getFormId() +" > .moreOptions").is(":visible");
+    },
+
+    getCommonFormUpdateFields: function() {
+        var result = this.getFormId() + "_link=" + this.getLink() + ";";
+        result = result  + this.getFormId() + "_label=" + this.getLabel() + ";";
+        if(typeof this._attr == "object") {
+            var that = this;
+            jQuery.each(this._attr, function(key, val) {
+                result = result + that.getFormId() + "_" + key + "=" + val + ";";
+            });
+        }
+        return result;
+    },
+
+    getAdditionalAttributeXML: function() {
+        var add = "";
+        var that = this;
+        if(typeof this._attr != "object") return;        
+        jQuery.each(this._attr, function(key, val) {
+            add = add + key + "='" + that._attr[key] + "' ";
+        });
+        return add;
     },
 
     applyAdditionalAreaActions: function() {

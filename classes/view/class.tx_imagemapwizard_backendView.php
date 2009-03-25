@@ -155,6 +155,25 @@ class tx_imagemapwizard_backendView extends tx_imagemapwizard_abstractView {
     }
 
 
+    public function renderAttributesTemplate($inp) {
+        $attrKeys = $this->data->getAttributeKeys();
+        $ret = '';
+        if(is_array($attrKeys)) {
+            foreach($attrKeys as $key) {
+                $ret .= str_replace(array('ATTRLABEL','ATTRNAME'),array(ucfirst($key),strtolower($key)),$inp);
+            }
+        }
+        return $ret;
+    }
+    
+    public function getEmptyAttributset() {
+        $attrKeys = $this->data->getAttributeKeys();
+        $ret = "";
+        foreach($attrKeys as $key) {
+            $ret[] = $key.':\'\'';
+        }
+        return implode(',',$ret);
+    }
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_backendView.php'])    {

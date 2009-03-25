@@ -41,7 +41,7 @@ var areaPolyClass = areaClass.extend({
 
     // called from canvasClass
 	persistanceXML: function() {
-		return "<area shape=\"poly\" coords=\""+this.joinCoords()+"\" alt=\"" + this.getLabel() + "\" color=\""+this.getColor()+"\">"+this.getLink()+"</area>";
+		return "<area shape=\"poly\" coords=\""+this.joinCoords()+"\" alt=\"" + this.getLabel() + "\" color=\""+this.getColor()+"\" " + this.getAdditionalAttributeXML() +">"+this.getLink()+"</area>";
 	},
 
     // called from canvasClass
@@ -87,9 +87,8 @@ var areaPolyClass = areaClass.extend({
         for(var i=0;i<this._coords.length;i++) {
             result = result  + this.getFormId() + "_x" + i + "=" + parseInt(this._coords[i].x) + ";";
             result = result  + this.getFormId() + "_y" + i + "=" + parseInt(this._coords[i].y) + ";";
-        }    
-        result = result  + this.getFormId() + "_link=" + this.getLink() + ";";
-        result = result  + this.getFormId() + "_label=" + this.getLabel() + ";";
+        }
+        result = result + this.getCommonFormUpdateFields();
         return result;
     },    
     

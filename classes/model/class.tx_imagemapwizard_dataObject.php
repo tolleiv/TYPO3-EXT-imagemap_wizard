@@ -143,6 +143,7 @@ class tx_imagemapwizard_dataObject {
 								"##color##"=>$area["@"]["color"],
 								"##link##"=>$area["value"],
 								"##alt##"=>$area["@"]["alt"],
+                                "##attributes##"=>$this->listAttributesAsSet($area)
 							);
 
 			$result .= str_replace(array_keys($markers),array_values($markers),$template);
@@ -150,6 +151,21 @@ class tx_imagemapwizard_dataObject {
 		}
 		return $result;
 	}
+    
+    protected function listAttributesAsSet($area) {
+        $relAttr = $this->getAttributeKeys();
+        $ret = array();
+        foreach($relAttr as $key) {
+            $ret[] = $key.':\''.(array_key_exists($key,$area["@"])?$area["@"][$key]:'').'\'';
+        }
+        return implode(',',$ret);
+    }
+
+    public function getAttributeKeys() {
+        $keys = t3lib_div::trimExplode(',',eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtConfValue(\'additionalAttributes\',\'\');'),true);
+        return array_diff($keys,array('alt','href','shape','coords'));
+    }
+
 
     protected function getLivePid() {
         return $this->row['pid']>0?$this->row['pid']:$this->liveRow['pid'];

@@ -1,3 +1,6 @@
+#cat=basic//10; type=boolean; label = use within common items: clear Config-Cache after you changes this setting
+allTTCtypes = 0
+
 #cat=basic//10; type=boolean; label = store wizard settings: (not used yet) determines whether wizard-settings should be stored in the user-session
 storeWindowSettings = 1
 
@@ -7,3 +10,5 @@ imageMaxWH = 700
 #cat=basic//10; type=int ; label = maximal preview-image width/height: maximal size for the preview image
 previewImageMaxWH = 200
 
+#cat=basic//10; type=string ; label = additonal attributes: attributes besides the alt-attribute for each area
+additionalAttributes = title

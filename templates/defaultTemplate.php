@@ -13,11 +13,12 @@ $this->addExternalJS("templates/js/im.areaCircleClass.js");
 $this->addExternalJS("templates/js/im.areaPolyClass.js");
 $this->addExternalCSS("templates/default.css");
 
-$existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape##Class(),'##coords##','##alt##','##link##','##color##',0);\n");
+$existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape##Class(),'##coords##','##alt##','##link##','##color##',0,{##attributes##});\n");
 
 $this->addInlineJS('
 var canvaseObject;
 var scaleFactor = 1;
+var defaultAttributeset = {'.$this->getEmptyAttributset().'};
 jQuery.noConflict();
 jQuery(document).ready(function(){
     canvasObject = new canvasClass();
@@ -36,13 +37,13 @@ jQuery(document).ready(function(){
 
 
     jQuery("#addRect").click(function(event) {      
-        canvasObject.addArea(new areaRectClass(),\'\',\'\',\'\',\'\',1);
+        canvasObject.addArea(new areaRectClass(),\'\',\'\',\'\',\'\',1,defaultAttributeset);
     });
     jQuery("#addPoly").click(function(event) {
-        canvasObject.addArea(new areaPolyClass(),\'\',\'\',\'\',\'\',1);
+        canvasObject.addArea(new areaPolyClass(),\'\',\'\',\'\',\'\',1,defaultAttributeset);
     });
     jQuery("#addCirc").click(function(event) {
-        canvasObject.addArea(new areaCircleClass(),\'\',\'\',\'\',\'\',1);
+        canvasObject.addArea(new areaCircleClass(),\'\',\'\',\'\',\'\',1,defaultAttributeset);
     });
     jQuery("#submit").click(function(event) {
     	setValue("<map>" + canvasObject.persistanceXML() + "\n</map>");
@@ -104,6 +105,7 @@ jQuery(document).ready(function(){
                 <div class="halfLine">
             	    <div id="MAPFORMID_color" class="colors"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
                     <div id="MAPFORMID_stroke" class="colors"><div class="strokeBox"><div><!-- --></div></div><div class="strokePicker"><!-- --></div><div class="cc""><!-- --></div></div>
+                    <div id="MAPFORMID_attributes" class="attributes"><?php echo $this->renderAttributesTemplate('<label for="MAPFORMID_ATTRNAME">ATTRLABEL:</label><input type="text" id="MAPFORMID_ATTRNAME" value="..." />'); ?></div>
                 </div>
                 <div class="positionOptions halfLine"><?php echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\" class=\"ptr refresh\" alt=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\" title=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\""); ?><label for="MAPFORMID_x1" class="XYlabel XYlabel-first">X1:</label><input type="text" class="formCoord" id="MAPFORMID_x1" value="x" /><label for="MAPFORMID_y1" class="XYlabel">Y1:</label><input type="text" class="formCoord" id="MAPFORMID_y1" value="y" /><br class="cc"/><label for="MAPFORMID_x2" class="XYlabel XYlabel-first">X2:</label><input type="text" class="formCoord" id="MAPFORMID_x2" value="x" /><label for="MAPFORMID_y2" class="XYlabel">Y2:</label><input type="text" class="formCoord" id="MAPFORMID_y2" value="y" /><div class="cc"><!-- --></div></div>
                 <div class="cc"><!-- --></div>
@@ -123,6 +125,7 @@ jQuery(document).ready(function(){
                 <div class="halfLine">
             	    <div id="MAPFORMID_color" class="colors"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
                     <div id="MAPFORMID_stroke" class="colors"><div class="strokeBox"><div><!-- --></div></div><div class="strokePicker"><!-- --></div><div class="cc""><!-- --></div></div>
+                    <div id="MAPFORMID_attributes" class="attributes"><?php echo $this->renderAttributesTemplate('<label for="MAPFORMID_ATTRNAME">ATTRLABEL:</label><input type="text" id="MAPFORMID_ATTRNAME" value="..." />'); ?></div>
                 </div>
                 <div class="positionOptions halfLine"><?php echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\" class=\"ptr refresh\" alt=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\" title=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\""); ?><label for="MAPFORMID_x" class="XYlabel XYlabel-first">X:</label><input type="text" class="formCoord" id="MAPFORMID_x" value="x" /><label for="MAPFORMID_y1" class="XYlabel">Y:</label><input type="text" class="formCoord" id="MAPFORMID_y" value="y" /><br class="cc"/><label for="MAPFORMID_radius" class="XYlabel XYlabel-first">R:</label><input type="text" class="formCoord" id="MAPFORMID_radius" value="r" /><div class="cc"><!-- --></div></div>
                 <div class="cc"><!-- --></div>
@@ -143,6 +146,7 @@ jQuery(document).ready(function(){
                 <div class="halfLine">
             	    <div id="MAPFORMID_color" class="colors"><div class="colorBox"><div><!-- --></div></div><div class="colorPicker"><!-- --></div><div class="cc""><!-- --></div></div>
                     <div id="MAPFORMID_stroke" class="colors"><div class="strokeBox"><div><!-- --></div></div><div class="strokePicker"><!-- --></div><div class="cc""><!-- --></div></div>
+                    <div id="MAPFORMID_attributes" class="attributes"><?php echo $this->renderAttributesTemplate('<label for="MAPFORMID_ATTRNAME">ATTRLABEL:</label><input type="text" id="MAPFORMID_ATTRNAME" value="..." />'); ?></div>
                 </div>
                 <div class="positionOptions halfLine"><?php echo $this->getIcon("gfx/refresh_n.gif","id=\"MAPFORMID_upd\"class=\"ptr refresh\" alt=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\" title=\"".$this->getLL('imagemap_wizard.form.area.refresh')."\""); ?>POLYCOORDS<div class="cc"><!-- --></div></div>
                 <div class="cc"><!-- --></div>
