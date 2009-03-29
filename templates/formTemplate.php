@@ -38,7 +38,7 @@ function imagemapwizard_valueChanged(field) {
 ');
 $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChanged(field);'));
 ?>
-<div id="<?php echo $this->getId(); ?>">
+<div id="<?php echo $this->getId(); ?>" style="position:relative">
     
     <?php
         ob_start();
@@ -58,9 +58,10 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
     
     <?php
         if($this->data->hasDirtyState()) {
-            echo '<div class="imagemap_wiz_message" style="width:180px;padding:4px;border:2px solid #ff6666;background:#ffdddd;">';
+            echo ".";
+            echo '<div class="imagemap_wiz_message" style="display:none;width:185px;height:70px;padding:20px 25px 10px 40px;position:absolute;z-index:999;background: url('.$this->getTplSubpath().'img/form-tooltip.png) no-repeat;">';
             $this->getLL('form.is_dirty',1);
-            echo '</div>';
+            echo '<div class="imagemap_wiz_message_close" style="display:block;position:absolute;right:15px;top:15px;cursor:pointer">[x]</div></div>';
         }
     ?>
     <script type="text/javascript">
@@ -68,7 +69,10 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
         canvasObject = new previewCanvasClass();
         canvasObject.init("<?php echo $this->getId(); ?>-canvas","<?php echo $this->data->getThumbnailScale('previewImageMaxWH',200) ?>");
         <?php echo $existingFields; ?>
-        jQuery(".imagemap_wiz_message").fadeOut(10000);
+        jQuery(".imagemap_wiz_message").css({top: "20px", left: "20px"}).animate({left: "60px",opacity: "show"}, 750).animate({left: "60px"}, 6000).animate({left: "20px", opacity: "hide"}, 750);
+        jQuery(".imagemap_wiz_message_close").click(function() {
+            jQuery(".imagemap_wiz_message").animate({left: "20px", opacity: "hide"}, {duration:250, queue:false});
+        });
     });
     </script>
     <?php echo $this->form->getSingleHiddenField($this->data->getTablename(),$this->data->getFieldname(),$this->data->getRow()); ?>

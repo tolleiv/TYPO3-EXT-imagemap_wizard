@@ -130,6 +130,27 @@ abstract class tx_imagemapwizard_abstractView {
         }
         return $value;
     }
+    
+	/**
+	 * Create a img-tag with a TYPO3-Skinicon
+	 *
+	 * @param String skinPath the Path to the TYPO3-icon
+	 * @param String attr additional required attributes
+	 * @return String HTML-img-tag
+	 */
+    protected function getIcon($skinPath,$attr='') {
+        $source = t3lib_iconWorks::skinImg($this->doc->backPath,$skinPath);        
+        $match=array();
+        if(preg_match('/src="(\S+)"/',$source,$match) && !is_file($match[1])) {
+            $source='src ="'.$this->getTplSubpath().$skinPath.'"';
+        }
+        return "<img ".$source.($attr?' '.$attr:'')." />";
+    }
+    
+    protected function getTplSubpath() {
+        return eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtBackPath(\'imagemap_wizard\');').'templates/';
+    }
+
 }
 
 
