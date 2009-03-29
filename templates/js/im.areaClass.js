@@ -168,15 +168,16 @@ var areaClass = Class.extend({
     },
 
     updateStatesFromForm: function() {
+    /**
+    * jQuery("<div/>").text(value).html() is used to encode various html entities ;)
+    **/
 		this.setLink(jQuery("<div/>").text(jQuery("#" + this.getFormId() + "_link").attr("value")).html());
         this.setLabel(jQuery("<div/>").text(jQuery("#" + this.getFormId() + "_label").attr("value")).html());
         var that = this;
         if(typeof this._attr != "object") return;
         jQuery.each(this._attr, function(key, val) {
-            that._attr[key] = document.forms[0].elements[that.getFormId() + "_" + key].value;
+            that._attr[key] = jQuery("<div/>").text(jQuery("#" + that.getFormId() + "_" + key).attr("value")).html();
         });
-        
-		//this._moreOptionsVisible = jQuery("#" + this.getFormId() +" > .moreOptions").is(":visible");
     },
 
     getCommonFormUpdateFields: function() {
