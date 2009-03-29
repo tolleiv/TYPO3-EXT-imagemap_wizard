@@ -34,7 +34,7 @@ previewCanvasClass = function () {
     }
 
     this.addArea = function(obj,coords,labelValue,linkValue,colorValue,prepend) {
-        obj.init(this,this.getNextId(),coords,labelValue,linkValue,colorValue);
+        obj.init(this,this.getNextId(),coords,labelValue,linkValue,colorValue,{});
         obj.disableEdges();
         obj.setScale(scale);
         areaObjects[obj.getId()] = obj;

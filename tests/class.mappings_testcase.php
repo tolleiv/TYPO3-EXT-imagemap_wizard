@@ -69,6 +69,15 @@ class mappings_testcase extends tx_phpunit_testcase {
     $output = '<map name="test"><area href="http://www.foo.org" title="individual title" shape="rect" xyz="1" /></map>';
     $this->assertEquals($output,$this->mapper->generateMap($cObj,'test',$input),'Individual Attributes are lost after Generation');
   }
+  
+  function test_creatingMapRemovesEmptyAttributes() {
+    $cObj = $this->getMock('tslib_cObj', array('typoLink'));
+    $cObj->expects($this->atLeastOnce())->method('typoLink')->will($this->returnValue('<a href="http://www.foo.org" title="tt">text</a>'));
+
+    $input = '<map><area shape="rect" title="individual title" xyz="">1</area></map>';
+    $output = '<map name="test"><area href="http://www.foo.org" title="individual title" shape="rect" /></map>';
+    $this->assertEquals($output,$this->mapper->generateMap($cObj,'test',$input),'Empty Attribute should be removed during Generation');  
+  }
 
   function test_creatingMapGeneratorAcceptsAttributeWhitelist() {
     $cObj = $this->getMock('tslib_cObj', array('typoLink'));

@@ -41,10 +41,9 @@ class tx_imagemapwizard_dataObject {
 		$this->imageField = $this->determineImageFieldName();
 	    $this->mapField = $field;
         $this->row = t3lib_BEfunc::getRecordWSOL($table,$uid);
-        if($currentValue) { $this->useCurrentData($currentValue); }        
+        if($currentValue) { $this->useCurrentData($currentValue); }               
         $this->liveRow = $this->row;
         t3lib_BEfunc::fixVersioningPid($table,$this->liveRow);
-
 	    $this->map = t3lib_div::makeInstance("tx_imagemapwizard_mapper")->map2array($this->row[$this->mapField]);
 
         //eval for the XCLASSes

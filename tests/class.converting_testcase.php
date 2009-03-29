@@ -72,6 +72,17 @@ class converting_testcase extends tx_phpunit_testcase {
         $this->assertEquals($inputArray,$helper->map2array($helper->array2map($inputArray)),'Map is destroyed within the conversions');
     }
 
+    public function test_specialCharsShouldNotBreakIt() {
+    	$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapper');
+        $inputString = array();
+		$inputString[] = '<map name="test &amp; test2" />';
+		$inputString[] = '<map><area name="test &amp; test2">http://www.example.com</area></map>';
+		$inputString[] = '<map><area name="test(&quot;stringvalue&quot;); test2">http://www.example.com</area></map>';
+        foreach($inputString as $key=>$value) {
+            $this->assertEquals($inputString[$key],$helper->array2map($helper->map2array($inputString[$key])),'Special chars break map within the conversions - String '.$key);
+        }
+    }
+
 
 }
 

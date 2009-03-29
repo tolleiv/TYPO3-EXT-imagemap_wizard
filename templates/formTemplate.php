@@ -22,7 +22,6 @@ function imagemapwizard_valueChanged(field) {
         type: "GET",
         success: function(data, textStatus) { 
             if(textStatus==\'success\') {
-                /*alert(data);*/
                 jQuery("#'.$this->getId().'").html(data);
             }
         },
@@ -65,14 +64,12 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
         }
     ?>
     <script type="text/javascript">
-
     jQuery(document).ready(function(){
         canvasObject = new previewCanvasClass();
         canvasObject.init("<?php echo $this->getId(); ?>-canvas","<?php echo $this->data->getThumbnailScale('previewImageMaxWH',200) ?>");
         <?php echo $existingFields; ?>
         jQuery(".imagemap_wiz_message").fadeOut(10000);
     });
-
     </script>
     <?php echo $this->form->getSingleHiddenField($this->data->getTablename(),$this->data->getFieldname(),$this->data->getRow()); ?>
 </div>

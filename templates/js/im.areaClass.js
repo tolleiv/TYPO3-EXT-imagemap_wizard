@@ -168,8 +168,8 @@ var areaClass = Class.extend({
     },
 
     updateStatesFromForm: function() {
-		this.setLink(document.forms[0].elements[this.getFormId() + "_link"].value);
-        this.setLabel(document.forms[0].elements[this.getFormId() + "_label"].value);
+		this.setLink(jQuery("<div/>").text(jQuery("#" + this.getFormId() + "_link").attr("value")).html());
+        this.setLabel(jQuery("<div/>").text(jQuery("#" + this.getFormId() + "_label").attr("value")).html());
         var that = this;
         if(typeof this._attr != "object") return;
         jQuery.each(this._attr, function(key, val) {
@@ -180,23 +180,23 @@ var areaClass = Class.extend({
     },
 
     getCommonFormUpdateFields: function() {
-        var result = this.getFormId() + "_link=" + this.getLink() + ";";
-        result = result  + this.getFormId() + "_label=" + this.getLabel() + ";";
+        var result = this.getFormId() + "_link=\"" + this.getLink() + "\";";
+        result = result  + this.getFormId() + "_label=\"" + this.getLabel() + "\";";
         if(typeof this._attr == "object") {
             var that = this;
             jQuery.each(this._attr, function(key, val) {
-                result = result + that.getFormId() + "_" + key + "=" + val + ";";
+                result = result + that.getFormId() + "_" + key + "=\"" + val + "\";";
             });
         }
         return result;
     },
 
     getAdditionalAttributeXML: function() {
-        var add = "";
+        var add =  "alt=\"" + this.getLabel().replace(/"/g,"\&quot;") + "\" color=\""+this.getColor()+"\"";
         var that = this;
         if(typeof this._attr != "object") return;        
         jQuery.each(this._attr, function(key, val) {
-            add = add + key + "='" + that._attr[key] + "' ";
+            add = add + " " + key + "=\"" + that._attr[key].replace(/"/g,"\&quot;") + "\"";
         });
         return add;
     },

@@ -62,6 +62,8 @@ class tx_imagemapwizard_mapper {
                 if($useWhitelist) {
                     $mapArray['#'][$key]['@'] = array_intersect_key($mapArray['#'][$key]['@'],$whitelist);
                 }
+                //Remove emoty attributes
+                $mapArray['#'][$key]['@'] = array_filter($mapArray['#'][$key]['@']);
                 
 				// if(!isset($mapArray['#'][$key]['@']['href']))... what to do here???
 			}
@@ -112,6 +114,7 @@ class tx_imagemapwizard_mapper {
 	 * @return Array transformed Array keys: 'name'~Tagname, 'value'~Tagvalue, '@'~Sub-Array with Attributes, '#'~Sub-Array with Childnodes
 	 */
 	public static function map2array($value,$basetag='map') {
+        if(!strlen($value) || !is_string($value)) { $value = '<map></map>'; }
         $ret = array('name'=>$basetag);
 		if(!($xml = @simplexml_load_string($value))) return $ret;
 
@@ -145,7 +148,6 @@ class tx_imagemapwizard_mapper {
 	 * @return String XML-String
 	 */
 	public static function array2map($value,$level=0) {
-
 		if((!$value['name']) && ($level==0)) $value['name']='map';
 		$ret = NULL;
 		if(!$value['#'] && !$value['value']) {
@@ -204,7 +206,7 @@ class tx_imagemapwizard_mapper {
 		if(!is_array($attributes)) return '';
 		$ret = '';
 		foreach($attributes as $key=>$value) {
-			$ret.= sprintf(' %s="%s"',$key,$value);
+			$ret.= sprintf(' %s="%s"',$key,htmlspecialchars($value));
 		}
 		return $ret;
 	}

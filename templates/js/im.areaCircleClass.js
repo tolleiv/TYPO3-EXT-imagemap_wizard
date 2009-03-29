@@ -41,7 +41,7 @@ var areaCircleClass = areaClass.extend({
 
     // called from canvasClass
 	persistanceXML: function() {
-		return "<area shape=\"circle\" coords=\""+this.getX(0)+","+this.getY(0)+","+this.getRadius(0)+"\" alt=\"" + this.getLabel() + "\" color=\""+this.getColor()+"\" " + this.getAdditionalAttributeXML() +">"+this.getLink()+"</area>";
+		return "<area shape=\"circle\" coords=\""+this.getX(0)+","+this.getY(0)+","+this.getRadius(0)+"\" " + this.getAdditionalAttributeXML() +">"+this.getLink()+"</area>";
 	},
 
     // called from canvasClass
@@ -65,9 +65,9 @@ var areaCircleClass = areaClass.extend({
 
     // called from canvasClass
     formUpdate: function() {
-        var result = this.getFormId() + "_x=" + this.getX(0) + ";" 
-                    + this.getFormId() + "_y=" + this.getY(0) + ";"
-                    + this.getFormId() + "_radius=" + this.getRadius(0) + ";"
+        var result = this.getFormId() + "_x=\"" + this.getX(0) + "\";" 
+                    + this.getFormId() + "_y=\"" + this.getY(0) + "\";"
+                    + this.getFormId() + "_radius=\"" + this.getRadius(0) + "\";"
 
         result = result + this.getCommonFormUpdateFields();
         return result;
