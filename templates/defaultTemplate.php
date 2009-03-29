@@ -92,7 +92,7 @@ jQuery(document).ready(function(){
         <input type="button" id="addCirc" value="<?php $this->getLL('imagemap_wizard.form.addcirc',1); ?>" />
         <input type="button" id="addPoly" value="<?php $this->getLL('imagemap_wizard.form.addpoly',1); ?>" />
         <input type="button" id="submit" value="<?php $this->getLL('imagemap_wizard.form.submit',1); ?>" />
-        <input type="button" id="debug" value="Debug" />
+        <!-- <input type="button" id="debug" value="Debug" /> -->
     </div>
     <div id="areaForms">
         <div id="rectForm" class="areaForm bgColor5">
