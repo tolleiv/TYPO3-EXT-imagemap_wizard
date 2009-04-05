@@ -147,6 +147,12 @@ abstract class tx_imagemapwizard_abstractView {
         return "<img ".$source.($attr?' '.$attr:'')." />";
     }
     
+    /**
+    *   Determine path to the view-templates 
+    *   Just a shortcut to reduce the code within the view's
+    * 
+    *   @return string      relative path to the template folder
+    */    
     protected function getTplSubpath() {
         return eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtBackPath(\'imagemap_wizard\');').'templates/';
     }

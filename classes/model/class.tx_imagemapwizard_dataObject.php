@@ -138,10 +138,10 @@ class tx_imagemapwizard_dataObject {
 		$result = '';
 		foreach($this->map["#"] as $area) {
 			$markers = array(	"##coords##"=>$area["@"]["coords"],
-								"##shape##"=>ucfirst($area["@"]["shape"]),
-								"##color##"=>$area["@"]["color"],
-								"##link##"=>$area["value"],
-								"##alt##"=>$area["@"]["alt"],
+								"##shape##"=>$this->attributize(ucfirst($area["@"]["shape"])),
+								"##color##"=>$this->attributize($area["@"]["color"]),
+								"##link##"=>$this->attributize($area["value"]),
+								"##alt##"=>$this->attributize($area["@"]["alt"]),
                                 "##attributes##"=>$this->listAttributesAsSet($area)
 							);
 
@@ -154,10 +154,14 @@ class tx_imagemapwizard_dataObject {
     protected function listAttributesAsSet($area) {
         $relAttr = $this->getAttributeKeys();
         $ret = array();
-        foreach($relAttr as $key) {
-            $ret[] = $key.':\''.(array_key_exists($key,$area["@"])?$area["@"][$key]:'').'\'';
+        foreach($relAttr as $key) {   
+            $ret[] = $key.':\''.$this->attributize(array_key_exists($key,$area["@"])?$area["@"][$key]:'').'\'';
         }
         return implode(',',$ret);
+    }
+
+    protected function attributize($v) {
+        return preg_replace('/[^\\\\]\\\\\\\\\'/','\\\\\\\\\\\'',str_replace('\'','\\\'',$v));
     }
 
     public function getAttributeKeys() {

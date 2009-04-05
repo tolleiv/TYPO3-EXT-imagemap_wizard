@@ -36,7 +36,7 @@ class tx_imagemapwizard_mapper {
 	 * @param String mapping the XML_pseudo-imagemap
 	 * @return String the valid HTML-imagemap (hopefully valid)
 	 */
-	public function generateMap(tslib_cObj &$cObj,$name,$mapping=NULL,$whitelist=NULL,$xhtml=NULL) {
+	public function generateMap(tslib_cObj &$cObj,$name,$mapping=NULL,$whitelist=NULL,$xhtml=NULL,$conf=NULL) {
         $useWhitelist = is_array($whitelist);
         if($useWhitelist) {
             $whitelist = array_flip($whitelist);
@@ -51,13 +51,24 @@ class tx_imagemapwizard_mapper {
             $mapArray['@']['id'] = $mapArray['@']['name'];
         }
         
+        if(!is_array($conf) || !array_key_exists('area.',$conf)) {
+            $conf = array('area.'=>array());
+        }        
         
 		while(is_array($mapArray['#']) && (list($key,$node) = each($mapArray['#']))) {
 			if(!$node['value'] && !$node['@']['href']) continue;
-			$tmp = self::map2array($cObj->typolink('-',$this->getTypolinkSetup($node['value']?$node['value']:$node['@']['href'])),'a');
+            
+            $reg = array('area-href'=>$node["value"]);
+            foreach($node['@'] as $ak=>$av) {
+                $reg['area-'.$ak]=$av;
+            }
+            $cObj->LOAD_REGISTER($reg,'LOAD_REGISTER');
+            $tmp = self::map2array($cObj->typolink('-',$this->getTypolinkSetup(($node['value']?$node['value']:$node['@']['href']),$conf['area.'])),'a');
+            $cObj->LOAD_REGISTER($reg,'RESTORE_REGISTER');
+            
 			if(is_array($tmp['@'])) {
 				unset($mapArray['#'][$key]['@']['href']);
-				$mapArray['#'][$key]['@'] = array_merge($tmp['@'],$mapArray['#'][$key]['@']);
+				$mapArray['#'][$key]['@'] = array_merge(array_filter($tmp['@']),array_filter($mapArray['#'][$key]['@']));
                 
                 if($useWhitelist) {
                     $mapArray['#'][$key]['@'] = array_intersect_key($mapArray['#'][$key]['@'],$whitelist);
@@ -99,8 +110,12 @@ class tx_imagemapwizard_mapper {
 	 * @param String param the paramater which is used for the link-generation
 	 * @return Array typolink-conf array
 	 */
-	protected function getTypolinkSetup($param) {
-		return array('parameter'=>$param);
+	protected function getTypolinkSetup($param,$conf=NULL) {
+        $ret = array('parameter'=>$param);
+        if(is_array($conf) && array_key_exists('typolink.',$conf) && is_array($conf['typolink.'])) {
+            $ret = array_merge($ret,$conf['typolink.']);
+        }
+		return $ret;
 	}
 
 
@@ -164,7 +179,12 @@ class tx_imagemapwizard_mapper {
 	}
 
     /**
+    * compare two maps
     *
+    * @param    string  $map1   first imagemap
+    * @param    string  $map2   second imagemap
+    * @return   boolean         determines whether the maps match or not
+    * @see arrays_match
     */
     public function compareMaps($map1,$map2) {
         $arrayMap1 = self::map2array($map1);
@@ -210,7 +230,15 @@ class tx_imagemapwizard_mapper {
 		}
 		return $ret;
 	}
-    
+
+    /**
+    * compare two element recursivly and check whether the content of both match
+    * order of elements is not important, just that every content related to a key is matching within these arrays
+    *
+    * @param    mixed  $a   first element
+    * @param    mixed  $b   second element
+    * @return   boolean     determine whether elements match of not
+    */
     protected static function arrays_match($a,$b) {
         if(!is_array($a) || !is_array($b)) {        
             return $a==$b;
@@ -226,7 +254,11 @@ class tx_imagemapwizard_mapper {
     }
        
     /**
+    * check whether a given string is a valid imagemap
+    * the check is not very robust so far but it resolves all required situations (see unit-tests)
     *
+    * @param    mixed   $map    the value which is supposed to be a imagemap
+    * @return   boolean     determine whether the valued passed the test or not
     */
     public static function isEmptyMap($map) {
         $arr = self::map2array($map);

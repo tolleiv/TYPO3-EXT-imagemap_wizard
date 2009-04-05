@@ -55,13 +55,13 @@ class tx_imagemapwizard_typo3env {
 
 
         $tca = $GLOBALS['TCA'];
-    
+		$temp_TTclassName = t3lib_div::makeInstanceClassName('t3lib_timeTrack');
+		$GLOBALS['TT'] = new $temp_TTclassName();
+		$GLOBALS['TT']->start();    
+        
 		$TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
 		$GLOBALS['TSFE'] = new $TSFEclassName($GLOBALS['TYPO3_CONF_VARS'], $pid, '0', 0, '','','','');
         $GLOBALS['TSFE']->ADMCMD_preview_postInit(array('BEUSER_uid'=>$GLOBALS['BE_USER']->user['uid']));
-		$temp_TTclassName = t3lib_div::makeInstanceClassName('t3lib_timeTrack');
-		$GLOBALS['TT'] = new $temp_TTclassName();
-		$GLOBALS['TT']->start();
 		$GLOBALS['TSFE']->config['config']['language']=$_GET['L'];
 		$GLOBALS['TSFE']->id = $pid;
 		$GLOBALS['TSFE']->workspacePreview = $GLOBALS['BE_USER']->workspace;
@@ -111,7 +111,10 @@ class tx_imagemapwizard_typo3env {
         
 		return true;
 	}
- 
+     /**
+     * Stack variable to store environment-settings
+     *
+     */
     protected $envStack = array();
  
     /**
@@ -204,14 +207,36 @@ class tx_imagemapwizard_typo3env {
         return $this->lastError;
     }
     
+    
+    /**
+    * Recalculate BACKPATH for the current script-location, 
+    * since the global BACKPATH might not be available or might be wrong
+    *
+    * @return string   the BACKPATH
+    */    
     public static function getBackPath() {
         return preg_replace('/([^\/]+)\//','../',str_replace(array(PATH_site,basename(PATH_thisScript)),array('',''),PATH_thisScript));
     }
     
+    /**
+    * Find extension BACKPATH,
+    * used to include resources from an extension (usually this is only used with imagemap_wizard) 
+    * but it has a more generic functionality - YAGNI rules :P
+    *
+    * @param  string    $extKey - the source extension
+    * @return string    the Extensions BACKPATH
+    */    
     public static function getExtBackPath($extKey='imagemap_wizard') {
         return self::getBackPath().str_replace(PATH_site,'',t3lib_extMgm::extPath($extKey));    
     }
     
+    /**
+    * Get the value out of the Extension-Configuration determined by the submitted key
+    *
+    * @param  string    $confKey - the extension configuration key
+    * @param  string    $defaulr - default value which is used whenevery the extension configuration doesn't contain a valid value
+    * @return mixed     either the config value or the default value
+    */
     public static function getExtConfValue($confKey,$default) {
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['imagemap_wizard']);
         return (is_array($conf) && in_array($confKey,array_keys($conf)))?$conf[$confKey]:$default;

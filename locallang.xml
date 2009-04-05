@@ -28,7 +28,7 @@
             <label index="imagemap_wizard.form.poly.addEdgeAfter">add edge after current</label>
             <label index="imagemap_wizard.form.poly.removeEdge">remove edge</label>
             <label index="form.no_image">No Image defined for current record (maybe you need to save your changes first).</label>
-            <label index="form.is_dirty">The imagemap was changed, please save this record otherwise the imagemap might be lost.</label>
+            <label index="form.is_dirty">The imagemap was changed, please save this record otherwise the changes might be lost.</label>
             <label index="tt_content.tx_imagemapwizard_links">ImageMap Configuration</label>
         </languageKey>
         <languageKey index="dk" type="array">

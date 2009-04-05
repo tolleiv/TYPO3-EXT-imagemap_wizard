@@ -42,7 +42,7 @@ require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_im
 
 		$converter = t3lib_div::makeInstance('tx_imagemapwizard_mapper');
         $mapname = $converter->createValidNameAttribute($mapname);
-		$map = $converter->generateMap($this->cObj,$mapname,$this->cObj->getData($conf['map.']['data'],$this->cObj->data),$attrlist,$xhtml);
+		$map = $converter->generateMap($this->cObj,$mapname,$this->cObj->getData($conf['map.']['data'],$this->cObj->data),$attrlist,$xhtml,$conf);
 
 		return str_replace('###IMAGEMAP_USEMAP###',$mapname,$content).$map;
 	}

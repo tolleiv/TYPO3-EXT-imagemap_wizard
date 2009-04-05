@@ -41,6 +41,8 @@ class tx_imagemapwizard_formView extends tx_imagemapwizard_abstractView {
 	
   /**
    * Renders Content and prints it to the screen (or any active output buffer)
+   *
+   * @return string     the rendered form content
    */
 	public function renderContent() {    
 		if(!$this->data->hasValidImageFile()) {
