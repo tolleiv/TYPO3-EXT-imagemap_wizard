@@ -11,7 +11,7 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
-            <label index="tx_imagemapwizard_links.description">[FILL IN] imagemap_wizard</label>
+            <label index="tx_imagemapwizard_links.description">Configure imagemap setup for the uploaded image.</label>
         </languageKey>
     </data>
 </T3locallang>
