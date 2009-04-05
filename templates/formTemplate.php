@@ -58,7 +58,6 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
     
     <?php
         if($this->data->hasDirtyState()) {
-            echo ".";
             echo '<div class="imagemap_wiz_message" style="display:none;width:150px;height:70px;padding:20px 50px 10px 50px;position:absolute;z-index:999;background: url('.$this->getTplSubpath().'img/form-tooltip.png) no-repeat;">';
             $this->getLL('form.is_dirty',1);
             echo '<div class="imagemap_wiz_message_close" style="display:block;position:absolute;right:15px;top:15px;cursor:pointer">[x]</div></div>';

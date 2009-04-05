@@ -60,12 +60,11 @@ class tx_imagemapwizard_mapper {
             
             $reg = array('area-href'=>$node["value"]);
             foreach($node['@'] as $ak=>$av) {
-                $reg['area-'.$ak]=$av;
+                $reg['area-'.$ak]=htmlspecialchars($av);
             }
             $cObj->LOAD_REGISTER($reg,'LOAD_REGISTER');
-            $tmp = self::map2array($cObj->typolink('-',$this->getTypolinkSetup(($node['value']?$node['value']:$node['@']['href']),$conf['area.'])),'a');
+            $tmp = self::map2array($cObj->typolink('-',$this->getTypolinkSetup(($node['value']?$node['value']:$node['@']['href']),$conf['area.'])),'a');            
             $cObj->LOAD_REGISTER($reg,'RESTORE_REGISTER');
-            
 			if(is_array($tmp['@'])) {
 				unset($mapArray['#'][$key]['@']['href']);
 				$mapArray['#'][$key]['@'] = array_merge(array_filter($tmp['@']),array_filter($mapArray['#'][$key]['@']));

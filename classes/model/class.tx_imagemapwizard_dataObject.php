@@ -158,17 +158,24 @@ class tx_imagemapwizard_dataObject {
             $ret[] = $key.':\''.$this->attributize(array_key_exists($key,$area["@"])?$area["@"][$key]:'').'\'';
         }
         return implode(',',$ret);
+    }    
+    public function emptyAttributeSet() {
+        $relAttr = $this->getAttributeKeys();
+        $ret = array();
+        foreach($relAttr as $key) {   
+            $ret[] = $key.':\'\'';
+        }
+        return implode(',',$ret);
     }
 
     protected function attributize($v) {
-        return preg_replace('/[^\\\\]\\\\\\\\\'/','\\\\\\\\\\\'',str_replace('\'','\\\'',$v));
+        return preg_replace('/([^\\\\])\\\\\\\\\'/','\1\\\\\\\\\\\'',str_replace('\'','\\\'',$v));
     }
 
     public function getAttributeKeys() {
         $keys = t3lib_div::trimExplode(',',eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtConfValue(\'additionalAttributes\',\'\');'),true);
         return array_diff($keys,array('alt','href','shape','coords'));
     }
-
 
     protected function getLivePid() {
         return $this->row['pid']>0?$this->row['pid']:$this->liveRow['pid'];

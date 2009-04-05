@@ -25,7 +25,7 @@
 class mappings_testcase extends tx_phpunit_testcase {
 
   function test_creatingEmptyMap() {
-    $cObj = $this->getMock('tslib_cObj', array('typoLink'));
+    $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
     $cObj->expects($this->never())->method('typoLink');
 
     $supposedOutput = '<map name="testname" />';
@@ -34,7 +34,7 @@ class mappings_testcase extends tx_phpunit_testcase {
   }
 
   function test_creatingValidMapNames() {
-    $cObj = $this->getMock('tslib_cObj', array('typoLink'));
+    $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
     $cObj->expects($this->never())->method('typoLink');
 
     $strings = array('test name','test näme','ÄÖÜ..','1234');
@@ -48,13 +48,13 @@ class mappings_testcase extends tx_phpunit_testcase {
   }
 
     function test_emptyMapNameDoesnTHurt() {
-        $cObj = $this->getMock('tslib_cObj', array('typoLink'));
+        $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
         $input = '<map></map>';	    
         $this->assertEquals(0,preg_match('/^<map name="\S+">/',$this->mapper->generateMap($cObj,'',$input)),'Empty Map-Name inputs are not processed as supposed');        
     }
 
   function test_creatingSimpleRectMap() {
-    $cObj = $this->getMock('tslib_cObj', array('typoLink'));
+    $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
     $cObj->expects($this->atLeastOnce())->method('typoLink')->will($this->returnValue('<a href="http://www.foo.org" title="tt">text</a>'));
 
     $input = '<map><area shape="rect">1</area></map>';
@@ -62,7 +62,7 @@ class mappings_testcase extends tx_phpunit_testcase {
     $this->assertEquals($output,$this->mapper->generateMap($cObj,'test',$input),'Generator Output looks not as supposed');
   }
   function test_creatingMapGeneratorKeepsIndividualAttributes() {
-    $cObj = $this->getMock('tslib_cObj', array('typoLink'));
+    $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
     $cObj->expects($this->atLeastOnce())->method('typoLink')->will($this->returnValue('<a href="http://www.foo.org" title="tt">text</a>'));
 
     $input = '<map><area shape="rect" title="individual title" xyz="1">1</area></map>';
@@ -71,7 +71,7 @@ class mappings_testcase extends tx_phpunit_testcase {
   }
   
   function test_creatingMapRemovesEmptyAttributes() {
-    $cObj = $this->getMock('tslib_cObj', array('typoLink'));
+    $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
     $cObj->expects($this->atLeastOnce())->method('typoLink')->will($this->returnValue('<a href="http://www.foo.org" title="tt">text</a>'));
 
     $input = '<map><area shape="rect" title="individual title" xyz="">1</area></map>';
@@ -80,7 +80,7 @@ class mappings_testcase extends tx_phpunit_testcase {
   }
 
   function test_creatingMapGeneratorAcceptsAttributeWhitelist() {
-    $cObj = $this->getMock('tslib_cObj', array('typoLink'));
+    $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
     $cObj->expects($this->atLeastOnce())->method('typoLink')->will($this->returnValue('<a href="http://www.foo.org" title="tt">text</a>'));
 
     $whitelist = array('href','shape');
@@ -91,7 +91,7 @@ class mappings_testcase extends tx_phpunit_testcase {
   }
 
   function test_creatingMapUsingHrefAttrIfNoValueExists() {
-    $cObj = $this->getMock('tslib_cObj', array('typoLink'));
+    $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
     $cObj->expects($this->atLeastOnce())->method('typoLink')->will($this->returnValue('<a href="http://www.foo.org">text</a>'));
 
     //stupid href-value but this proveds that the typoLink-function is really used
@@ -102,7 +102,7 @@ class mappings_testcase extends tx_phpunit_testcase {
   
   // due to issue 2525
   function test_xhtmlSwitchWorks() {
-    $cObj = $this->getMock('tslib_cObj', array('typoLink'));
+    $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
        
     $name = "testname";
     $htmlOutput = '<map name="'.$name.'" />';

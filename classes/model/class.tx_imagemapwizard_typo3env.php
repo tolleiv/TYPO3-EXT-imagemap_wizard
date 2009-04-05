@@ -53,7 +53,6 @@ class tx_imagemapwizard_typo3env {
         require_once(PATH_t3lib.'class.t3lib_timetrack.php');
         require_once(t3lib_extMgm::extPath('css_styled_content').'pi1/class.tx_cssstyledcontent_pi1.php');
 
-
         $tca = $GLOBALS['TCA'];
 		$temp_TTclassName = t3lib_div::makeInstanceClassName('t3lib_timeTrack');
 		$GLOBALS['TT'] = new $temp_TTclassName();

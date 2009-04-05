@@ -18,7 +18,7 @@ $existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape
 $this->addInlineJS('
 var canvaseObject;
 var scaleFactor = 1;
-var defaultAttributeset = {}; 
+var defaultAttributeset = {'.$this->data->emptyAttributeSet().'}; 
 jQuery.noConflict();
 jQuery(document).ready(function(){
     canvasObject = new canvasClass();
