@@ -2,6 +2,7 @@
 $this->addExternalJS("templates/js/jquery-1.2.6.js");
 $this->addExternalJS("templates/js/ui.core.js");
 $this->addExternalJS("templates/js/wz_jsgraphics.js");
+$this->addExternalJS("templates/js/js.inheritance.js");
 $this->addExternalJS("templates/js/im.previewCanvasClass.js");
 $this->addExternalJS("templates/js/js.inheritance.js");
 $this->addExternalJS("templates/js/im.areaClass.js");
@@ -58,7 +59,7 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
     
     <?php
         if($this->data->hasDirtyState()) {
-            echo '<div class="imagemap_wiz_message" style="display:none;width:150px;height:70px;padding:20px 50px 10px 50px;position:absolute;z-index:999;background: url('.$this->getTplSubpath().'img/form-tooltip.png) no-repeat;">';
+            echo '<div class="imagemap_wiz_message" style="display:none;width:170px;height:70px;padding:20px 40px 10px 40px;position:absolute;z-index:999;background: url('.$this->getTplSubpath().'img/form-tooltip.png) no-repeat;">';
             $this->getLL('form.is_dirty',1);
             echo '<div class="imagemap_wiz_message_close" style="display:block;position:absolute;right:15px;top:15px;cursor:pointer">[x]</div></div>';
         }
@@ -68,7 +69,7 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
         canvasObject = new previewCanvasClass();
         canvasObject.init("<?php echo $this->getId(); ?>-canvas","<?php echo $this->data->getThumbnailScale('previewImageMaxWH',200) ?>");
         <?php echo $existingFields; ?>
-        jQuery(".imagemap_wiz_message").css({top: "20px", left: "20px"}).animate({left: "60px",opacity: "show"}, 750).animate({left: "60px"}, 6000).animate({left: "20px", opacity: "hide"}, 750);
+        jQuery(".imagemap_wiz_message").css({top: (canvasObject.getMaxH()/2-35)+"px", left: "20px"}).animate({left: "60px",opacity: "show"}, 750).animate({left: "60px"}, 6000).animate({left: "20px", opacity: "hide"}, 750);
         jQuery(".imagemap_wiz_message_close").click(function() {
             jQuery(".imagemap_wiz_message").animate({left: "20px", opacity: "hide"}, {duration:250, queue:false});
         });

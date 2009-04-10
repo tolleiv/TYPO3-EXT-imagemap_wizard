@@ -21,30 +21,36 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-previewCanvasClass = function () {
+var previewCanvasClass = Class.extend({
 
-    var canvasId,canvasVectors,areaCount,areaObjects,areaObjectList,scale;
-    this.init = function (id,scaleFactor){
-        canvasId = "#" + id;
-        scale = scaleFactor;
-        canvasVectors = new jsGraphics(id);
-        areaCount = 0;
-        areaObjects = new Array();
-        areaObjectList = new Array();
-    }
+    canvasId:null,    
+    canvasVectors:null,
+    areaCount:null,
+    areaObjects:null,
+    areaObjectList:null,
+    scale:null,
+    
+    init:function (id,scaleFactor){
+        this.canvasId = "#" + id;
+        this.scale = scaleFactor;
+        this.canvasVectors = new jsGraphics(id);
+        this.areaCount = 0;
+        this.areaObjects = new Array();
+        this.areaObjectList = new Array();
+    },
 
-    this.addArea = function(obj,coords,labelValue,linkValue,colorValue,prepend) {
+    addArea:function(obj,coords,labelValue,linkValue,colorValue,prepend) {
         obj.init(this,this.getNextId(),coords,labelValue,linkValue,colorValue,{});
         obj.disableEdges();
-        obj.setScale(scale);
-        areaObjects[obj.getId()] = obj;
+        obj.setScale(this.scale);
+        this.areaObjects[obj.getId()] = obj;
         if(prepend) {
-            areaObjectList.push(obj.getId());
+            this.areaObjectList.push(obj.getId());
         } else {
-            areaObjectList.unshift(obj.getId());
+            this.areaObjectList.unshift(obj.getId());
         }
         this.updateCanvas();
-    }
+    },
     
     /**
     *  Re-Paint a canvas-layer for a single Area-Object.
@@ -52,13 +58,14 @@ previewCanvasClass = function () {
     * @param id     the object-id
     * @usage area*Classes
     */
-    this.updateCanvas = function() {      
-        canvasVectors.clear();
-        jQuery.each(areaObjectList, function(i, objId) {
-            areaObjects[objId].drawSelection(canvasVectors);
+    updateCanvas:function() {      
+        this.canvasVectors.clear();
+        var that = this;
+        jQuery.each(this.areaObjectList, function(i, objId) {
+            that.areaObjects[objId].drawSelection(that.canvasVectors);
         });    
-        canvasVectors.paint();
-    }    
+        this.canvasVectors.paint();
+    },
     
     
     /**
@@ -66,16 +73,17 @@ previewCanvasClass = function () {
     *
     * @usage internal
     */ 
-    this.getNextId = function() {
-        areaCount = areaCount + 1;
-        return "Object" + areaCount;
-    }    
+    getNextId:function() {
+        this.areaCount = this.areaCount + 1;
+        return "Object" + this.areaCount;
+    },
     
-    this.getMaxW = function() {
-        return jQuery(canvasId).width();
-    }
-    this.getMaxH = function() {
-        return jQuery(canvasId).height();
+    getMaxW:function() {
+        return jQuery(this.canvasId).width();
+    },
+    
+    getMaxH:function() {
+        return jQuery(this.canvasId).height();
     }
 
-};
+});
