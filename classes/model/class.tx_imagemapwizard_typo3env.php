@@ -70,24 +70,25 @@ class tx_imagemapwizard_typo3env {
 		$GLOBALS['TSFE']->initLLVars();
 		$GLOBALS['TSFE']->initFEuser();
 		$GLOBALS['TSFE']->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
-		$GLOBALS['TSFE']->sys_page->init($GLOBALS['TSFE']->showHiddenPage);
+		//$GLOBALS['TSFE']->sys_page->init($GLOBALS['TSFE']->showHiddenPage);
+        $GLOBALS['TSFE']->sys_page->init(true);
 		$page = $GLOBALS['TSFE']->sys_page->getPage($pid);
 		if (count($page) == 0) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
-            		$this->lastError = "DB Error(".__LINE__."):".$sqlDebug;
+			$this->lastError = "Error(".__LINE__.") [ Unable to find the requested host-page ]:".$sqlDebug;
 			return false;
 		}
 		if ($page['doktype']==4 && count($GLOBALS['TSFE']->getPageShortcut($page['shortcut'],$page['shortcut_mode'],$page['uid'])) == 0) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
-            		$this->lastError = "DB Error(".__LINE__."):" .$sqlDebug;
-			return false;
+			$this->lastError = "Error(".__LINE__.") [ The parent-page is a shortcut therefor preview won't render properly ] :" .$sqlDebug;
+//			return false; we continue using the TSFE but write down that there's something which was wrong
 		}
-
 		if ($page['doktype'] == 199 || $page['doktype'] == 254) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
-            		$this->lastError = "DB Error(".__LINE__."):".$sqlDebug;
-			return false;
+			$this->lastError = "Error(".__LINE__.") [ The parent-page is a recycle or sysfolder therefor the preview won't render properly ]:".$sqlDebug;
+//			return false; we continue using the TSFE but write down that there's something which was wrong
 		}
+        $GLOBALS['TSFE']->showHiddenRecords = true;
 		$GLOBALS['TSFE']->getPageAndRootline();
 		$GLOBALS['TSFE']->initTemplate();
 		$GLOBALS['TSFE']->forceTemplateParsing = 1;
@@ -96,8 +97,8 @@ class tx_imagemapwizard_typo3env {
 		$GLOBALS['TSFE']->pSetup = $GLOBALS['TSFE']->tmpl->setup[$GLOBALS['TSFE']->sPre.'.'];
 		if (!$GLOBALS['TSFE']->tmpl->loaded || ($GLOBALS['TSFE']->tmpl->loaded && !$GLOBALS['TSFE']->pSetup)) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
-           		$this->lastError = "DB Error(".__LINE__."):".$sqlDebug;
-			return false;
+			$this->lastError = "Error(".__LINE__.") [ template not loaded as supposed ] :".$sqlDebug;
+//			return false;   we continue using the TSFE but write down that there's something which was wrong
 		}
 		$GLOBALS['TSFE']->getConfigArray();
 		$GLOBALS['TSFE']->getCompressedTCarray();

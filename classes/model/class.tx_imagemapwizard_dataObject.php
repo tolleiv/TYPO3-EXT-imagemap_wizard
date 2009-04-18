@@ -89,7 +89,8 @@ class tx_imagemapwizard_dataObject {
 		// extract the image
 		$matches=array();
 		if(!preg_match('/(<img[^>]+usemap="####IMAGEMAP_USEMAP###"[^>]*\/>)/',$result,$matches)) {
-			return 'No Image rendered from TSFE. :(<br/>Error was:'.$t3env->get_lastError();
+            //TODO: consider to use the normal image as fallback here instead of showing an error-message
+			return 'No Image rendered from TSFE. :(<br/>Has the page some kind of special doktype or has it access-restrictions?<br/>There are lot\'s of things which can go wrong since normally nobody creates frontend-output in the backend ;)<br/>Error was:'.$t3env->get_lastError();
 		}
 		$result = str_replace('src="','src="'.($this->backPath),$matches[1]);
 		return $result;
