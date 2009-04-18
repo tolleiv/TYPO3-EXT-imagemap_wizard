@@ -62,15 +62,13 @@ class tx_imagemapwizard_softrefproc extends t3lib_softrefproc {
         $linkData = $tmp['elements'][$zeroToken];
 
         $newToken = $this->makeTokenID('setTypoLinkPartsElement:'.$idx);
-
-        $data['#'][$key]['value'] = str_replace($linkData['subst']['tokenID'],$newToken,$content);
-
+        $data['#'][$key]['value'] = str_replace($linkData['subst']['tokenID'],$newToken,$tmp['content']);
         $linkData['subst']['tokenID']=$newToken;
-
-        $data['#'][$key]['value'] = $tmp['content'];
         $elements[$newToken.':'.$idx] = $linkData;
         $idx++;
       }
+      reset($elements);
+      reset($data['#']);
     }
     return array("content"=>$conv->array2map($data),"elements"=>$elements);
   }

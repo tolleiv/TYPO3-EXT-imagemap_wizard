@@ -65,10 +65,11 @@ class softref_testcase extends tx_phpunit_testcase {
 						array('3','db','pages:3'),
 				);
 		$i=0;
-		foreach($result["elements"] as $elem) {
+		foreach($result["elements"] as $token=>$elem) {
 			$this->assertEquals($supposed[$i][0],$elem['matchString'],'Wrong Reference found');
 			$this->assertEquals($supposed[$i][1],$elem['subst']['type'],'Wrong Reference-Type found');
 			$this->assertEquals($supposed[$i][2],$elem['subst']['recordRef'],'Wrong Reference-Records found');
+            $this->assertEquals(true,stristr($result['content'],'{softref:'.$elem['subst']['tokenID'].'}'),'Token ('.$i.') not found in parsed content');
 			$i++;
 		}
 	}
