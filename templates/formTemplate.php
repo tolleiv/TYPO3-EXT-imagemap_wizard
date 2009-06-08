@@ -16,31 +16,32 @@ $existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape
 $this->addInlineJS('
 jQuery.noConflict();
 
-function imagemapwizard_valueChanged(field) {  
+function imagemapwizard_valueChanged(field) {
     jQuery.ajaxSetup({
         url: "'.$this->getAjaxURL('wizard.php').'",
         global: false,
-        type: "GET",
-        success: function(data, textStatus) { 
+        type: "POST",
+        success: function(data, textStatus) {
             if(textStatus==\'success\') {
                 jQuery("#'.$this->getId().'").html(data);
             }
         },
-        data: { context:"formAjax", 
+        data: { context:"formAjax",
                 formField:field.name,
-                value:field.value, 
-                table:"'.$this->data->getTablename().'", 
-                field:"'.$this->data->getFieldname().'", 
-                uid:"'.$this->data->getUid().'"
+                value:field.value,
+                table:"'.$this->data->getTablename().'",
+                field:"'.$this->data->getFieldname().'",
+                uid:"'.$this->data->getUid().'",
+                config:"'.addslashes(serialize($this->data->getFieldConf())).'"
         }
     });
-    jQuery.ajax();    
+    jQuery.ajax();
 }
 ');
 $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChanged(field);'));
 ?>
 <div id="<?php echo $this->getId(); ?>" style="position:relative">
-    
+
     <?php
         ob_start();
     ?>
@@ -56,7 +57,7 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
         ob_end_clean();
         echo $this->form->renderWizards(array($imagepreview,''),$this->wizardConf,$this->data->getTablename(),$this->data->getRow(),$this->data->getFieldname(),$additionalWizardConf,$this->formName,array(),1)
     ?>
-    
+
     <?php
         if($this->data->hasDirtyState()) {
             echo '<div class="imagemap_wiz_message" style="display:none;width:170px;height:70px;padding:20px 40px 10px 40px;position:absolute;z-index:999;background: url('.$this->getTplSubpath().'img/form-tooltip.png) no-repeat;">';
@@ -75,5 +76,5 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
         });
     });
     </script>
-    <?php echo $this->form->getSingleHiddenField($this->data->getTablename(),$this->data->getFieldname(),$this->data->getRow()); ?>
+    <input type="hidden" name="<?php echo $this->formName; ?>" value="<?php echo htmlspecialchars($this->data->getCurrentData()); ?>" />
 </div>

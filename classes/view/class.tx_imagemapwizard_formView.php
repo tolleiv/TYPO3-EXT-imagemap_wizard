@@ -36,15 +36,15 @@ class tx_imagemapwizard_formView extends tx_imagemapwizard_abstractView {
 	protected $form,$formName,$wizardConf;
 
 	public function setTCEForm($form) {
-		$this->form = $form;    	
+		$this->form = $form;
 	}
-	
+
   /**
    * Renders Content and prints it to the screen (or any active output buffer)
    *
    * @return string     the rendered form content
    */
-	public function renderContent() {    
+	public function renderContent() {
 		if(!$this->data->hasValidImageFile()) {
 			$content = $this->form->sL('LLL:EXT:imagemap_wizard/locallang.xml:form.no_image');
 		} else {
@@ -54,15 +54,14 @@ class tx_imagemapwizard_formView extends tx_imagemapwizard_abstractView {
 		}
         return $content;
     }
-    
+
     public function setWizardConf($wConf) {
         $this->wizardConf = $wConf;
     }
-    
+
     public function setFormName($name) {
         $this->formName = $name;
     }
-    
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_formView.php'])    {

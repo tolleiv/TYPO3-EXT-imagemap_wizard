@@ -148,7 +148,7 @@ class tx_imagemapwizard_backendView extends tx_imagemapwizard_abstractView {
         }
         return $ret;
     }
-    
+
     public function getEmptyAttributset() {
         $attrKeys = $this->data->getAttributeKeys();
         $ret = "";

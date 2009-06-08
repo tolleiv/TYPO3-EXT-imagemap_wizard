@@ -44,12 +44,12 @@ class softref_testcase extends tx_phpunit_testcase {
 		$result = $parser->findRef('', '', '', $mapContent, '', '', '');
 
 		$this->assertEquals(1,count($result["elements"]),'Wrong Reference-Count found');
-
-		foreach($result["elements"] as $elem) {
-			$this->assertEquals('1',$elem['matchString'],'Wrong Reference found');
-			$this->assertEquals('db',$elem['subst']['type'],'Wrong Reference-Type found');
-			$this->assertEquals('pages:1',$elem['subst']['recordRef'],'Wrong Reference-Records found');
-		}
+        
+        $elem = array_pop($result["elements"]);
+        $this->assertEquals(true,stristr($result['content'],'{softref:'.$elem['subst']['tokenID'].'}'),'Token not found in parsed content');
+        $this->assertEquals('1',$elem['matchString'],'Wrong Reference found');
+        $this->assertEquals('db',$elem['subst']['type'],'Wrong Reference-Type found');
+        $this->assertEquals('pages:1',$elem['subst']['recordRef'],'Wrong Reference-Records found');
 	}
 
 	function test_multipleSoftRefsWork() {

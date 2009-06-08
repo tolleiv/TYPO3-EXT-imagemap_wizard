@@ -38,7 +38,7 @@ class tx_imagemapwizard_wizardController {
 	 * Initialize Context and required View
 	 */
     public function __construct() {
-        $this->initContext();    
+        $this->initContext();
         $this->initView();
     }
 
@@ -61,26 +61,28 @@ class tx_imagemapwizard_wizardController {
      * comes with a cool preview and Ajax functionality which updates the preview...
 	 */
     protected function formAction() {
-    		
+
         $dataClass = t3lib_div::makeInstanceClassName('tx_imagemapwizard_dataObject');
         $data = new $dataClass($this->params['table'],$this->params['field'],$this->params['uid'],$this->forceValue);
-        
-        $this->view->setData($data);            
-        $this->view->setTCEForm($this->params['pObj']);
+        $data->setFieldConf($this->params['fieldConf']);
+
+        $this->view->setData($data);
+        $this->view->setTCEForm($this->params['pObj']);;
         $this->view->setFormName($this->params['itemFormElName']);
-        $this->view->setWizardConf($GLOBALS['TCA'][$this->params['table']]['columns'][$this->params['field']]['config']['wizards']);
+        $this->view->setWizardConf($this->params['fieldConf']['config']['wizards']);
         t3lib_div::loadTCA($this->params['table']);
-        
-        return $this->view->renderContent();            
+
+        return $this->view->renderContent();
     }
-    
+
 	/**
-	 * 
+	 *
 	 */
 	protected function formAjaxAction() {
         $this->params['table'] = t3lib_div::_GP('table');
         $this->params['field'] = t3lib_div::_GP('field');
-        $this->params['uid'] = t3lib_div::_GP('uid');        
+        $this->params['uid'] = t3lib_div::_GP('uid');
+        $this->params['fieldConf'] = unserialize(stripslashes((t3lib_div::_GP('config'))));
         require_once(PATH_t3lib."class.t3lib_tceforms.php");
 		$this->params['pObj'] = t3lib_div::makeInstance('t3lib_TCEforms');
 		$this->params['pObj']->initDefaultBEMode();
@@ -99,7 +101,7 @@ class tx_imagemapwizard_wizardController {
 	public function triggerAction() {
 		return call_user_func_array(array($this, $this->context['key'].'Action'),array());
 	}
-    
+
 	/**
 	 * Determine context
 	 */
@@ -114,14 +116,14 @@ class tx_imagemapwizard_wizardController {
             default:
                 $this->context['key'] = 'default';
                 $this->context['tpl'] = 'backend';
-                
+
         }
     }
 
     protected function initView() {
-        require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_imagemapwizard_'.$this->context['tpl'].'View.php');        
+        require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_imagemapwizard_'.$this->context['tpl'].'View.php');
         $this->view = t3lib_div::makeInstance('tx_imagemapwizard_'.$this->context['tpl'].'View');
-        $this->view->init($this->context['key']);    
+        $this->view->init($this->context['key']);
     }
 
 
@@ -133,18 +135,19 @@ class tx_imagemapwizard_wizardController {
 	 * @return	String		HTMLCode with form-field
 	 */
     function renderForm($PA, t3lib_TCEforms $fobj) {
-        $GLOBALS['BE_USER']->setAndSaveSessionData('imagemap_wizard.value',NULL);            
-        
-        if($GLOBALS['TCA']['tt_content']['columns'][$PA['field']]['config']['type'] == 'flex') {
-        t3lib_div::debug($PA); die();
-            return 'Flexform support not implemented yet';
-        }
-        
-        
+        $GLOBALS['BE_USER']->setAndSaveSessionData('imagemap_wizard.value',NULL);
         $this->params['table'] = $PA['table'];
-        $this->params['field'] = $PA['field'];
+        if($GLOBALS['TCA'][$PA['table']]['columns'][$PA['field']]['config']['type'] == 'flex') {
+            $parts = array_slice(explode('][',$PA['itemFormElName']),3);
+            $field = substr(implode('/',$parts),0,-1);
+            $this->params['field'] = sprintf('%s:%d:%s:%s',$PA['table'],$PA['row']['uid'],$PA['field'],$field);
+        } else {
+        	$this->params['field'] = $PA['field'];
+        }
+
         $this->params['uid'] = $PA['row']['uid'];
         $this->params['pObj'] = $PA['pObj'];
+        $this->params['fieldConf'] = $PA['fieldConf'];
         $this->params['itemFormElName'] = $PA['itemFormElName'];
 
         $this->initContext('form');

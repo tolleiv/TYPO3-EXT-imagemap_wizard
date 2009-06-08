@@ -33,41 +33,66 @@ require_once(PATH_t3lib.'class.t3lib_stdgraphic.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
 
 class tx_imagemapwizard_dataObject {
-	protected $row,$liveRow,$table,$mapField,$imageField,$backPath;
+	protected $row,$liveRow,$table,$mapField,$backPath;
     protected $modifiedFlag = false;
 	public function __construct($table,$field,$uid,$currentValue=NULL) {
 	    $this->table = $table;
 	    t3lib_div::loadTCA($this->table);
-		$this->imageField = $this->determineImageFieldName();
-	    $this->mapField = $field;
+        $this->mapField = $field;
         $this->row = t3lib_BEfunc::getRecordWSOL($table,$uid);
-        if($currentValue) { $this->useCurrentData($currentValue); }               
+        if($currentValue) { $this->useCurrentData($currentValue); }
         $this->liveRow = $this->row;
         t3lib_BEfunc::fixVersioningPid($table,$this->liveRow);
-	    $this->map = t3lib_div::makeInstance("tx_imagemapwizard_mapper")->map2array($this->row[$this->mapField]);
+	    $this->map = t3lib_div::makeInstance("tx_imagemapwizard_mapper")->map2array($this->getFieldValue($this->mapField));
 
         //eval for the XCLASSes
 	    $this->backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getBackPath();');
     }
 
 	public function getFieldValue($field,$listNum=-1) {
-		if(is_array($this->row) && array_key_exists($field,$this->row)) {
-            if($listNum == -1) {
-                return $this->row[$field];
-            } else {
-                $tmp = split(',',$this->row[$field]);
-                return $tmp[$listNum];
-            }
+
+        if(!is_array($this->row)) return NULL;
+        $isFlex = $this->isFlexField($field);
+        $parts = array();
+        if($isFlex) {
+            $parts = explode(':',$field);
+            $dbField = $parts[2];
+        } else {
+        	$dbField = $field;
         }
+
+        if(!array_key_exists($dbField,$this->row)) return NULL;
+
+        $data = $this->row[$dbField];
+        if($isFlex) {
+        	$xml = t3lib_div::xml2array($data);
+            $tools = t3lib_div::makeInstance('t3lib_flexformtools');
+            $data = $tools->getArrayValueByPath($parts[3],$xml);
+
+        }
+
+		if($listNum == -1) {
+		    return $data;
+		} else {
+		    $tmp = split(',',$data);
+		    return $tmp[$listNum];
+		}
 		return NULL;
+
 	}
     /**
     *   retrives current imagelocation - if multiple files are stored in the field only the first is recognized
     */
 	public function getImageLocation($abs=false) {
-		return ($abs?PATH_site:$this->backPath).$GLOBALS['TCA'][$this->table]['columns'][$this->imageField]['config']['uploadfolder'].'/'.$this->getFieldValue($this->imageField,0);
+        $imageField = $this->determineImageFieldName();
+		if($this->isFlexField($imageField)) {
+            $path = $this->getFieldConf('config/userImage/uploadfolder');
+		} else {
+			$path = $GLOBALS['TCA'][$this->table]['columns'][$imageField]['config']['uploadfolder'];
+		}
+		return ($abs?PATH_site:$this->backPath).$path.'/'.$this->getFieldValue($imageField,0);
 	}
-    
+
 	public function hasValidImageFile() {
 		return is_file($this->getImageLocation(true))&&is_readable($this->getImageLocation(true));
 	}
@@ -79,6 +104,7 @@ class tx_imagemapwizard_dataObject {
 		}
 		$conf = array('table'=>$this->table,'select.'=>array('uidInList'=>$this->getLiveUid()));
 
+		if(t3lib_extMgm::isLoaded('templavoila')) require_once(t3lib_extMgm::extPath('templavoila').'pi1/class.tx_templavoila_pi1.php');
 		//render like in FE with WS-preview etc...
 		$t3env->pushEnv();
 		$t3env->setEnv(PATH_site);
@@ -107,18 +133,18 @@ class tx_imagemapwizard_dataObject {
 				$height = ($maxSize/$width)*$height;
 				$width = $maxSize;
 			} else if($height > $maxSize) {
-				$width = ($maxSize/$height)*$width;	
+				$width = ($maxSize/$height)*$width;
 				$height = $maxSize;
 			}
 			return preg_replace('/width="(\d+)" height="(\d+)"/','width="'.$width.'" height="'.$height.'"',$img);
-			
+
 		} else {
 			return '';
 		}
     }
-    
+
     public function getThumbnailScale($confKey,$defaultMaxWH) {
-        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue($confKey,$defaultMaxWH);    
+        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue($confKey,$defaultMaxWH);
         $ret = 1;
 		$img = $this->renderImage();
 		$matches = array();
@@ -133,7 +159,7 @@ class tx_imagemapwizard_dataObject {
 		}
 		return $ret;
     }
-  
+
 	public function listAreas($template="") {
 		if(!is_array($this->map["#"])) return '';
 		$result = '';
@@ -151,19 +177,19 @@ class tx_imagemapwizard_dataObject {
 		}
 		return $result;
 	}
-    
+
     protected function listAttributesAsSet($area) {
         $relAttr = $this->getAttributeKeys();
         $ret = array();
-        foreach($relAttr as $key) {   
+        foreach($relAttr as $key) {
             $ret[] = $key.':\''.$this->attributize(array_key_exists($key,$area["@"])?$area["@"][$key]:'').'\'';
         }
         return implode(',',$ret);
-    }    
+    }
     public function emptyAttributeSet() {
         $relAttr = $this->getAttributeKeys();
         $ret = array();
-        foreach($relAttr as $key) {   
+        foreach($relAttr as $key) {
             $ret[] = $key.':\'\'';
         }
         return implode(',',$ret);
@@ -187,7 +213,11 @@ class tx_imagemapwizard_dataObject {
     }
 
 	protected function determineImageFieldName() {
-		return isset($GLOBALS['TCA'][$this->table]['columns'][$this->mapField]['config']['userImageField'])?$GLOBALS['TCA'][$this->table]['columns'][$this->mapField]['config']['userImageField']:'image';
+		$imgField = $this->getFieldConf('config/userImage/field')?$this->getFieldConf('config/userImage/field'):'image';
+		if($this->isFlexField($this->mapField)) {
+		  $imgField = preg_replace('/\/[^\/]+\/(v\S+)$/','/'.$imgField.'/\1',$this->mapField);
+		}
+		return $imgField;
 	}
 
     public function getTablename() {
@@ -201,21 +231,66 @@ class tx_imagemapwizard_dataObject {
     public function getRow() {
         return $this->row;
     }
-    
+
     public function getUid() {
         return $this->row['uid'];
     }
-    
-    public function useCurrentData($value) {        
-        if(!t3lib_div::makeInstance("tx_imagemapwizard_mapper")->compareMaps($this->row[$this->mapField],$value)) {
+
+    public function useCurrentData($value) {
+    	$cur = $this->getCurrentData();
+        if(!t3lib_div::makeInstance("tx_imagemapwizard_mapper")->compareMaps($cur,$value)) {
             $this->modifiedFlag = true;
         }
-        $this->row[$this->mapField] = $value;
+
+        if($this->isFlexField($this->mapField)) {
+            $tools = t3lib_div::makeInstance('t3lib_flexformtools');
+            $parts = explode(':',$this->mapField);
+            $data = t3lib_div::xml2array($this->row[$parts[2]]);
+            $tools->setArrayValueByPath($parts[3],$data,$value);
+            $this->row[$parts[2]] = $tools->flexArray2Xml($data);
+        } else {
+            $this->row[$this->mapField] = $value;
+        }
     }
-    
+
+    public function getCurrentData(){
+        if($this->isFlexField($this->mapField)) {
+            $tools = t3lib_div::makeInstance('t3lib_flexformtools');
+            $parts = explode(':',$this->mapField);
+            $data = t3lib_div::xml2array($this->row[$parts[2]]);
+            return $tools->getArrayValueByPath($parts[3],$data);
+        } else {
+            return $this->row[$this->mapField];
+        }
+    }
+
     public function hasDirtyState() {
         return $this->modifiedFlag;
     }
+
+    protected $fieldConf;
+    public function setFieldConf($cfg) {
+        $this->fieldConf = $cfg;
+    }
+
+    public function getFieldConf($subKey=NULL) {
+    	if($subKey==NULL) {
+            return $this->fieldConf;
+    	}
+
+        $tools = t3lib_div::makeInstance('t3lib_flexformtools');
+        return $tools->getArrayValueByPath($subKey,$this->fieldConf);
+    }
+
+    protected function isFlexField($field) {
+    	$theField = $field;
+    	if(stristr($field,':')) {
+            $parts = explode(':',$field);
+            $theField = $parts[2];
+    	}
+    	return ($GLOBALS['TCA'][$this->table]['columns'][$theField]['config']['type'] == 'flex');
+    }
+
 }
 
 
