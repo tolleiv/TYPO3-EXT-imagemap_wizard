@@ -232,8 +232,8 @@ var areaClass = Class.extend({
     },
     isMoreOptionsVisible: function()      { return this._moreOptionsVisible; },
 
-    getId: function()         {   return this._id;  },
-    getFormId: function()     {   return this.getId();   },
+    getId: function()         {	return this._id;  },
+    getFormId: function()     {	return this.getId();   },
     
     performResizeAction: function(edge,x,y){ 
         // abstract

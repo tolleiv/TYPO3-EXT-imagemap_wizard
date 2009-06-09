@@ -392,7 +392,9 @@ var canvasClass = Class.extend({
         var data = this.areaObjects[id].formUpdate();
         jQuery.each(data.split("\";"), function(elem, value) {
             var item = value.split("=\"");
-            jQuery("#" + item[0]).attr("value",item[1]);
+            if(item[0]) {
+            	jQuery("#" + item[0]).attr("value",item[1]);
+            }
         });
     },
 
