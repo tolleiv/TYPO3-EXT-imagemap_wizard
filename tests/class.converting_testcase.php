@@ -22,19 +22,19 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_mapper.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_model_mapper.php');
 
 class converting_testcase extends tx_phpunit_testcase {
 
 	public function test_basicMap2ArrayWorks() {
-    	$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapper');
+    	$helper = t3lib_div::makeInstance('tx_imagemapwizard_model_mapper');
 
 		$this->assertEquals(array('name'=>'map'),$helper->map2array('<map></map>'),'Map to Array mappings fails to convert empty Maps');
 		$this->assertEquals(array('name'=>'map'),$helper->map2array('<map />'),'Map to Array mappings fails to convert empty Maps');
 		$this->assertEquals(array('name'=>'map','@'=>array('name'=>'test')),$helper->map2array('<map name="test"></map>'),'Map to Array fails to extract the Name-Attribute.');
 	}
 	public function test_singleAreaInMap2ArrayWorks() {
-    	$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapper');
+    	$helper = t3lib_div::makeInstance('tx_imagemapwizard_model_mapper');
 
         $supposed = array(
         		'name'=>'map',
@@ -50,7 +50,7 @@ class converting_testcase extends tx_phpunit_testcase {
     }
 
     public function test_basicArray2MapWorks() {
-    	$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapper');
+    	$helper = t3lib_div::makeInstance('tx_imagemapwizard_model_mapper');
 
     	$this->assertEquals('<map />',$helper->array2map(array()),'Empty Map-creation fails.');
     	$this->assertEquals('<map name="test" />',$helper->array2map(array('name'=>'map','@'=>array('name'=>'test'))),'Map without areas is not created as supposed');
@@ -58,7 +58,7 @@ class converting_testcase extends tx_phpunit_testcase {
     }
 
     public function test_simpleMapWithAreaConverts() {
-    	$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapper');
+    	$helper = t3lib_div::makeInstance('tx_imagemapwizard_model_mapper');
 
         $inputArray = array(
         		'name'=>'map',
@@ -73,7 +73,7 @@ class converting_testcase extends tx_phpunit_testcase {
     }
 
     public function test_specialCharsShouldNotBreakIt() {
-    	$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapper');
+    	$helper = t3lib_div::makeInstance('tx_imagemapwizard_model_mapper');
         $inputString = array();
 		$inputString[] = '<map name="test &amp; test2" />';
 		$inputString[] = '<map><area name="test &amp; test2">http://www.example.com</area></map>';

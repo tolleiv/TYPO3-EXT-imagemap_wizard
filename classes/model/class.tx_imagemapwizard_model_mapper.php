@@ -26,7 +26,7 @@
  *
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
-class tx_imagemapwizard_mapper {
+class tx_imagemapwizard_model_mapper {
 
 	/**
 	 * Generate a HTML-Imagemap using Typolink etc..
@@ -43,38 +43,38 @@ class tx_imagemapwizard_mapper {
         }
 		//$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapconverter');
 		$mapArray = self::map2array($mapping);
-                
+
         $mapArray['@']['name']=$this->createValidNameAttribute($name);
         // use id-attribute if XHTML is required see issue #2525
         // name-attribute is still required due to browser compatibility ;(
         if($xhtml) {
             $mapArray['@']['id'] = $mapArray['@']['name'];
         }
-        
+
         if(!is_array($conf) || !array_key_exists('area.',$conf)) {
             $conf = array('area.'=>array());
-        }        
-        
+        }
+
 		while(is_array($mapArray['#']) && (list($key,$node) = each($mapArray['#']))) {
 			if(!$node['value'] && !$node['@']['href']) continue;
-            
+
             $reg = array('area-href'=>$node["value"]);
             foreach($node['@'] as $ak=>$av) {
                 $reg['area-'.$ak]=htmlspecialchars($av);
             }
             $cObj->LOAD_REGISTER($reg,'LOAD_REGISTER');
-            $tmp = self::map2array($cObj->typolink('-',$this->getTypolinkSetup(($node['value']?$node['value']:$node['@']['href']),$conf['area.'])),'a');            
+            $tmp = self::map2array($cObj->typolink('-',$this->getTypolinkSetup(($node['value']?$node['value']:$node['@']['href']),$conf['area.'])),'a');
             $cObj->LOAD_REGISTER($reg,'RESTORE_REGISTER');
 			if(is_array($tmp['@'])) {
 				unset($mapArray['#'][$key]['@']['href']);
 				$mapArray['#'][$key]['@'] = array_merge(array_filter($tmp['@']),array_filter($mapArray['#'][$key]['@']));
-                
+
                 if($useWhitelist) {
                     $mapArray['#'][$key]['@'] = array_intersect_key($mapArray['#'][$key]['@'],$whitelist);
                 }
                 //Remove emoty attributes
                 $mapArray['#'][$key]['@'] = array_filter($mapArray['#'][$key]['@']);
-                
+
 				// if(!isset($mapArray['#'][$key]['@']['href']))... what to do here???
 			}
 			unset($mapArray['#'][$key]['value']);
@@ -90,16 +90,16 @@ class tx_imagemapwizard_mapper {
 	 */
 
 	public function createValidNameAttribute($value) {
-        
+
         if(!preg_match('/\S+/',$value)) {
             $value = t3lib_div::shortMD5(rand(0,100));
         }
         $name = preg_replace('/[^a-zA-Z0-9\-_]/i','-',$value);  // replace any special character with an dash
         $name = preg_replace('/\-+$/','',$name);    // remove trailing dashes
-        
+
         while(!preg_match('/^[a-zA-Z]{3}/',$name)) {
             $name = chr(rand(97,122)).$name;
-        }        
+        }
 		return $name;
 	}
 
@@ -239,7 +239,7 @@ class tx_imagemapwizard_mapper {
     * @return   boolean     determine whether elements match of not
     */
     protected static function arrays_match($a,$b) {
-        if(!is_array($a) || !is_array($b)) {        
+        if(!is_array($a) || !is_array($b)) {
             return $a==$b;
         }
         $match = true;
@@ -251,7 +251,7 @@ class tx_imagemapwizard_mapper {
         }
         return $match;
     }
-       
+
     /**
     * check whether a given string is a valid imagemap
     * the check is not very robust so far but it resolves all required situations (see unit-tests)
@@ -263,12 +263,12 @@ class tx_imagemapwizard_mapper {
         $arr = self::map2array($map);
         return !(count($arr['#'])>0);
     }
-    
+
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_mapper.php'])    {
-    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_mapper.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_mapper.php'])    {
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_mapper.php']);
 }
 
 

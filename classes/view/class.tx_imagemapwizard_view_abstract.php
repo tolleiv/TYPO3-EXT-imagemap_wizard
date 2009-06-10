@@ -27,17 +27,17 @@
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
 
-abstract class tx_imagemapwizard_abstractView {
+abstract class tx_imagemapwizard_view_abstract {
 
     protected $jsFiles,$cssFiles,$inlineJs,$data,$id;
-    
+
     /**
     * Just initialize the View, fill internal variables etc...
-    */    
+    */
     public function init() {
         $this->id = "imagemap".t3lib_div::shortMD5(rand(1,100000));
         $this->jsFiles = array();
-        $this->cssFiles = array();    
+        $this->cssFiles = array();
     }
 
     public function getId() {
@@ -49,7 +49,7 @@ abstract class tx_imagemapwizard_abstractView {
     *
     * @param tx_imagemapwizard_dataObject Data-Object
     */
-    public function setData(tx_imagemapwizard_dataObject $data) {
+    public function setData(tx_imagemapwizard_model_dataObject $data) {
         $this->data=$data;
     }
 
@@ -84,10 +84,10 @@ abstract class tx_imagemapwizard_abstractView {
         $this->cssFiles[] = $file;
       }
     }
-    
-    protected function getExternalJSIncludes() {      
-        $extPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtBackPath(\'imagemap_wizard\');');
-        
+
+    protected function getExternalJSIncludes() {
+        $extPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_typo3env').'::getExtBackPath(\'imagemap_wizard\');');
+
         if(is_array($this->jsFiles)) {
             foreach($this->jsFiles as $file) {
                 $ret .= "\n<script type=\"text/javascript\" src=\"".$backPath.$extPath.$file."\"></script>";
@@ -99,19 +99,19 @@ abstract class tx_imagemapwizard_abstractView {
     protected function getInlineJSIncludes() {
 	  return trim($this->inlineJs)?('<script type="text/javascript">'.trim($this->inlineJs).'</script>'):'';
     }
-    
+
     protected function getExternalCSSIncludes() {
-        $backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getBackPath();');
+        $backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_typo3env').'::getBackPath();');
         $extPath = str_replace(PATH_site,'',t3lib_extMgm::extPath('imagemap_wizard'));
         if(is_array($this->cssFiles)) {
             foreach($this->cssFiles as $file) {
                 $ret .= "\n<link rel=\"stylesheet\" type=\"text/css\" href=\"".$backPath.$extPath.$file."\" />";
             }
-        }       
+        }
         return $ret;
     }
-    
-    protected function renderTemplate($file) {	
+
+    protected function renderTemplate($file) {
         ob_start();
             include(t3lib_extMgm::extPath('imagemap_wizard').'templates/'.$file);
             $ret = ob_get_contents();
@@ -120,9 +120,9 @@ abstract class tx_imagemapwizard_abstractView {
     }
 
     protected function getAjaxURL($script) {
-        return eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtBackPath(\'imagemap_wizard\');').$script;
+        return eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_typo3env').'::getExtBackPath(\'imagemap_wizard\');').$script;
     }
-    
+
     protected function getLL($label,$printIt=false) {
         $value = $GLOBALS['LANG']->getLL($label);
         if($printIt) {
@@ -130,7 +130,7 @@ abstract class tx_imagemapwizard_abstractView {
         }
         return $value;
     }
-    
+
 	/**
 	 * Create a img-tag with a TYPO3-Skinicon
 	 *
@@ -139,28 +139,28 @@ abstract class tx_imagemapwizard_abstractView {
 	 * @return String HTML-img-tag
 	 */
     protected function getIcon($skinPath,$attr='') {
-        $source = t3lib_iconWorks::skinImg($this->doc->backPath,$skinPath);        
+        $source = t3lib_iconWorks::skinImg($this->doc->backPath,$skinPath);
         $match=array();
         if(preg_match('/src="(\S+)"/',$source,$match) && !is_file($match[1])) {
             $source='src ="'.$this->getTplSubpath().$skinPath.'"';
         }
         return "<img ".$source.($attr?' '.$attr:'')." />";
     }
-    
+
     /**
-    *   Determine path to the view-templates 
+    *   Determine path to the view-templates
     *   Just a shortcut to reduce the code within the view's
-    * 
+    *
     *   @return string      relative path to the template folder
-    */    
+    */
     protected function getTplSubpath() {
-        return eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtBackPath(\'imagemap_wizard\');').'templates/';
+        return eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_typo3env').'::getExtBackPath(\'imagemap_wizard\');').'templates/';
     }
 
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_abstractView.php'])    {
-    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_abstractView.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_abstract.php'])    {
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_abstract.php']);
 }
 ?>

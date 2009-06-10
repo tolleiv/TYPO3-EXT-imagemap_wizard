@@ -25,7 +25,7 @@ jQuery(document).ready(function(){
     canvasObject.init("canvas","picture","areaForms");
 	'.$existingFields.'
 
-    scaleFactor = canvasObject.initializeScaling('.t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue('imageMaxWH',700).');
+    scaleFactor = canvasObject.initializeScaling('.t3lib_div::makeInstance('tx_imagemapwizard_model_typo3env')->getExtConfValue('imageMaxWH',700).');
     canvasObject.setScale(scaleFactor);        // todo: store last used scale per Image...
 
     if(scaleFactor < 1) {

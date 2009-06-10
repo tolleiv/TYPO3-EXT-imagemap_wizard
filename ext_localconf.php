@@ -5,7 +5,7 @@ if (TYPO3_MODE=='BE') {
     //$GLOBALS['TBE_MODULES_EXT']['xMOD_db_new_content_el']['addElClasses']['tx_imagemapwizard_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'classes/class.tx_imagemapwizard_wizicon.php';
 }
 
-    require_once(t3lib_extMgm::extPath('imagemap_wizard') . 'classes/controller/class.tx_imagemapwizard_wizardController.php');
+    require_once(t3lib_extMgm::extPath('imagemap_wizard') . 'classes/controller/class.tx_imagemapwizard_controller_wizard.php');
 	$typoscript = '
         includeLibs.imagemap_wizard = EXT:imagemap_wizard/classes/class.tx_imagemapwizard_parser.php
         tt_content.imagemap_wizard < tt_content.image

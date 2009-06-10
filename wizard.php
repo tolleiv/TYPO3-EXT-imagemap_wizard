@@ -31,12 +31,12 @@ $BACK_PATH = '../../../typo3/';
 require($BACK_PATH.'init.php');
 require($BACK_PATH.'template.php');
 
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/controller/class.tx_imagemapwizard_wizardController.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/controller/class.tx_imagemapwizard_controller_wizard.php');
 
 $GLOBALS['LANG']->includeLLFile('EXT:lang/locallang_wizards.xml');
 $GLOBALS['LANG']->includeLLFile('EXT:imagemap_wizard/locallang.xml');
 
-$SOBE = t3lib_div::makeInstance('tx_imagemapwizard_wizardController');
+$SOBE = t3lib_div::makeInstance('tx_imagemapwizard_controller_wizard');
 $SOBE->triggerAction();
 
 ?>

@@ -26,10 +26,10 @@
  *
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_imagemapwizard_abstractView.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_imagemapwizard_view_abstract.php');
 
 
-class tx_imagemapwizard_backendView extends tx_imagemapwizard_abstractView {
+class tx_imagemapwizard_view_wizard extends tx_imagemapwizard_view_abstract {
 
 	protected $doc;
   /**
@@ -81,7 +81,7 @@ class tx_imagemapwizard_backendView extends tx_imagemapwizard_abstractView {
 
 		$this->content.=$this->doc->startPage($GLOBALS['LANG']->getLL('imagemap_wizard.title'));
 
-		$mainContent = $this->renderTemplate('defaultTemplate.php');
+		$mainContent = $this->renderTemplate('wizard.php');
 		$this->content.= $this->doc->section($GLOBALS['LANG']->getLL('imagemap_wizard.title'), $mainContent, 0,1);
 		$this->content.= $this->doc->endPage();
 		$this->content = $this->insertMyStylesAndJs($this->content);
@@ -159,7 +159,7 @@ class tx_imagemapwizard_backendView extends tx_imagemapwizard_abstractView {
     }
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_backendView.php'])    {
-    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_backendView.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_wizard.php'])    {
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_wizard.php']);
 }
 ?>

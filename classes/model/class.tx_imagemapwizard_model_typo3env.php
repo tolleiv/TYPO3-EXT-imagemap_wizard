@@ -28,7 +28,7 @@
  */
 define('PATH_tslib', PATH_site.'typo3/sysext/cms/tslib/');
 
-class tx_imagemapwizard_typo3env {
+class tx_imagemapwizard_model_typo3env {
 	protected $lastError;
 	protected $BE_USER = NULL;
 	protected $BE_USER_GLOBAL = NULL;
@@ -44,7 +44,7 @@ class tx_imagemapwizard_typo3env {
 		require_once(PATH_t3lib.'class.t3lib_userauth.php');
 		require_once(PATH_t3lib.'class.t3lib_userauthgroup.php');
 		require_once(PATH_t3lib.'class.t3lib_beuserauth.php');
-		require_once(PATH_t3lib.'class.t3lib_tsfebeuserauth.php');        
+		require_once(PATH_t3lib.'class.t3lib_tsfebeuserauth.php');
 		require_once(PATH_tslib.'class.tslib_feuserauth.php');
 		require_once(PATH_t3lib.'class.t3lib_cs.php');
 		require_once(PATH_tslib.'class.tslib_pagegen.php');
@@ -56,8 +56,8 @@ class tx_imagemapwizard_typo3env {
 		$tca = $GLOBALS['TCA'];
 		$temp_TTclassName = t3lib_div::makeInstanceClassName('t3lib_timeTrack');
 		$GLOBALS['TT'] = new $temp_TTclassName();
-		$GLOBALS['TT']->start();    
-		
+		$GLOBALS['TT']->start();
+
 		$TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
 		$GLOBALS['TSFE'] = new $TSFEclassName($GLOBALS['TYPO3_CONF_VARS'], $pid, '0', 0, '','','','');
 		$GLOBALS['TSFE']->ADMCMD_preview_postInit(array('BEUSER_uid'=>$GLOBALS['BE_USER']->user['uid']));
@@ -108,7 +108,7 @@ class tx_imagemapwizard_typo3env {
 		$GLOBALS['TSFE']->determineId();
 		$GLOBALS['TSFE']->newCObj();
 		$GLOBALS['TCA'] = $tca; //todo: check why TCA is lost sometimes...
-		
+
 		return true;
 	}
 	 /**
@@ -116,7 +116,7 @@ class tx_imagemapwizard_typo3env {
 	 *
 	 */
 	protected $envStack = array();
- 
+
 	/**
 	* Store relevant data - juat to be sure that nothing gets lost during FE-simulation
 	* and it really sucks that this is needed
@@ -126,14 +126,14 @@ class tx_imagemapwizard_typo3env {
 	public function pushEnv() {
 		array_push($this->envStack,array('workDir'=>getcwd(),'BE_USER'=>$GLOBALS['BE_USER'],'TCA'=>$GLOBALS['TCA']));
 	}
- 
+
 	/**
-	* prepares Frontend-like-Rendering 
+	* prepares Frontend-like-Rendering
 	* and it really sucks that this is needed
 	*
 	* @see pushEnv()
 	* @see popEnv()
-	*/ 
+	*/
 	public function setEnv($backPath='') {
 		if($this->BE_USER==NULL) {
 			$this->initMyBE_USER();
@@ -141,49 +141,49 @@ class tx_imagemapwizard_typo3env {
 		if($backPath && is_dir($backPath)) {
 			chdir($backPath);
 		}
-		//$this->BE_USER_GLOBAL = $GLOBALS['BE_USER'];	
+		//$this->BE_USER_GLOBAL = $GLOBALS['BE_USER'];
 		$GLOBALS['BE_USER'] = $this->BE_USER;
-	}	
+	}
 
 	/**
-	* closes Frontend-like-Rendering 
+	* closes Frontend-like-Rendering
 	* and it also really sucks that this is needed
 	*
 	* @see setEnv()
-	*/ 	
-	public function popEnv($curPath='') {    
+	*/
+	public function popEnv($curPath='') {
 		if(!is_array($this->envStack) || !count($this->envStack)) { return false; }
 		$env = array_pop($this->envStack);
-		
+
 		if($env['TCA'] && is_array($env['TCA'])) {
 			$GLOBALS['TCA'] = $env['TCA'];
 		}
-		
+
 		if($env['BE_USER'] && is_object($env['BE_USER']))  {
 			$GLOBALS['BE_USER'] = $env['BE_USER'];
 		}
-		
+
 		if($env['workDir'] && is_dir($env['workDir'])) {
 			chdir($env['workDir']);
 		}
 	}
 
 	/**
-	* reset/clear enableColumns - used to enable preview of access-restricted 
+	* reset/clear enableColumns - used to enable preview of access-restricted
 	* elements - use only with stored Env!!!!!
 	*/
 	public function resetEnableColumns($table,$newConf=NULL) {
 		if(!is_array($this->envStack) || !count($this->envStack)) { return false; }
-		if(!in_array($table,array_keys($GLOBALS['TCA']))) { return false; }        
+		if(!in_array($table,array_keys($GLOBALS['TCA']))) { return false; }
 		$GLOBALS['TCA'][$table]['ctrl']['enablecolumns'] = $newConf;
 		return true;
 	}
-	
+
 	/**
 	* lazyload the feBEUSER
 	*
 	*/
-	protected function initMyBE_USER() {        
+	protected function initMyBE_USER() {
 		$this->BE_USER = t3lib_div::makeInstance('t3lib_tsfeBeUserAuth');     // New backend user object
 		$this->BE_USER->userTS_dontGetCached = 1;
 		$this->BE_USER->OS = TYPO3_OS;
@@ -206,30 +206,30 @@ class tx_imagemapwizard_typo3env {
 	public function get_lastError() {
 		return $this->lastError;
 	}
-	
-	
+
+
 	/**
-	* Recalculate BACKPATH for the current script-location, 
+	* Recalculate BACKPATH for the current script-location,
 	* since the global BACKPATH might not be available or might be wrong
 	*
 	* @return string   the BACKPATH
-	*/    
+	*/
 	public static function getBackPath() {
 		return preg_replace('/([^\/]+)\//','../',str_replace(array(PATH_site,basename(PATH_thisScript)),array('',''),PATH_thisScript));
 	}
-	
+
 	/**
 	* Find extension BACKPATH,
-	* used to include resources from an extension (usually this is only used with imagemap_wizard) 
+	* used to include resources from an extension (usually this is only used with imagemap_wizard)
 	* but it has a more generic functionality - YAGNI rules :P
 	*
 	* @param  string    $extKey - the source extension
 	* @return string    the Extensions BACKPATH
-	*/    
+	*/
 	public static function getExtBackPath($extKey='imagemap_wizard') {
-		return self::getBackPath().str_replace(PATH_site,'',t3lib_extMgm::extPath($extKey));    
+		return self::getBackPath().str_replace(PATH_site,'',t3lib_extMgm::extPath($extKey));
 	}
-	
+
 	/**
 	* Get the value out of the Extension-Configuration determined by the submitted key
 	*
@@ -241,12 +241,12 @@ class tx_imagemapwizard_typo3env {
 		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['imagemap_wizard']);
 		return (is_array($conf) && in_array($confKey,array_keys($conf)))?$conf[$confKey]:$default;
 	}
-	
+
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_typo3env.php'])    {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_typo3env.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_typo3env.php'])    {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_typo3env.php']);
 }
 
 

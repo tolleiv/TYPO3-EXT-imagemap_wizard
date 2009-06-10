@@ -27,11 +27,12 @@
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
 
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_dataObject.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_model_dataObject.php');
 
-class tx_imagemapwizard_wizardController {
+class tx_imagemapwizard_controller_wizard {
     protected $view;
-    protected $context;
+    protected $context = 'wizard';
+    protected $ajax = false;
     protected $params;
     protected $forceValue;
 	/**
@@ -45,11 +46,11 @@ class tx_imagemapwizard_wizardController {
 	/**
 	 * Default action just renders the Wizard with the default view.
 	 */
-    protected function defaultAction() {
+    protected function wizardAction() {
 		$params = t3lib_div::_GP('P');
         $currentValue = $GLOBALS['BE_USER']->getSessionData ('imagemap_wizard.value');
 		//TODO: use-Flex-DataObject if needed
-		$dataClass = t3lib_div::makeInstanceClassName('tx_imagemapwizard_dataObject');
+		$dataClass = t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_dataObject');
 		$data = new $dataClass($params['table'],$params['field'],$params['uid'],$currentValue);
 
 		$this->view->setData($data);
@@ -60,9 +61,9 @@ class tx_imagemapwizard_wizardController {
 	 * Form action just renders the TCEForm which opens the wizard
      * comes with a cool preview and Ajax functionality which updates the preview...
 	 */
-    protected function formAction() {
+    protected function tceformAction() {
 
-        $dataClass = t3lib_div::makeInstanceClassName('tx_imagemapwizard_dataObject');
+        $dataClass = t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_dataObject');
         $data = new $dataClass($this->params['table'],$this->params['field'],$this->params['uid'],$this->forceValue);
         $data->setFieldConf($this->params['fieldConf']);
 
@@ -78,7 +79,7 @@ class tx_imagemapwizard_wizardController {
 	/**
 	 *
 	 */
-	protected function formAjaxAction() {
+	protected function tceformAjaxAction() {
         $this->params['table'] = t3lib_div::_GP('table');
         $this->params['field'] = t3lib_div::_GP('field');
         $this->params['uid'] = t3lib_div::_GP('uid');
@@ -90,7 +91,7 @@ class tx_imagemapwizard_wizardController {
 
         $this->forceValue = t3lib_div::_GP('value');
         $GLOBALS['BE_USER']->setAndSaveSessionData('imagemap_wizard.value',$this->forceValue);
-        echo $this->formAction();
+        echo $this->tceformAction();
 	}
 
 
@@ -99,31 +100,23 @@ class tx_imagemapwizard_wizardController {
 	 * Execute required action which is determined by the given context
 	 */
 	public function triggerAction() {
-		return call_user_func_array(array($this, $this->context['key'].'Action'),array());
+		$action = $this->context.($this->ajax?'Ajax':'').'Action';
+		return call_user_func_array(array($this, $action),array());
 	}
 
 	/**
 	 * Determine context
 	 */
     protected function initContext($forceContext=NULL) {
-        $reqContext = $forceContext?$forceContext:t3lib_div::_GP('context');
-        switch($reqContext) {
-            case 'form':
-            case 'formAjax':
-                $this->context['key'] = $reqContext;
-                $this->context['tpl'] = 'form';
-                break;
-            default:
-                $this->context['key'] = 'default';
-                $this->context['tpl'] = 'backend';
-
-        }
+        $reqContext = $forceContext ? $forceContext : t3lib_div::_GP('context');
+        $this->context = ($reqContext == 'tceform') ? 'tceform' : 'wizard';
+        $this->ajax = (t3lib_div::_GP('ajax') == '1' );
     }
 
     protected function initView() {
-        require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_imagemapwizard_'.$this->context['tpl'].'View.php');
-        $this->view = t3lib_div::makeInstance('tx_imagemapwizard_'.$this->context['tpl'].'View');
-        $this->view->init($this->context['key']);
+        require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_imagemapwizard_view_'.$this->context.'.php');
+        $this->view = t3lib_div::makeInstance('tx_imagemapwizard_view_'.$this->context);
+        $this->view->init($this->context);
     }
 
 
@@ -134,7 +127,7 @@ class tx_imagemapwizard_wizardController {
 	 * @param	Object		fobj
 	 * @return	String		HTMLCode with form-field
 	 */
-    function renderForm($PA, t3lib_TCEforms $fobj) {
+    public function renderForm($PA, t3lib_TCEforms $fobj) {
         $GLOBALS['BE_USER']->setAndSaveSessionData('imagemap_wizard.value',NULL);
         $this->params['table'] = $PA['table'];
         if($GLOBALS['TCA'][$PA['table']]['columns'][$PA['field']]['config']['type'] == 'flex') {
@@ -150,15 +143,15 @@ class tx_imagemapwizard_wizardController {
         $this->params['fieldConf'] = $PA['fieldConf'];
         $this->params['itemFormElName'] = $PA['itemFormElName'];
 
-        $this->initContext('form');
+        $this->initContext('tceform');
         $this->initView();
         return $this->triggerAction();
 
     }
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/controller/class.tx_imagemapwizard_wizardController.php'])    {
-    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/controller/class.tx_imagemapwizard_wizardController.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/controller/class.tx_imagemapwizard_controller_wizard.php'])    {
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/controller/class.tx_imagemapwizard_controller_wizard.php']);
 }
 
 ?>

@@ -29,7 +29,7 @@
  */
 
 require_once(PATH_t3lib."class.t3lib_softrefproc.php");
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_mapper.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_model_mapper.php');
 
 
 class tx_imagemapwizard_softrefproc extends t3lib_softrefproc {
@@ -49,7 +49,7 @@ class tx_imagemapwizard_softrefproc extends t3lib_softrefproc {
    */
 
   function findRef($table, $field, $uid, $content, $spKey, $spParams, $structurePath='')  {
-    $conv = t3lib_div::makeInstance("tx_imagemapwizard_mapper");
+    $conv = t3lib_div::makeInstance("tx_imagemapwizard_model_mapper");
     $data = $conv->map2array($content);
     $idx=0;
 

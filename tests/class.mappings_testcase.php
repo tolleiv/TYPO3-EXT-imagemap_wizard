@@ -49,8 +49,8 @@ class mappings_testcase extends tx_phpunit_testcase {
 
     function test_emptyMapNameDoesnTHurt() {
         $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
-        $input = '<map></map>';	    
-        $this->assertEquals(0,preg_match('/^<map name="\S+">/',$this->mapper->generateMap($cObj,'',$input)),'Empty Map-Name inputs are not processed as supposed');        
+        $input = '<map></map>';
+        $this->assertEquals(0,preg_match('/^<map name="\S+">/',$this->mapper->generateMap($cObj,'',$input)),'Empty Map-Name inputs are not processed as supposed');
     }
 
   function test_creatingSimpleRectMap() {
@@ -69,14 +69,14 @@ class mappings_testcase extends tx_phpunit_testcase {
     $output = '<map name="test"><area href="http://www.foo.org" title="individual title" shape="rect" xyz="1" /></map>';
     $this->assertEquals($output,$this->mapper->generateMap($cObj,'test',$input),'Individual Attributes are lost after Generation');
   }
-  
+
   function test_creatingMapRemovesEmptyAttributes() {
     $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
     $cObj->expects($this->atLeastOnce())->method('typoLink')->will($this->returnValue('<a href="http://www.foo.org" title="tt">text</a>'));
 
     $input = '<map><area shape="rect" title="individual title" xyz="">1</area></map>';
     $output = '<map name="test"><area href="http://www.foo.org" title="individual title" shape="rect" /></map>';
-    $this->assertEquals($output,$this->mapper->generateMap($cObj,'test',$input),'Empty Attribute should be removed during Generation');  
+    $this->assertEquals($output,$this->mapper->generateMap($cObj,'test',$input),'Empty Attribute should be removed during Generation');
   }
 
   function test_creatingMapGeneratorAcceptsAttributeWhitelist() {
@@ -99,32 +99,32 @@ class mappings_testcase extends tx_phpunit_testcase {
     $output = '<map name="test"><area href="http://www.foo.org" shape="rect" /></map>';
     $this->assertEquals($output,$this->mapper->generateMap($cObj,'test',$input),'Href-Attribute is not recognized for the area-link creation.');
   }
-  
+
   // due to issue 2525
   function test_xhtmlSwitchWorks() {
     $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
-       
+
     $name = "testname";
     $htmlOutput = '<map name="'.$name.'" />';
     $xhtmlOutput = '<map  id="'.$name.'" name="'.$name.'" />';
     $this->assertEquals(true,$this->mapper->compareMaps($htmlOutput,$this->mapper->generateMap($cObj,$name,'',array(),false)),' HTML mapname is not generated as supposed');
     $this->assertEquals(true,$this->mapper->compareMaps($xhtmlOutput,$this->mapper->generateMap($cObj,$name,'',array(),true)),' XHTML mapname is not generated as supposed');
   }
-  
-  
+
+
   function test_simpleComparingWorks() {
     $map1 = '<map><area>1</area></map>';
     $map2 = '<map><area>2</area></map>';
     $this->assertEquals(true,$this->mapper->compareMaps($map1,$map1),'Equal maps are not recognized when compared...');
-    $this->assertEquals(false,$this->mapper->compareMaps($map1,$map2),'Different maps are not recognized when compared...');    
+    $this->assertEquals(false,$this->mapper->compareMaps($map1,$map2),'Different maps are not recognized when compared...');
   }
-  
+
   function test_complexerComparingWithVariousAttributeOrderWorks() {
     $map1 = '<map><area xxx="abc" color="green">1</area></map>';
     $map2 = '<map><area color="green" xxx="abc">1</area></map>';
     $this->assertEquals(true,$this->mapper->compareMaps($map1,$map1),'Equal maps are not recognized when compared...');
   }
-  
+
   function test_compairingDifferentStructures() {
     $map1 = '<map></map>';
     $map2 = '<map><area xxx="abc" color="green">1</area></map>';
@@ -133,20 +133,20 @@ class mappings_testcase extends tx_phpunit_testcase {
     $this->assertEquals(false,$this->mapper->compareMaps($map1,$map3),'Different structured maps are not processed as supposed');
     $this->assertEquals(false,$this->mapper->compareMaps($map2,$map3),'Different structured maps are not processed as supposed');
   }
-  
+
   function test_detectEmptyMaps() {
     $map1 = '<map></map>';
     $map2 = '<map><area xxx="abc" color="green">1</area></map>';
     $map3 = '<map attr="value" />';
-    $this->assertEquals(true,$this->mapper->isEmptyMap($map1),'Empty map1 is  not recognized.');  
-    $this->assertEquals(false,$this->mapper->isEmptyMap($map2),'Map2 is  recognized to be empty by mistake.');  
-    $this->assertEquals(true,$this->mapper->isEmptyMap($map3),'Empty map3 is  not recognized.');  
-    $this->assertEquals(true,$this->mapper->isEmptyMap(''),'Empty string is  not recognized.');  
-  } 
-  
+    $this->assertEquals(true,$this->mapper->isEmptyMap($map1),'Empty map1 is  not recognized.');
+    $this->assertEquals(false,$this->mapper->isEmptyMap($map2),'Map2 is  recognized to be empty by mistake.');
+    $this->assertEquals(true,$this->mapper->isEmptyMap($map3),'Empty map3 is  not recognized.');
+    $this->assertEquals(true,$this->mapper->isEmptyMap(''),'Empty string is  not recognized.');
+  }
+
   function setUp() {
-    require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_mapper.php');
-    $this->mapper = t3lib_div::makeInstance('tx_imagemapwizard_mapper');
+    require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_model_mapper.php');
+    $this->mapper = t3lib_div::makeInstance('tx_imagemapwizard_model_mapper');
   }
   function tearDown() {
     unset($this->mapper);

@@ -27,12 +27,12 @@
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
 
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_typo3env.php');
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_mapper.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_model_typo3env.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_model_mapper.php');
 require_once(PATH_t3lib.'class.t3lib_stdgraphic.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
 
-class tx_imagemapwizard_dataObject {
+class tx_imagemapwizard_model_dataObject {
 	protected $row,$liveRow,$table,$mapField,$backPath;
     protected $modifiedFlag = false;
 	public function __construct($table,$field,$uid,$currentValue=NULL) {
@@ -43,10 +43,10 @@ class tx_imagemapwizard_dataObject {
         if($currentValue) { $this->useCurrentData($currentValue); }
         $this->liveRow = $this->row;
         t3lib_BEfunc::fixVersioningPid($table,$this->liveRow);
-	    $this->map = t3lib_div::makeInstance("tx_imagemapwizard_mapper")->map2array($this->getFieldValue($this->mapField));
+	    $this->map = t3lib_div::makeInstance("tx_imagemapwizard_model_mapper")->map2array($this->getFieldValue($this->mapField));
 
         //eval for the XCLASSes
-	    $this->backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getBackPath();');
+	    $this->backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_typo3env').'::getBackPath();');
     }
 
 	public function getFieldValue($field,$listNum=-1) {
@@ -98,7 +98,7 @@ class tx_imagemapwizard_dataObject {
 	}
 
 	public function renderImage() {
-		$t3env = t3lib_div::makeInstance('tx_imagemapwizard_typo3env');
+		$t3env = t3lib_div::makeInstance('tx_imagemapwizard_model_typo3env');
 		if(!$t3env->initTSFE($this->getLivePid(),$GLOBALS['BE_USER']->workspace,$GLOBALS['BE_USER']->user['uid'])) {
 			return 'Can\'t render image since TYPO3 Environment is not ready.<br/>Error was:'.$t3env->get_lastError();
 		}
@@ -123,7 +123,7 @@ class tx_imagemapwizard_dataObject {
 	}
 
     public function renderThumbnail($confKey,$defaultMaxWH) {
-        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue($confKey,$defaultMaxWH);
+        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_model_typo3env')->getExtConfValue($confKey,$defaultMaxWH);
 		$img = $this->renderImage();
 		$matches = array();
 		if(preg_match('/width="(\d+)" height="(\d+)"/',$img,$matches)) {
@@ -144,7 +144,7 @@ class tx_imagemapwizard_dataObject {
     }
 
     public function getThumbnailScale($confKey,$defaultMaxWH) {
-        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_typo3env')->getExtConfValue($confKey,$defaultMaxWH);
+        $maxSize = t3lib_div::makeInstance('tx_imagemapwizard_model_typo3env')->getExtConfValue($confKey,$defaultMaxWH);
         $ret = 1;
 		$img = $this->renderImage();
 		$matches = array();
@@ -200,7 +200,7 @@ class tx_imagemapwizard_dataObject {
     }
 
     public function getAttributeKeys() {
-        $keys = t3lib_div::trimExplode(',',eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_typo3env').'::getExtConfValue(\'additionalAttributes\',\'\');'),true);
+        $keys = t3lib_div::trimExplode(',',eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_typo3env').'::getExtConfValue(\'additionalAttributes\',\'\');'),true);
         return array_diff($keys,array('alt','href','shape','coords'));
     }
 
@@ -238,7 +238,7 @@ class tx_imagemapwizard_dataObject {
 
     public function useCurrentData($value) {
     	$cur = $this->getCurrentData();
-        if(!t3lib_div::makeInstance("tx_imagemapwizard_mapper")->compareMaps($cur,$value)) {
+        if(!t3lib_div::makeInstance("tx_imagemapwizard_model_mapper")->compareMaps($cur,$value)) {
             $this->modifiedFlag = true;
         }
 
@@ -294,8 +294,8 @@ class tx_imagemapwizard_dataObject {
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_dataObject.php'])    {
-    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_dataObject.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_dataObject.php'])    {
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_dataObject.php']);
 }
 
 ?>
