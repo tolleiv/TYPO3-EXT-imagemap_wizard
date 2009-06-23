@@ -29,5 +29,5 @@
 .colorPreview div { width:10px; height:10px;  border:2px solid #fff; }
 .moreOptions .colorBox { border:1px solid #000; float:left; }
 .moreOptions .colorBox div { width:20px; height:20px;  border:2px solid #fff; }
-.moreOptions .colorPicker { width:152px; height:24px; border:1px solid #000; float:left; margin-left:5px; }
+.moreOptions .colorPicker { width:168px; height:24px; border:1px solid #000; float:left; margin-left:5px; }
 .moreOptions .colorPickerCell { float:left; width:6px; height:6px; margin:0; border:1px solid white; cursor:pointer; font-size:1px; line-height:1px; }
