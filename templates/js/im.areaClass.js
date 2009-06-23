@@ -300,6 +300,7 @@ var areaClass = Class.extend({
     
     pushUndoableAction: function() {    	
     	this._undoStack.push(this.getUndoObject());
+    	this._redoStack.splice(0,this._redoStack.length);
     	this.changeUndoBtnStates();
     },
     
