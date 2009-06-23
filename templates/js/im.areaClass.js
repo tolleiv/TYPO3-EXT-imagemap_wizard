@@ -28,6 +28,8 @@ var areaClass = Class.extend({
     _canvas:-1,
     _scale:1,
     _edges:true,
+    _undoStack: new Array(),
+    _redoStack: new Array(),
     _moreOptionsInitFlag:false,
     _moreOptionsVisible:false,
     _attr:{},
@@ -116,12 +118,18 @@ var areaClass = Class.extend({
 	// most of the operations can't be called earlier since we need the form-markup to be loaded
     applyBasicAreaActions: function() {
     	this._moreOptionsInitFlag = false;
-        jQuery("#" + this.getFormId() + "_upd").data("area",this).click(function(event) {
-            jQuery(this).data("area").updateCoordsFromForm();
-        });
-        jQuery("#" + this.getFormId() + "_del").data("area",this).click(function(event) {
-            jQuery(this).data("area").remove();
-        });
+        jQuery("#" + this.getFormId() + "_upd")
+        	.data("area",this)
+        	.click(function(event) {
+        		var that =jQuery(this).data("area");
+        		that.pushUndoableAction()        	
+        		that.updateCoordsFromForm();
+        	});
+        jQuery("#" + this.getFormId() + "_del")
+        	.data("area",this)
+        	.click(function(event) {
+        		jQuery(this).data("area").remove();
+        	});
         jQuery("#" + this.getFormId() + " > .basicOptions > .exp > img")
         	.data("obj",this)
         	.data("rel","#" + this.getFormId() +" > .moreOptions")
@@ -135,7 +143,7 @@ var areaClass = Class.extend({
                 }
                 jQuery(this).data("obj").toogleMoreOptionsFlag();
 
-        });
+        	});
         jQuery("#" + this.getFormId() + " > .basicOptions > .colorPreview > div")
         	.data("pseudo","#" + this.getFormId() + " > .basicOptions > .exp > img:visible")
             .click(function(event) {
@@ -149,13 +157,25 @@ var areaClass = Class.extend({
         jQuery("#" + this.getFormId() + "_up")
            	.data("obj",this)
             .click(function(event) {
-            jQuery(this).data("obj").getCanvas().areaUp(jQuery(this).data("obj").getId());
-        });
+            	jQuery(this).data("obj").getCanvas().areaUp(jQuery(this).data("obj").getId());
+            });
         jQuery("#" + this.getFormId() + "_down")
            	.data("obj",this)
             .click(function(event) {
-            jQuery(this).data("obj").getCanvas().areaDown(jQuery(this).data("obj").getId());
-        });
+            	jQuery(this).data("obj").getCanvas().areaDown(jQuery(this).data("obj").getId());
+            });
+        
+        jQuery("#" + this.getFormId() + "_undo")
+	       	.data("obj",this)	       	
+	        .click(function(event) {
+	        	jQuery(this).data("obj").performUndo();
+	        });
+        
+        jQuery("#" + this.getFormId() + "_redo")
+	       	.data("obj",this)
+	        .click(function(event) {
+	        	jQuery(this).data("obj").performRedo();
+	        });
         
         this.applyBasicTypeActions();
         
@@ -163,6 +183,7 @@ var areaClass = Class.extend({
 		else						this.applyAdditionalAreaActions();
 
         this.updateColor(this.getColor(),0);
+        this.changeUndoBtnStates();
         this.refreshExpandButtons();
     },
 
@@ -182,12 +203,14 @@ var areaClass = Class.extend({
     getCommonFormUpdateFields: function() {
         var result = this.getFormId() + "_link=\"" + this.getLink() + "\";";
         result = result  + this.getFormId() + "_label=\"" + this.getLabel() + "\";";
+//        result = result  + this.getFormId() + "_color=\"" + this.getColor() + "\";";
         if(typeof this._attr == "object") {
             var that = this;
             jQuery.each(this._attr, function(key, val) {
                 result = result + that.getFormId() + "_" + key + "=\"" + val + "\";";
             });
         }
+        this.updateColor(this.getColor(), false);
         return result;
     },
 
@@ -208,7 +231,9 @@ var areaClass = Class.extend({
         		.simpleColor({colors:this._colors})
         		.click(function(event,data) {
         			if(typeof data == 'undefined') return;
-        			jQuery(this).data("area").updateColor(data,1);
+        			var that = jQuery(this).data("area");
+        			that.pushUndoableAction();
+        			that.updateColor(data,1);
         		});
 		
          this.applyAdditionalTypeActions();
@@ -271,6 +296,46 @@ var areaClass = Class.extend({
     
     borderWasHit: function(border,x,y) {
     
-    }
+    },
+    
+    pushUndoableAction: function() {    	
+    	this._undoStack.push(this.getUndoObject());
+    	this.changeUndoBtnStates();
+    },
+    
+    performUndo: function() {
+    	if(this._undoStack.length) {
+    		var undo = this._undoStack.pop();
+    		this._redoStack.push(this.getUndoObject());
+    		this.restoreFromUndoOject(undo);
+    		this.getCanvas().updateForm(this.getId());
+    		this.getCanvas().updateCanvas(this.getId())
+    	}
+    	this.changeUndoBtnStates();
+    },
+    
+    performRedo: function() {
+    	if(this._redoStack.length) {
+    		var redo = this._redoStack.pop();
+    		this._undoStack.push(this.getUndoObject());
+    		this.restoreFromUndoOject(redo);
+    		this.getCanvas().updateForm(this.getId());
+    		this.getCanvas().updateCanvas(this.getId())
+    	}
+    	this.changeUndoBtnStates();
+    },
+    
+    getUndoObject: function() {
+    	return {};
+    },
+    
+    restoreFromUndoOject: function(obj) {
 
+    },
+    
+    changeUndoBtnStates: function() {
+    	jQuery("#" + this.getFormId() + "_undo").css('visibility', (this._undoStack.length?'visible':'hidden'));
+    	jQuery("#" + this.getFormId() + "_redo").css('visibility', (this._redoStack.length?'visible':'hidden'));
+    }
+    
 });

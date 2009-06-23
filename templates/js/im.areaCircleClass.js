@@ -23,6 +23,8 @@
 
 var areaCircleClass = areaClass.extend({
     _coords:-1,
+    _undoStack: new Array(),
+    _redoStack: new Array(),
 
     initCoords: function(coords) {
         if(typeof coords == 'undefined') { return; }
@@ -158,5 +160,16 @@ var areaCircleClass = areaClass.extend({
     },
     setRadius: function(r)   {
           this._coords[2] = Math.abs(parseInt(r));
+    },
+    
+    getUndoObject: function() {
+    	return {color: this.getColor(), x:this.getX(false), y:this.getY(false), radius:this.getRadius(false)};
+    },
+    
+    restoreFromUndoOject: function(obj) {
+    	this.setColor(obj.color);
+    	this.setX(obj.x);
+    	this.setY(obj.y);
+    	this.setRadius(obj.radius);
     }
 });

@@ -105,6 +105,7 @@ var canvasClass = Class.extend({
             if((that.mouseCurrentObjectDrag==-1) && (that.mouseCurrentEdgeDrag==-1))  {
                 var tmp = that.areaObjects[jQuery(this).attr("id")].hitOnObjectEdge(x,y,3);
                 if(tmp != -1) {
+                	that.areaObjects[jQuery(this).attr("id")].pushUndoableAction();
                     that.mouseCurrentObjectDrag=jQuery(this).attr("id");
                     that.mouseCurrentEdgeDrag=tmp;
                     event.stopPropagation();
@@ -113,6 +114,7 @@ var canvasClass = Class.extend({
             if((that.mouseCurrentObjectDrag==-1) && (that.mouseCurrentBorderDrag==-1)) {
                 var tmp = that.areaObjects[jQuery(this).attr("id")].hitOnObjectBorder(x,y,5);
                 if(tmp != -1) {
+                	that.areaObjects[jQuery(this).attr("id")].pushUndoableAction();
                     that.mouseCurrentObjectDrag=jQuery(this).attr("id");
                     that.mouseCurrentBorderDrag=tmp;
                     that.mouseCurrentBorderDragX = x;

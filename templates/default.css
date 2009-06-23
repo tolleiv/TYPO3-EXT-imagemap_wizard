@@ -11,7 +11,7 @@
  .point { width:5px; height:5px; background:#ffffff; border:1px solid #000000; position:absolute; left:0px; top:0px; }
 #actions { float:left; padding:10px 20px 0 20px; width:100%; clear:left; }
 #areaForms { padding:20px 5px 50px 5px; width:480px; float:left; clear:left; }
-.areaForm { position:relative; width: 450px; float:left; clear:left; margin:3px; padding:10px; border:1px solid gray; }
+.areaForm { position:relative; width: 480px; float:left; clear:left; margin:3px; padding:10px; border:1px solid gray; }
 .areaForm .formCoord { width: 35px; text-align:right; margin-right:5px; float:left; }
 .arrow { position:absolute; right:10px; top:15px; }
 .basicOptions input { padding:2px 0; }

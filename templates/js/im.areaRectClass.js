@@ -23,6 +23,8 @@
 
 var areaRectClass = areaClass.extend({
     _coords:-1,
+    _undoStack: new Array(),
+    _redoStack: new Array(),
 
     initCoords: function(coords) {
         if(typeof coords == 'undefined') { return; }
@@ -187,6 +189,16 @@ var areaRectClass = areaClass.extend({
           this._coords[3] = parseInt(parseInt(y1)>parseInt(y2)?y1:y2);  
     },
     setW: function(value)     {   var x = this.getLeftX(0);    this.setX(x,x+value);     },
-    setH: function(value)     {   var y = this.getTopY(0);    this.setY(y,y+value);     }
+    setH: function(value)     {   var y = this.getTopY(0);    this.setY(y,y+value);     },
+    
+    getUndoObject: function() {
+    	return {color: this.getColor(), x1: this._coords[0], x2: this._coords[2], y1: this._coords[1], y2: this._coords[3]};
+    },
+    
+    restoreFromUndoOject: function(obj) {
+    	this.setColor(obj.color);
+    	this.setX(obj.x1, obj.x2);
+    	this.setY(obj.y1, obj.y2);
+    }
 });
 

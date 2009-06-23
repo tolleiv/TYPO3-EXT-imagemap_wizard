@@ -19,6 +19,8 @@
             <label index="imagemap_wizard.form.area.linkwizard">Open LinkWizard</label>
             <label index="imagemap_wizard.form.area.up">move up</label>
             <label index="imagemap_wizard.form.area.down">move down</label>
+            <label index="imagemap_wizard.form.area.undo">undo</label>
+            <label index="imagemap_wizard.form.area.redo">redo</label>
             <label index="imagemap_wizard.form.area.remove">remove</label>
             <label index="imagemap_wizard.form.area.refresh">Update Coords</label>
             <label index="imagemap_wizard.form.area.expand">show more options</label>

@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Provides an TYPO3 Wizard which enables interactive Imagemap-Creation - related to the TYPO3-Linkwizard. Supported by AOE media.',
 	'category' => 'be',
 	'shy' => 0,
-	'version' => '0.5.0',
+	'version' => '0.5.1',
 	'dependencies' => 'cms,css_styled_content',
 	'conflicts' => '',
 	'priority' => '',
@@ -35,7 +35,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'php' => '5.0.0-5.2.99',
-			'typo3' => '3.8.0-4.2.99',
+			'typo3' => '3.8.0-4.3.99',
 			'cms' => '0.0.0',
 			'css_styled_content' => '0.0.0',
 		),

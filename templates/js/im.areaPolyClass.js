@@ -23,6 +23,8 @@
 
 var areaPolyClass = areaClass.extend({
     _coords:-1,
+    _undoStack: new Array(),
+    _redoStack: new Array(),
 
     initCoords: function(coords) {
         if(typeof coords == 'undefined') { return; }
@@ -227,6 +229,14 @@ var areaPolyClass = areaClass.extend({
             result = result + (result.length?",":"") + parseInt(this._coords[i].x) + "," + parseInt(this._coords[i].y);
         }
         return result;
+    },
+    
+    getUndoObject: function() {
+    	return {color: this.getColor(), coords:this.joinCoords()};
+    },
+    
+    restoreFromUndoOject: function(obj) {
+    	this.setColor(obj.color);
+    	this.initCoords(obj.coords)
     }
-
 });
