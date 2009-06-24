@@ -2,13 +2,7 @@
 $this->addExternalJS("templates/js/jquery-1.3.2.min.js");
 $this->addExternalJS("templates/js/jquery-ui-1.7.2.custom.min.js");
 $this->addExternalJS("templates/js/jquery.simpleColor.mod.js");
-$this->addExternalJS("templates/js/wz_jsgraphics.js");
-$this->addExternalJS("templates/js/js.inheritance.js");
-$this->addExternalJS("templates/js/im.canvasClass.js");
-$this->addExternalJS("templates/js/im.areaClass.js");
-$this->addExternalJS("templates/js/im.areaRectClass.js");
-$this->addExternalJS("templates/js/im.areaCircleClass.js");
-$this->addExternalJS("templates/js/im.areaPolyClass.js");
+$this->addExternalJS("templates/js/wizard.all.js.ycomp.js");
 $this->addExternalCSS("templates/default.css");
 
 $existingFields = $this->data->listAreas("\tcanvasObject.addArea(new area##shape##Class(),'##coords##','##alt##','##link##','##color##',0,{##attributes##});\n");
