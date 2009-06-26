@@ -1,7 +1,6 @@
 <?php
 $this->addExternalJS("templates/js/jquery-1.3.2.min.js");
 $this->addExternalJS("templates/js/jquery-ui-1.7.2.custom.min.js");
-$this->addExternalJS("templates/js/jquery.simpleColor.mod.js");
 $this->addExternalJS("templates/js/wizard.all.js.ycomp.js");
 $this->addExternalCSS("templates/default.css");
 
