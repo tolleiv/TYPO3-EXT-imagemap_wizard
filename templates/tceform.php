@@ -63,7 +63,7 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
         canvasObject = new previewCanvasClass();
         canvasObject.init("<?php echo $this->getId(); ?>-canvas","<?php echo $this->data->getThumbnailScale('previewImageMaxWH',200) ?>");
         <?php echo $existingFields; ?>
-        jQuery(".imagemap_wiz_message").css({top: (canvasObject.getMaxH()/2-35)+"px", left: "20px"}).animate({left: "60px",opacity: "show"}, 1000).animate({left: "60px"}, 6000).animate({left: "20px", opacity: "hide"}, 750);
+        jQuery(".imagemap_wiz_message").css({top: (canvasObject.getMaxH()/2-35)+"px", left: "20px"}).animate({left: "60px",opacity: "show"}, 750).animate({left: "60px"}, 6000).animate({left: "20px", opacity: "hide"}, 750);
         jQuery(".imagemap_wiz_message_close").click(function() {
             jQuery(".imagemap_wiz_message").animate({left: "20px", opacity: "hide"}, {duration:250, queue:false});
         });
