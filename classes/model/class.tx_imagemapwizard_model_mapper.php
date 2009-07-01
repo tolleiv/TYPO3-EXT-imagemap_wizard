@@ -75,11 +75,11 @@ class tx_imagemapwizard_model_mapper {
                 //Remove emoty attributes
                 $mapArray['#'][$key]['@'] = array_filter($mapArray['#'][$key]['@']);
 
-				// if(!isset($mapArray['#'][$key]['@']['href']))... what to do here???
+				// TODO: if(!isset($mapArray['#'][$key]['@']['href']))... what to do here???
 			}
 			unset($mapArray['#'][$key]['value']);
 		}
-		return self::array2map($mapArray);
+		return (self::isEmptyMap($mapArray) ? '' : self::array2map($mapArray));
 	}
 
 	/**
@@ -260,7 +260,7 @@ class tx_imagemapwizard_model_mapper {
     * @return   boolean     determine whether the valued passed the test or not
     */
     public static function isEmptyMap($map) {
-        $arr = self::map2array($map);
+        $arr = is_array($map) ? $map : self::map2array($map);
         return !(count($arr['#'])>0);
     }
 

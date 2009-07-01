@@ -28,30 +28,28 @@ class mappings_testcase extends tx_phpunit_testcase {
     $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
     $cObj->expects($this->never())->method('typoLink');
 
-    $supposedOutput = '<map name="testname" />';
+    $supposedOutput = '';
     $this->assertEquals($supposedOutput,$this->mapper->generateMap($cObj,'testname'),'Empty Map is not created as supposed');
     $this->assertEquals($supposedOutput,$this->mapper->generateMap($cObj,'testname',array()),'Empty Map is not created as supposed');
-  }
-
-  function test_creatingValidMapNames() {
-    $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
-    $cObj->expects($this->never())->method('typoLink');
-
-    $strings = array('test name','test n�me','���..','1234');
-
-    $regExAttr = '/^[a-zA-Z][a-zA-Z0-9\-_]+[a-zA-Z0-9]$/i';
-    $regExName = '/^<map name="[a-zA-Z][a-zA-Z0-9\-_]+[a-zA-Z0-9]" \/>$/i';
-    foreach($strings as $key=>$string) {
-        $this->assertEquals(1,preg_match($regExAttr,$this->mapper->createValidNameAttribute($string)),'Attribute ('.$key.') is not cleaned as supposed...['.$this->mapper->createValidNameAttribute($string).']');
-        $this->assertEquals(1,preg_match($regExName,$this->mapper->generateMap($cObj,$string)),'Name-attribute ('.$key.') is not cleaned as supposed...['.$this->mapper->createValidNameAttribute($string).']');
-    }
   }
 
     function test_emptyMapNameDoesnTHurt() {
         $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
         $input = '<map></map>';
-        $this->assertEquals(0,preg_match('/^<map name="\S+">/',$this->mapper->generateMap($cObj,'',$input)),'Empty Map-Name inputs are not processed as supposed');
+        $this->assertEquals('',$this->mapper->generateMap($cObj,'',$input),'Empty Map-Name inputs are not processed as supposed');
     }
+
+  function test_creatingValidMapNames() {
+    $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
+    $cObj->expects($this->never())->method('typoLink');
+
+    $strings = array('test name','test näme','ÄÖÜ..','1234','おはようございます');
+
+    $regExAttr = '/^[a-zA-Z][a-zA-Z0-9\-_]+[a-zA-Z0-9]$/i';
+    foreach($strings as $key=>$string) {
+        $this->assertEquals(1,preg_match($regExAttr,$this->mapper->createValidNameAttribute($string)),'Attribute ('.$key.') is not cleaned as supposed...['.$this->mapper->createValidNameAttribute($string).']');
+    }
+  }
 
   function test_creatingSimpleRectMap() {
     $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
@@ -103,12 +101,12 @@ class mappings_testcase extends tx_phpunit_testcase {
   // due to issue 2525
   function test_xhtmlSwitchWorks() {
     $cObj = $this->getMock('tslib_cObj', array('typoLink','LOAD_REGISTER'));
-
+	$input = '<map><area href="1" shape="rect" /></map>';
     $name = "testname";
-    $htmlOutput = '<map name="'.$name.'" />';
-    $xhtmlOutput = '<map  id="'.$name.'" name="'.$name.'" />';
-    $this->assertEquals(true,$this->mapper->compareMaps($htmlOutput,$this->mapper->generateMap($cObj,$name,'',array(),false)),' HTML mapname is not generated as supposed');
-    $this->assertEquals(true,$this->mapper->compareMaps($xhtmlOutput,$this->mapper->generateMap($cObj,$name,'',array(),true)),' XHTML mapname is not generated as supposed');
+    $htmlOutput = '<map name="'.$name.'"><area href="1" shape="rect" /></map>';
+    $xhtmlOutput = '<map  id="'.$name.'" name="'.$name.'"><area href="1" shape="rect" /></map>';
+    $this->assertEquals(true,$this->mapper->compareMaps($htmlOutput,$this->mapper->generateMap($cObj,$name,$input,array(),false)),' HTML mapname is not generated as supposed');
+    $this->assertEquals(true,$this->mapper->compareMaps($xhtmlOutput,$this->mapper->generateMap($cObj,$name,$input,array(),true)),' XHTML mapname is not generated as supposed');
   }
 
 
