@@ -49,11 +49,8 @@ class tx_imagemapwizard_controller_wizard {
 	protected function wizardAction() {
 		$params = t3lib_div::_GP('P');
 		$currentValue = $GLOBALS['BE_USER']->getSessionData ('imagemap_wizard.value');
-		//TODO: use-Flex-DataObject if needed
-		$dataClass = t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_dataObject');
-		$data = new $dataClass($params['table'],$params['field'],$params['uid'],$currentValue);
-
-		$this->view->setData($data);
+			//TODO: use-Flex-DataObject if needed
+		$this->view->setData($this->makeDataObj($params['table'],$params['field'],$params['uid'],$currentValue));
 		$this->view->renderContent();
 	}
 
@@ -63,8 +60,7 @@ class tx_imagemapwizard_controller_wizard {
 	 */
 	protected function tceformAction() {
 
-		$dataClass = t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_dataObject');
-		$data = new $dataClass($this->params['table'],$this->params['field'],$this->params['uid'],$this->forceValue);
+		$data = $this->makeDataObj($this->params['table'],$this->params['field'],$this->params['uid'],$this->forceValue);
 		$data->setFieldConf($this->params['fieldConf']);
 
 		$this->view->setData($data);
@@ -146,7 +142,25 @@ class tx_imagemapwizard_controller_wizard {
 		$this->initContext('tceform');
 		$this->initView();
 		return $this->triggerAction();
+	}
 
+	/**
+	 * Wrapper to instaciate the dataObject
+	 *
+	 * @param $table
+	 * @param $field
+	 * @param $uid
+	 * @param $value
+	 * @return tx_imagemapwizard_model_dataObject
+	 */
+	protected function makeDataObj($table, $field, $uid, $value) {
+		if(version_compare(TYPO3_version,'4.3.0','<')) {
+			$dataClass = t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_dataObject');
+			$data = new $dataClass($table, $field, $uid, $value);
+		} else {
+			$data = t3lib_div::makeInstance('tx_imagemapwizard_model_dataObject', $table, $field, $uid, $value);
+		}
+		return $data;
 	}
 }
 
