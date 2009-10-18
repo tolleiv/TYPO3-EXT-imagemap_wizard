@@ -32,6 +32,7 @@ class tx_imagemapwizard_model_typo3env {
 	protected $lastError;
 	protected $BE_USER = NULL;
 	protected $BE_USER_GLOBAL = NULL;
+
 	/**
 	 * Initialize TSFE so that the Frontend-Stuff can also be used in the Backend
 	 *
@@ -116,6 +117,7 @@ class tx_imagemapwizard_model_typo3env {
 
 		return true;
 	}
+
 	/**
 	 * Stack variable to store environment-settings
 	 *

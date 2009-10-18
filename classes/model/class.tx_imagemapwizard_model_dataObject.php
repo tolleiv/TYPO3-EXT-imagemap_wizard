@@ -33,8 +33,22 @@ require_once(PATH_t3lib.'class.t3lib_stdgraphic.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
 
 class tx_imagemapwizard_model_dataObject {
-	protected $row,$liveRow,$table,$mapField,$backPath;
+	protected $row;
+	protected $liveRow;
+	protected $table;
+	protected $mapField;
+	protected $backPath;
 	protected $modifiedFlag = false;
+	protected $fieldConf;
+
+	/**
+	 *
+	 * @param $table
+	 * @param $field
+	 * @param $uid
+	 * @param $currentValue
+	 * @return unknown_type
+	 */
 	public function __construct($table,$field,$uid,$currentValue=NULL) {
 		$this->table = $table;
 		t3lib_div::loadTCA($this->table);
@@ -49,6 +63,12 @@ class tx_imagemapwizard_model_dataObject {
 		$this->backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_typo3env').'::getBackPath();');
 	}
 
+	/**
+	 *
+	 * @param $field
+	 * @param $listNum
+	 * @return unknown_type
+	 */
 	public function getFieldValue($field,$listNum=-1) {
 
 		if(!is_array($this->row)) return NULL;
@@ -81,7 +101,10 @@ class tx_imagemapwizard_model_dataObject {
 
 	}
 	/**
-	 *   retrives current imagelocation - if multiple files are stored in the field only the first is recognized
+	 *	Retrives current imagelocation - if multiple files are stored in the field only the first is recognized
+	 *
+	 * @param $abs
+	 * @return string
 	 */
 	public function getImageLocation($abs=false) {
 		$imageField = $this->determineImageFieldName();
@@ -93,10 +116,19 @@ class tx_imagemapwizard_model_dataObject {
 		return ($abs?PATH_site:$this->backPath).$path.'/'.$this->getFieldValue($imageField,0);
 	}
 
+	/**
+	 *
+	 * @return boolean
+	 */
 	public function hasValidImageFile() {
 		return is_file($this->getImageLocation(true))&&is_readable($this->getImageLocation(true));
 	}
 
+	/**
+	 *	Renders the image within a frontend-like context
+	 *
+	 * @return string
+	 */
 	public function renderImage() {
 		$t3env = t3lib_div::makeInstance('tx_imagemapwizard_model_typo3env');
 		if(!$t3env->initTSFE($this->getLivePid(),$GLOBALS['BE_USER']->workspace,$GLOBALS['BE_USER']->user['uid'])) {
@@ -121,6 +153,13 @@ class tx_imagemapwizard_model_dataObject {
 		return $result;
 	}
 
+	/**
+	 *  Renders a thumbnail with preconfiguraed dimensions
+	 *
+	 * @param $confKey
+	 * @param $defaultMaxWH
+	 * @return unknown_type
+	 */
 	public function renderThumbnail($confKey,$defaultMaxWH) {
 		$maxSize = t3lib_div::makeInstance('tx_imagemapwizard_model_typo3env')->getExtConfValue($confKey,$defaultMaxWH);
 		$img = $this->renderImage();
@@ -142,6 +181,13 @@ class tx_imagemapwizard_model_dataObject {
 		}
 	}
 
+	/**
+	 * Calculates the scale-factor which is required to scale down the imagemap to the thumbnail
+	 *
+	 * @param $confKey
+	 * @param $defaultMaxWH
+	 * @return float
+	 */
 	public function getThumbnailScale($confKey,$defaultMaxWH) {
 		$maxSize = t3lib_div::makeInstance('tx_imagemapwizard_model_typo3env')->getExtConfValue($confKey,$defaultMaxWH);
 		$ret = 1;
@@ -159,6 +205,11 @@ class tx_imagemapwizard_model_dataObject {
 		return $ret;
 	}
 
+	/**
+	 *
+	 * @param $template
+	 * @return string
+	 */
 	public function listAreas($template="") {
 		if(!is_array($this->map["#"])) return '';
 		$result = '';
@@ -177,6 +228,11 @@ class tx_imagemapwizard_model_dataObject {
 		return $result;
 	}
 
+	/**
+	 *
+	 * @param $area
+	 * @return string
+	 */
 	protected function listAttributesAsSet($area) {
 		$relAttr = $this->getAttributeKeys();
 		$ret = array();
@@ -185,6 +241,11 @@ class tx_imagemapwizard_model_dataObject {
 		}
 		return implode(',',$ret);
 	}
+
+	/**
+	 *
+	 * @return string
+	 */
 	public function emptyAttributeSet() {
 		$relAttr = $this->getAttributeKeys();
 		$ret = array();
@@ -194,23 +255,44 @@ class tx_imagemapwizard_model_dataObject {
 		return implode(',',$ret);
 	}
 
+	/**
+	 *
+	 * @param $v
+	 * @return string
+	 */
 	protected function attributize($v) {
 		return preg_replace('/([^\\\\])\\\\\\\\\'/','\1\\\\\\\\\\\'',str_replace('\'','\\\'',$v));
 	}
 
+	/**
+	 *
+	 * @return array
+	 */
 	public function getAttributeKeys() {
 		$keys = t3lib_div::trimExplode(',',eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_typo3env').'::getExtConfValue(\'additionalAttributes\',\'\');'),true);
 		return array_diff($keys,array('alt','href','shape','coords'));
 	}
 
+	/**
+	 *
+	 * @return int
+	 */
 	protected function getLivePid() {
 		return $this->row['pid']>0?$this->row['pid']:$this->liveRow['pid'];
 	}
 
+	/**
+	 *
+	 * @return int
+	 */
 	protected function getLiveUid() {
 		return (($GLOBALS['BE_USER']->workspace===0) || ($this->row['t3ver_oid']==0))?$this->row['uid']:$this->row['t3ver_oid'];
 	}
 
+	/**
+	 *
+	 * @return string
+	 */
 	protected function determineImageFieldName() {
 		$imgField = $this->getFieldConf('config/userImage/field')?$this->getFieldConf('config/userImage/field'):'image';
 		if($this->isFlexField($this->mapField)) {
@@ -219,22 +301,43 @@ class tx_imagemapwizard_model_dataObject {
 		return $imgField;
 	}
 
+	/**
+	 *
+	 * @return string
+	 */
 	public function getTablename() {
 		return $this->table;
 	}
 
+	/**
+	 *
+	 * @return string
+	 */
 	public function getFieldname() {
 		return $this->mapField;
 	}
 
+	/**
+	 *
+	 * @return array
+	 */
 	public function getRow() {
 		return $this->row;
 	}
 
+	/**
+	 *
+	 * @return int
+	 */
 	public function getUid() {
 		return $this->row['uid'];
 	}
 
+	/**
+	 *
+	 * @param $value
+	 * @return void
+	 */
 	public function useCurrentData($value) {
 		$cur = $this->getCurrentData();
 		if(!t3lib_div::makeInstance("tx_imagemapwizard_model_mapper")->compareMaps($cur,$value)) {
@@ -252,6 +355,10 @@ class tx_imagemapwizard_model_dataObject {
 		}
 	}
 
+	/**
+	 *
+	 * @return string
+	 */
 	public function getCurrentData(){
 		if($this->isFlexField($this->mapField)) {
 			$tools = t3lib_div::makeInstance('t3lib_flexformtools');
@@ -263,24 +370,41 @@ class tx_imagemapwizard_model_dataObject {
 		}
 	}
 
+	/**
+	 *
+	 * @return boolean
+	 */
 	public function hasDirtyState() {
 		return $this->modifiedFlag;
 	}
 
-	protected $fieldConf;
+	/**
+	 *
+	 * @param $cfg
+	 * @return void
+	 */
 	public function setFieldConf($cfg) {
 		$this->fieldConf = $cfg;
 	}
 
+	/**
+	 *
+	 * @param $subKey
+	 * @return array
+	 */
 	public function getFieldConf($subKey=NULL) {
 		if($subKey==NULL) {
 			return $this->fieldConf;
 		}
-
 		$tools = t3lib_div::makeInstance('t3lib_flexformtools');
 		return $tools->getArrayValueByPath($subKey,$this->fieldConf);
 	}
 
+	/**
+	 *
+	 * @param $field
+	 * @return boolesan
+	 */
 	protected function isFlexField($field) {
 		$theField = $field;
 		if(stristr($field,':')) {

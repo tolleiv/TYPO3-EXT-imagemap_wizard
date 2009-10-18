@@ -14,17 +14,18 @@ $tempColumns = array (
 		'config' => array (
 			'type' => 'user',
 			'userFunc' => 'tx_imagemapwizard_controller_wizard->renderForm',
-            'wizards' => array(
-                'imagemap' => array(
-                    'type' => 'popup',
-                    'script' => 'EXT:imagemap_wizard/wizard.php',
-                    'title' => 'ImageMap',
-                    'JSopenParams' => 'height=700,width=780,status=0,menubar=0,scrollbars=1',
-                    'icon' => 'link_popup.gif',
-                ),
-            ),
-            'softref'=>'tx_imagemapwizard',
-        ),
+			'wizards' => array(
+				'imagemap' => array(
+					'type' => 'popup',
+					'script' => 'EXT:imagemap_wizard/wizard.php',
+					'title' => 'ImageMap',
+					'JSopenParams' => 'height=700,width=780,status=0,menubar=0,scrollbars=1',
+					'icon' => 'link_popup.gif',
+				),
+				'_VALIGN' => 'middle',
+			),
+			'softref'=>'tx_imagemapwizard',
+		),
 	),
 );
 t3lib_extMgm::addTCAcolumns("tt_content",$tempColumns,1);
