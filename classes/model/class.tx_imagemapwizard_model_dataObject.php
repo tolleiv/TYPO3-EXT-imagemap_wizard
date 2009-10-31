@@ -134,13 +134,15 @@ class tx_imagemapwizard_model_dataObject {
 		if(!$t3env->initTSFE($this->getLivePid(),$GLOBALS['BE_USER']->workspace,$GLOBALS['BE_USER']->user['uid'])) {
 			return 'Can\'t render image since TYPO3 Environment is not ready.<br/>Error was:'.$t3env->get_lastError();
 		}
-		$conf = array('table'=>$this->table,'select.'=>array('uidInList'=>$this->getLiveUid()));
+		$conf = array('table'=>$this->table,'select.'=>array('uidInList'=>$this->getLiveUid(), 'pidInList'=>$this->getLivePid()));
 
 		if(t3lib_extMgm::isLoaded('templavoila')) require_once(t3lib_extMgm::extPath('templavoila').'pi1/class.tx_templavoila_pi1.php');
 		//render like in FE with WS-preview etc...
 		$t3env->pushEnv();
 		$t3env->setEnv(PATH_site);
-		$t3env->resetEnableColumns($this->table);       // no fe_group, start/end, hidden restrictions needed :P
+		$t3env->resetEnableColumns('pages');			// enable rendering on access-restricted pages
+		$t3env->resetEnableColumns('pages_language_overlay');
+		$t3env->resetEnableColumns($this->table);		// no fe_group, start/end, hidden restrictions needed :P
 		$result = $GLOBALS['TSFE']->cObj->CONTENT($conf);
 		$t3env->popEnv();
 		// extract the image
