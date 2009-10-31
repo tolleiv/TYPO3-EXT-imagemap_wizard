@@ -470,5 +470,4 @@ var canvasClass = Class.extend({
     getMaxH: function() {
         return this.scaleFactor*this.imageOrigH;
     }
-    
 });

@@ -38,8 +38,8 @@ $additionalWizardConf = array('fieldChangeFunc'=>array('imagemapwizard_valueChan
     <?php
         ob_start();
     ?>
-    <div class="imagemap_wiz" style="padding:5px;overflow:hidden">
-        <div id="<?php echo $this->getId(); ?>-canvas" style="position:relative">
+    <div class="imagemap_wiz" style="padding:5px;overflow:hidden;position:relative">
+        <div id="<?php echo $this->getId(); ?>-canvas" style="position:relative;top:5px;left:5px;">
         <?php
             echo $this->data->renderThumbnail('previewImageMaxWH',200);
         ?>

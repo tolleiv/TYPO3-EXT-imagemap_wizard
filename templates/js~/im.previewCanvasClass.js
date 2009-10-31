@@ -85,5 +85,4 @@ var previewCanvasClass = Class.extend({
     getMaxH:function() {
         return jQuery(this.canvasId).height();
     }
-
 });

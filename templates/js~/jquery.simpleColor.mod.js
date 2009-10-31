@@ -10,6 +10,7 @@
  * Revision: $Id$
  * Version: 1.0.0  Aug-03-2007
  */
+
  (function($) {
 /**
  * simpleColor() provides a mechanism for displaying simple color-pickers.
