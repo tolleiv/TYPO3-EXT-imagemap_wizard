@@ -23,6 +23,7 @@ $tempColumns = array (
 					'icon' => 'link_popup.gif',
 				),
 				'_VALIGN' => 'middle',
+				'_PADDING' => '4',
 			),
 			'softref'=>'tx_imagemapwizard',
 		),
