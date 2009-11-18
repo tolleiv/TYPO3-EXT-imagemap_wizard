@@ -38,13 +38,21 @@ require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_im
 		if(strcmp($GLOBALS['TSFE']->config['config']['doctype'],'xhtml_strict')===0) {
 			$attrlist =  array_diff($attrlist, array('target'));
 		}
+
 		$mapname = $this->cObj->stdWrap(preg_replace('/\s/','-',$this->cObj->getData($conf['map.']['name'],$this->cObj->data)),$conf['map.']['name.']);
 
-		$converter = t3lib_div::makeInstance('tx_imagemapwizard_model_mapper');
-		$mapname = $converter->createValidNameAttribute($mapname);
-		$map = $converter->generateMap($this->cObj,$mapname,$this->cObj->getData($conf['map.']['data'],$this->cObj->data),$attrlist,$xhtml,$conf);
-
-		return str_replace('###IMAGEMAP_USEMAP###',$mapname,$content).$map;
+			// checking which image this is - using registers I guess these won't change in later versions (global vars might)
+		$num = $this->cObj->getData('register:IMAGE_NUM_CURRENT',$this->cObj->data);
+		if($num==0) {
+				/* @var $converter tx_imagemapwizard_model_mapper */
+			$converter = t3lib_div::makeInstance('tx_imagemapwizard_model_mapper');
+			$mapname = $converter->createValidNameAttribute($mapname);
+			$map = $converter->generateMap($this->cObj,$mapname,$this->cObj->getData($conf['map.']['data'],$this->cObj->data),$attrlist,$xhtml,$conf,$num);
+			if(!$converter->isEmptyMap($map)) {
+				return str_replace('###IMAGEMAP_USEMAP###',$mapname,$content).$map;
+			}
+		}
+		return str_replace(' usemap="####IMAGEMAP_USEMAP###"','',$content);
 	}
  }
 
