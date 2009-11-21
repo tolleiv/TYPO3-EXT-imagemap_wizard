@@ -55,8 +55,7 @@ class tx_imagemapwizard_model_typo3env {
 		require_once(t3lib_extMgm::extPath('css_styled_content').'pi1/class.tx_cssstyledcontent_pi1.php');
 
 		$tca = $GLOBALS['TCA'];
-		$temp_TTclassName = t3lib_div::makeInstanceClassName('t3lib_timeTrack');
-		$GLOBALS['TT'] = new $temp_TTclassName();
+		$GLOBALS['TT'] = t3lib_div::makeInstance('t3lib_timeTrack');
 		$GLOBALS['TT']->start();
 
 		if(version_compare(TYPO3_version,'4.3.0','<')) {

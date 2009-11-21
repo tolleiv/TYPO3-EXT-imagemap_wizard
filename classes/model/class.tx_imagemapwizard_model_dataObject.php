@@ -58,9 +58,7 @@ class tx_imagemapwizard_model_dataObject {
 		$this->liveRow = $this->row;
 		t3lib_BEfunc::fixVersioningPid($table,$this->liveRow);
 		$this->map = t3lib_div::makeInstance("tx_imagemapwizard_model_mapper")->map2array($this->getFieldValue($this->mapField));
-
-		//eval for the XCLASSes
-		$this->backPath = eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_typo3env').'::getBackPath();');
+		$this->backPath = tx_imagemapwizard_model_typo3env::getBackPath();
 	}
 
 	/**
@@ -271,7 +269,7 @@ class tx_imagemapwizard_model_dataObject {
 	 * @return array
 	 */
 	public function getAttributeKeys() {
-		$keys = t3lib_div::trimExplode(',',eval('return '.t3lib_div::makeInstanceClassName('tx_imagemapwizard_model_typo3env').'::getExtConfValue(\'additionalAttributes\',\'\');'),true);
+		$keys = t3lib_div::trimExplode(',',tx_imagemapwizard_model_typo3env::getExtConfValue('additionalAttributes',''));
 		return array_diff($keys,array('alt','href','shape','coords'));
 	}
 
