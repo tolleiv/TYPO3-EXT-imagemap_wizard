@@ -40,9 +40,6 @@ jQuery(document).ready(function(){
     	setValue("<map>" + canvasObject.persistanceXML() + "\n</map>");
     	close();
     });
-    jQuery("#debug").click(function(event) {
-    	setValue("<map>" + canvasObject.persistanceXML() + "\n</map>");
-    });
     jQuery("#canvas").mousedown(function(e){
         return canvasObject.mousedown(e);
     });
