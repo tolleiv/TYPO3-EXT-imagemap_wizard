@@ -29,12 +29,15 @@ jQuery(document).ready(function(){
 
     jQuery("#addRect").click(function(event) {
         canvasObject.addArea(new areaRectClass(),\'\',\'\',\'\',\'\',1,defaultAttributeset);
+        return false;
     });
     jQuery("#addPoly").click(function(event) {
         canvasObject.addArea(new areaPolyClass(),\'\',\'\',\'\',\'\',1,defaultAttributeset);
+        return false;
     });
     jQuery("#addCirc").click(function(event) {
         canvasObject.addArea(new areaCircleClass(),\'\',\'\',\'\',\'\',1,defaultAttributeset);
+        return false;
     });
     jQuery("#submit").click(function(event) {
     	setValue("<map>" + canvasObject.persistanceXML() + "\n</map>");
@@ -75,11 +78,10 @@ jQuery(document).ready(function(){
         </div>
     </div>
 	<div id="actions">
-        <input type="button" id="addRect" value="<?php $this->getLL('imagemap_wizard.form.addrect',1); ?>" />
-        <input type="button" id="addCirc" value="<?php $this->getLL('imagemap_wizard.form.addcirc',1); ?>" />
-        <input type="button" id="addPoly" value="<?php $this->getLL('imagemap_wizard.form.addpoly',1); ?>" />
-        <input type="button" id="submit" value="<?php $this->getLL('imagemap_wizard.form.submit',1); ?>" />
-        <!-- <input type="button" id="debug" value="Debug" /> -->
+        <input type="submit" id="addRect" value="<?php $this->getLL('imagemap_wizard.form.addrect',1); ?>" />
+        <input type="submit" id="addCirc" value="<?php $this->getLL('imagemap_wizard.form.addcirc',1); ?>" />
+        <input type="submit" id="addPoly" value="<?php $this->getLL('imagemap_wizard.form.addpoly',1); ?>" />
+        <input type="submit" id="submit" value="<?php $this->getLL('imagemap_wizard.form.submit',1); ?>" />
     </div>
     <div id="areaForms">
         <div id="rectForm" class="areaForm bgColor5">
