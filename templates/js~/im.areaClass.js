@@ -144,7 +144,7 @@ var areaClass = Class
 						.click(function(event) {
 							jQuery(this).data("area").remove();
 						});
-				jQuery("#" + this.getFormId() + " > .basicOptions > .exp > img")
+				jQuery("#" + this.getFormId() + " > .basicOptions > .exp > img").parent()
 						.data("obj", this).data("rel",
 								"#" + this.getFormId() + " > .moreOptions")
 						.click(
@@ -171,7 +171,7 @@ var areaClass = Class
 								"pseudo",
 								"#"
 										+ this.getFormId()
-										+ " > .basicOptions > .exp > img:visible")
+										+ " > .basicOptions > .exp > img:visible").parent()
 						.click(
 								function(event) {
 									jQuery(jQuery(this).data("pseudo"))
