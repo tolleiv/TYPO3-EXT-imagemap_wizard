@@ -141,8 +141,10 @@ class tx_imagemapwizard_model_dataObject {
 		$t3env->resetEnableColumns('pages');			// enable rendering on access-restricted pages
 		$t3env->resetEnableColumns('pages_language_overlay');
 		$t3env->resetEnableColumns($this->table);		// no fe_group, start/end, hidden restrictions needed :P
+		$GLOBALS['TSFE']->cObj->LOAD_REGISTER(array('keepUsemapMarker'=>'1'));
 		$result = $GLOBALS['TSFE']->cObj->CONTENT($conf);
 		$t3env->popEnv();
+
 		// extract the image
 		$matches=array();
 		if(!preg_match('/(<img[^>]+usemap="#[^"]+"[^>]*\/>)/',$result,$matches)) {
