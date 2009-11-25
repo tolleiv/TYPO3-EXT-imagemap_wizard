@@ -1,4 +1,4 @@
-#cat=basic//10; type=boolean; label = use within common items: (not used yet) clear Config-Cache after you changes this setting
+#cat=basic//10; type=boolean; label = use within common items: atm. only the first image can have a imagemap setup, clear Config-Cache after you changed this setting
 allTTCtypes = 0
 
 #cat=basic//10; type=boolean; label = store wizard settings: (not used yet) determines whether wizard-settings should be stored in the user-session

@@ -31,9 +31,10 @@ $tempColumns = array (
 );
 t3lib_extMgm::addTCAcolumns("tt_content",$tempColumns,1);
 
+$imwizardConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['imagemap_wizard']);
 
 $GLOBALS['TCA']['tt_content']['types']['imagemap_wizard'] = $GLOBALS['TCA']['tt_content']['types']['image'];
-t3lib_extMgm::addToAllTCAtypes('tt_content','tx_imagemapwizard_links', 'imagemap_wizard','after:image');
+t3lib_extMgm::addToAllTCAtypes('tt_content','tx_imagemapwizard_links', ($imwizardConf['allTTCtypes'] ? '' : 'imagemap_wizard') ,'after:image');
 // CSH context sensitive help
 t3lib_extMgm::addLLrefForTCAdescr('tt_content','EXT:imagemap_wizard/locallang_csh_ttc.xml');
 
