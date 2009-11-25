@@ -22,4 +22,26 @@ if (TYPO3_MODE=='BE') {
 
 	t3lib_extMgm::addTypoScript($_EXTKEY,'setup',$typoscript,43);
 
+	t3lib_extMgm::addPageTSConfig('
+		mod.wizards.newContentElement.wizardItems.common.elements.imagemap·{
+			icon·=·EXT:imagemap_wizard/tt_content_imagemap.gif
+			title·=·LLL:EXT:imagemap_wizard/locallang.xml:imagemap.title
+			description·=··LLL:EXT:imagemap_wizard/locallang.xml:imagemap.description
+			tt_content_defValues·{
+				CType·=·imagemap_wizard
+			}
+		}
+		mod.wizards.newContentElement.wizardItems.common.show := addToList(imagemap)
+
+		templavoila.wizards.newContentElement.wizardItems.common.elements.imagemap·{
+			icon·=·EXT:imagemap_wizard/tt_content_imagemap.gif
+			title·=·LLL:EXT:imagemap_wizard/locallang.xml:imagemap.title
+			description·=··LLL:EXT:imagemap_wizard/locallang.xml:imagemap.description
+			tt_content_defValues·{
+				CType·=·imagemap_wizard
+			}
+		}
+		templavoila.wizards.newContentElement.wizardItems.common.show := addToList(imagemap)
+	');
+
 ?>
