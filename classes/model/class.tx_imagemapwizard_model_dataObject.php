@@ -141,14 +141,14 @@ class tx_imagemapwizard_model_dataObject {
 		$t3env->resetEnableColumns('pages');			// enable rendering on access-restricted pages
 		$t3env->resetEnableColumns('pages_language_overlay');
 		$t3env->resetEnableColumns($this->table);		// no fe_group, start/end, hidden restrictions needed :P
-		$GLOBALS['TSFE']->cObj->LOAD_REGISTER(array('keepUsemapMarker'=>'1'));
+		$GLOBALS['TSFE']->cObj->LOAD_REGISTER(array('keepUsemapMarker'=>'1'), 'LOAD_REGISTER');
 		$result = $GLOBALS['TSFE']->cObj->CONTENT($conf);
 		$t3env->popEnv();
 
 		// extract the image
 		$matches=array();
 		if(!preg_match('/(<img[^>]+usemap="#[^"]+"[^>]*\/>)/',$result,$matches)) {
-			//TODO: consider to use the normal image as fallback here instead of showing an error-message
+				//TODO: consider to use the normal image as fallback here instead of showing an error-message
 			return 'No Image rendered from TSFE. :(<br/>Has the page some kind of special doktype or has it access-restrictions?<br/>There are lot\'s of things which can go wrong since normally nobody creates frontend-output in the backend ;)<br/>Error was:'.$t3env->get_lastError();
 		}
 		$result = str_replace('src="','src="'.($this->backPath),$matches[1]);
