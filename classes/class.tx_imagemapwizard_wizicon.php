@@ -38,7 +38,7 @@ class tx_imagemapwizard_wizicon {
 			'icon' => t3lib_extMgm::extRelPath('imagemap_wizard').'tt_content_imagemap.gif',
 			'title' => $GLOBALS['LANG']->getLLL('imagemap.title',$LL),
 			'description' => $GLOBALS['LANG']->getLLL('imagemap.description',$LL),
-			'tt_content_defValues' => array(
+			'tt_content_defValues.' => array(
 				'CType' => 'imagemap_wizard'
 			)
 		);
