@@ -49,11 +49,17 @@ class tx_imagemapwizard_model_dataObject {
 	 * @param $currentValue
 	 * @return unknown_type
 	 */
-	public function __construct($table,$field,$uid,$currentValue=NULL) {
+	public function __construct($table,$field,$uid,$currentValue=NULL) {	
+		if(!in_array($table, array_keys($GLOBALS['TCA']))) {
+			throw new Exception('table ('.$table.') not defined in TCA');
+		}	
 		$this->table = $table;
 		t3lib_div::loadTCA($this->table);
+		if(!in_array($field, array_keys($GLOBALS['TCA'][$table]['columns']))) {
+			throw new Exception('field ('.$field.') unknow for table in TCA');
+		}		
 		$this->mapField = $field;
-		$this->row = t3lib_BEfunc::getRecordWSOL($table,$uid);
+		$this->row = t3lib_BEfunc::getRecordWSOL($table,intval($uid));
 		if($currentValue) { $this->useCurrentData($currentValue); }
 		$this->liveRow = $this->row;
 		t3lib_BEfunc::fixVersioningPid($table,$this->liveRow);
@@ -135,7 +141,7 @@ class tx_imagemapwizard_model_dataObject {
 		$conf = array('table'=>$this->table,'select.'=>array('uidInList'=>$this->getLiveUid(), 'pidInList'=>$this->getLivePid()));
 
 		if(t3lib_extMgm::isLoaded('templavoila')) require_once(t3lib_extMgm::extPath('templavoila').'pi1/class.tx_templavoila_pi1.php');
-		//render like in FE with WS-preview etc...
+			//render like in FE with WS-preview etc...
 		$t3env->pushEnv();
 		$t3env->setEnv(PATH_site);
 		$t3env->resetEnableColumns('pages');			// enable rendering on access-restricted pages
