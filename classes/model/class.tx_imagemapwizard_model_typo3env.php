@@ -68,7 +68,7 @@ class tx_imagemapwizard_model_typo3env {
 		$GLOBALS['TSFE']->config['config']['language']=$_GET['L'];
 		$GLOBALS['TSFE']->id = $pid;
 		$GLOBALS['TSFE']->workspacePreview = $GLOBALS['BE_USER']->workspace;
-		$GLOBALS['TSFE']->connectToMySQL();
+		$GLOBALS['TSFE']->connectToDB();
 		$sqlDebug = $GLOBALS['TYPO3_DB']->debugOutput;
 		$GLOBALS['TYPO3_DB']->debugOutput = false;
 		$GLOBALS['TSFE']->initLLVars();
