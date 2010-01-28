@@ -49,15 +49,15 @@ class tx_imagemapwizard_model_dataObject {
 	 * @param $currentValue
 	 * @return unknown_type
 	 */
-	public function __construct($table,$field,$uid,$currentValue=NULL) {	
+	public function __construct($table,$field,$uid,$currentValue=NULL) {
 		if(!in_array($table, array_keys($GLOBALS['TCA']))) {
 			throw new Exception('table ('.$table.') not defined in TCA');
-		}	
+		}
 		$this->table = $table;
 		t3lib_div::loadTCA($this->table);
 		if(!in_array($field, array_keys($GLOBALS['TCA'][$table]['columns']))) {
 			throw new Exception('field ('.$field.') unknow for table in TCA');
-		}		
+		}
 		$this->mapField = $field;
 		$this->row = t3lib_BEfunc::getRecordWSOL($table,intval($uid));
 		if($currentValue) { $this->useCurrentData($currentValue); }
@@ -223,7 +223,7 @@ class tx_imagemapwizard_model_dataObject {
 		$result = '';
 		foreach($this->map["#"] as $area) {
 			$markers = array(	"##coords##"=>$area["@"]["coords"],
-								"##shape##"=>$this->attributize(ucfirst($area["@"]["shape"])),
+								"##shape##"=>ucfirst($area["@"]["shape"]),
 								"##color##"=>$this->attributize($area["@"]["color"]),
 								"##link##"=>$this->attributize($area["value"]),
 								"##alt##"=>$this->attributize($area["@"]["alt"]),
@@ -269,7 +269,14 @@ class tx_imagemapwizard_model_dataObject {
 	 * @return string
 	 */
 	protected function attributize($v) {
-		return preg_replace('/([^\\\\])\\\\\\\\\'/','\1\\\\\\\\\\\'',str_replace('\'','\\\'',$v));
+
+		$attr = preg_replace('/([^\\\\])\\\\\\\\\'/','\1\\\\\\\\\\\'',str_replace('\'','\\\'',$v));
+
+		if($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] != 'utf-8') {
+			$attr = '\' + jQuery.base64Decode(\''.base64_encode($attr) .'\') + \'';
+		}
+
+		return $attr;
 	}
 
 	/**
