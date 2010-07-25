@@ -10,8 +10,8 @@
 #canvas { z-index:100; left:4px; top:4px; }
  .point { width:5px; height:5px; background:#ffffff; border:1px solid #000000; position:absolute; left:0px; top:0px; }
 #actions { float:left; padding:10px 20px 0 20px; width:100%; clear:left; }
-#areaForms { padding:20px 5px 50px 5px; width:490px; float:left; clear:left; }
-.areaForm { position:relative; width: 490px; float:left; clear:left; margin:3px; padding:10px 10px 0 10px; border:1px solid gray; }
+#areaForms { padding:20px 5px 50px 5px; width:590px; float:left; clear:left; }
+.areaForm { position:relative; width: 560px; float:left; clear:left; margin:3px; padding:10px 10px 0 10px; border:1px solid gray; }
 .areaForm .formCoord { width: 35px; text-align:right; margin-right:5px; float:left; }
 .arrow { position:absolute; right:0px; top:0px; border-left:1px solid grey; height:25px; padding:16px 10px 0 10px; }
 .basicOptions { margin-bottom:10px; }
@@ -27,7 +27,7 @@
 .XYlabel { float:left; width:30px; }
 .coordOpt { float:left; }
 
-.moreOptions .halfLine { float:left; width:220px; }
+.moreOptions .halfLine { float:left; width:230px; padding-right:10px; }
 .colorPreview { border:1px solid #000; float:left; margin-right:5px;margin-top:3px; }
 .colorPreview div { width:10px; height:10px;  border:2px solid #fff; }
 .moreOptions .colorBox { border:1px solid #000; float:left; }

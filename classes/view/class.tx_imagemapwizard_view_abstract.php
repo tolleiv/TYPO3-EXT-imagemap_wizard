@@ -31,6 +31,24 @@ abstract class tx_imagemapwizard_view_abstract {
 
 	protected $jsFiles,$cssFiles,$inlineJs,$data,$id;
 
+	protected static $icon2Sprite = array(
+		"gfx/button_up.gif" => 'actions-move-up',
+		"gfx/button_down.gif" => 'actions-move-down',
+		"gfx/undo.gif" => 'actions-edit-undo',
+		"gfx/redo.gif" => 'extensions-imagemap_wizard-redo',
+		"gfx/garbage.gif" => 'actions-edit-delete',
+		"gfx/add.gif" => 'actions-edit-add',
+		"gfx/refresh_n.gif" => 'actions-system-refresh',
+		"gfx/pil2down.gif" => 'actions-view-table-expand',
+		"gfx/pil2up.gif" => 'actions-view-table-collapse',
+		"gfx/link_popup.gif" => 'extensions-imagemap_wizard-link',
+		"gfx/zoom_in.gif" => 'extensions-imagemap_wizard-zoomin',
+		"gfx/zoom_out.gif" => 'extensions-imagemap_wizard-zoomout',
+		"gfx/arrowup.png" => 'actions-view-go-up',
+		"gfx/arrowdown.png" => 'actions-view-go-down',
+		"gfx/close_gray.gif" => 'actions-document-close',
+	);
+
 	/**
 	 * Just initialize the View, fill internal variables etc...
 	 */
@@ -139,12 +157,17 @@ abstract class tx_imagemapwizard_view_abstract {
 	 * @return String HTML-img-tag
 	 */
 	protected function getIcon($skinPath,$attr='') {
-		$source = t3lib_iconWorks::skinImg($this->doc->backPath,$skinPath);
-		$match=array();
-		if(preg_match('/src="(\S+)"/',$source,$match) && !is_file($match[1])) {
-			$source='src ="'.$this->getTplSubpath().$skinPath.'"';
+
+		if(version_compare(TYPO3_version,'4.4','<')) {
+			$source = t3lib_iconWorks::skinImg($this->doc->backPath,$skinPath);
+			$match=array();
+			if(preg_match('/src="(\S+)"/',$source,$match) && !is_file($match[1])) {
+				$source='src ="'.$this->getTplSubpath().$skinPath.'"';
+			}
+			return "<img ".$source.($attr?' '.$attr:'')." />";
+		} else {
+			return '<span '.$attr.'>'.t3lib_iconWorks::getSpriteIcon(self::$icon2Sprite[$skinPath]).'</span>';
 		}
-		return "<img ".$source.($attr?' '.$attr:'')." />";
 	}
 
 	/**

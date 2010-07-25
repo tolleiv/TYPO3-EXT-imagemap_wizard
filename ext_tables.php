@@ -41,5 +41,13 @@ t3lib_extMgm::addLLrefForTCAdescr('tt_content','EXT:imagemap_wizard/locallang_cs
 if (TYPO3_MODE=='BE')    {
     $GLOBALS['TBE_MODULES_EXT']['xMOD_db_new_content_el']['addElClasses']['tx_imagemapwizard_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'classes/class.tx_imagemapwizard_wizicon.php';
 }
-
+if(version_compare(TYPO3_version,'4.4','>')) {
+	$icons = array(
+		'redo' => t3lib_extMgm::extRelPath($_EXTKEY) . 'res/arrow_redo.png',
+		'link' => t3lib_extMgm::extRelPath($_EXTKEY) . 'res/link_edit.png',
+		'zoomin' => t3lib_extMgm::extRelPath($_EXTKEY) . 'res/magnifier_zoom_in.png',
+		'zoomout' => t3lib_extMgm::extRelPath($_EXTKEY) . 'res/magnifier_zoom_out.png',
+	);
+	t3lib_SpriteManager::addSingleIcons($icons, $_EXTKEY);
+}
 ?>

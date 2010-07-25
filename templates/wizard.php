@@ -95,7 +95,7 @@ jQuery(document).ready(function(){
                 <?php echo $this->getIcon("gfx/undo.gif","id=\"MAPFORMID_undo\" alt=\"".$this->getLL('imagemap_wizard.form.area.undo')."\" title=\"".$this->getLL('imagemap_wizard.form.area.undo')."\" class=\"ptr undo\""); ?>
                 <?php echo $this->getIcon("gfx/redo.gif","id=\"MAPFORMID_redo\" alt=\"".$this->getLL('imagemap_wizard.form.area.redo')."\" title=\"".$this->getLL('imagemap_wizard.form.area redo')."\" class=\"ptr redo\""); ?>
             	<?php echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"".$this->getLL('imagemap_wizard.form.area.remove')."\" title=\"".$this->getLL('imagemap_wizard.form.area.remove')."\""); ?>
-            	<div class="arrow exp ptr"><?php echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
+            	<div class="arrow exp ptr"><?php echo $this->getIcon("gfx/pil2down.gif","class=\"ptr expUpDown down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); echo $this->getIcon("gfx/pil2up.gif","class=\"ptr expUpDown up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
             </div>
             <div id="MAPFORMID_more" class="moreOptions">
                 <div class="halfLine">
@@ -117,7 +117,7 @@ jQuery(document).ready(function(){
                 <?php echo $this->getIcon("gfx/undo.gif","id=\"MAPFORMID_undo\" alt=\"".$this->getLL('imagemap_wizard.form.area.undo')."\" title=\"".$this->getLL('imagemap_wizard.form.area.undo')."\" class=\"ptr undo\""); ?>
                 <?php echo $this->getIcon("gfx/redo.gif","id=\"MAPFORMID_redo\" alt=\"".$this->getLL('imagemap_wizard.form.area.redo')."\" title=\"".$this->getLL('imagemap_wizard.form.area redo')."\" class=\"ptr redo\""); ?>
             	<?php echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"".$this->getLL('imagemap_wizard.form.area.remove')."\" title=\"".$this->getLL('imagemap_wizard.form.area.remove')."\""); ?>
-            	<div class="arrow exp ptr"><?php echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
+            	<div class="arrow exp ptr"><?php echo $this->getIcon("gfx/pil2down.gif","class=\"ptr expUpDown down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); echo $this->getIcon("gfx/pil2up.gif","class=\"ptr expUpDown up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
             </div>
             <div id="MAPFORMID_more" class="moreOptions">
                 <div class="halfLine">
@@ -140,7 +140,7 @@ jQuery(document).ready(function(){
                 <?php echo $this->getIcon("gfx/redo.gif","id=\"MAPFORMID_redo\" alt=\"".$this->getLL('imagemap_wizard.form.area.redo')."\" title=\"".$this->getLL('imagemap_wizard.form.area redo')."\" class=\"ptr redo\""); ?>
             	<?php echo $this->getIcon("gfx/garbage.gif","id=\"MAPFORMID_del\" class=\"ptr\" alt=\"".$this->getLL('imagemap_wizard.form.area.remove')."\" title=\"".$this->getLL('imagemap_wizard.form.area.remove')."\""); ?>
                 <?php echo $this->getIcon("gfx/add.gif","id=\"MAPFORMID_add\" alt=\"".$this->getLL('imagemap_wizard.form.poly.add')."\" title=\"".$this->getLL('imagemap_wizard.form.poly.add')."\" class=\"ptr add\""); ?>
-            	<div class="arrow exp ptr"><?php echo $this->getIcon("gfx/pil2down.gif","class=\"ptr down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); echo $this->getIcon("gfx/pil2up.gif","class=\"ptr up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
+            	<div class="arrow exp ptr"><?php echo $this->getIcon("gfx/pil2down.gif","class=\"ptr expUpDown down\" alt=\"".$this->getLL('imagemap_wizard.form.area.expand')."\" title=\"".$this->getLL('imagemap_wizard.form.area.expand')."\""); echo $this->getIcon("gfx/pil2up.gif","class=\"ptr expUpDown up\" alt=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\" title=\"".$this->getLL('imagemap_wizard.form.area.collapse')."\""); ?></div>
             </div>
             <div id="MAPFORMID_more" class="moreOptions">
                 <div class="halfLine">
