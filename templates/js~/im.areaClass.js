@@ -178,11 +178,17 @@ var areaClass = Class
 											.trigger('click');
 								});
 				jQuery("#" + this.getFormId() + "_link").data("obj", this)
-						.change(function(event) {
-							jQuery(this).data("obj").updateStatesFromForm();
-							var that = jQuery(this).data("obj");
-							that.pushUndoableAction();
-						});
+					.change(function(event) {
+						jQuery(this).data("obj").updateStatesFromForm();
+						var that = jQuery(this).data("obj");
+						that.pushUndoableAction();
+					});
+				jQuery("#" + this.getFormId() + "_label").data("obj", this)
+					.change(function(event) {
+						jQuery(this).data("obj").updateStatesFromForm();
+						var that = jQuery(this).data("obj");
+						that.pushUndoableAction();
+					});
 				jQuery("#" + this.getFormId() + "_up").data("obj", this).click(
 						function(event) {
 							jQuery(this).data("obj").getCanvas().areaUp(
@@ -367,6 +373,7 @@ var areaClass = Class
 			},
 
 			pushUndoableAction : function() {
+				this.updateStatesFromForm();
 				this._undoStack.push(this.getUndoObject());
 				this._redoStack.splice(0, this._redoStack.length);
 				this.changeUndoBtnStates();
