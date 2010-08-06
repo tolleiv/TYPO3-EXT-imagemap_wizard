@@ -95,7 +95,7 @@ class tx_imagemapwizard_model_typo3env {
 		$GLOBALS['TSFE']->showHiddenRecords = true;
 		$GLOBALS['TSFE']->getPageAndRootline();
 		$GLOBALS['TSFE']->initTemplate();
-		$GLOBALS['TSFE']->forceTemplateParsing = 1;
+			//$GLOBALS['TSFE']->forceTemplateParsing = 1;
 		$GLOBALS['TSFE']->tmpl->start($GLOBALS['TSFE']->rootLine);
 		$GLOBALS['TSFE']->sPre = $GLOBALS['TSFE']->tmpl->setup['types.'][$GLOBALS['TSFE']->type];        // toplevel - objArrayName
 		$GLOBALS['TSFE']->pSetup = $GLOBALS['TSFE']->tmpl->setup[$GLOBALS['TSFE']->sPre.'.'];
