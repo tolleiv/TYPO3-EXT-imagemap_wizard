@@ -40,41 +40,41 @@ class tx_imagemapwizard_model_mapper {
 	 * @param int $mapNo
 	 * @return string the valid HTML-imagemap (hopefully valid)
 	 */
-	public function generateMap(tslib_cObj &$cObj,$name,$mapping=NULL,$whitelist=NULL,$xhtml=NULL,$conf=NULL,$mapNo=0) {
+	public function generateMap(tslib_cObj &$cObj, $name, $mapping = NULL, $whitelist = NULL, $xhtml = NULL, $conf = NULL, $mapNo = 0) {
 		$useWhitelist = is_array($whitelist);
-		if($useWhitelist) {
+		if ($useWhitelist) {
 			$whitelist = array_flip($whitelist);
 		}
-			//$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapconverter');
+		//$helper = t3lib_div::makeInstance('tx_imagemapwizard_mapconverter');
 		$mapArray = self::map2array($mapping);
 
-		$mapArray['@']['name']=$this->createValidNameAttribute($name);
-			// use id-attribute if XHTML is required see issue #2525
-			// name-attribute is still required due to browser compatibility ;(
-		if($xhtml) {
+		$mapArray['@']['name'] = $this->createValidNameAttribute($name);
+		// use id-attribute if XHTML is required see issue #2525
+		// name-attribute is still required due to browser compatibility ;(
+		if ($xhtml) {
 			$mapArray['@']['id'] = $mapArray['@']['name'];
 		}
 
-		if(!is_array($conf) || !array_key_exists('area.',$conf)) {
-			$conf = array('area.'=>array());
+		if (!is_array($conf) || !array_key_exists('area.', $conf)) {
+			$conf = array('area.' => array());
 		}
 
-		while(is_array($mapArray['#']) && (list($key,$node) = each($mapArray['#']))) {
-			if(!$node['value'] && !$node['@']['href']) continue;
+		while (is_array($mapArray['#']) && (list($key, $node) = each($mapArray['#']))) {
+			if (!$node['value'] && !$node['@']['href']) continue;
 
-			$reg = array('area-href'=>$node["value"]);
-			foreach($node['@'] as $ak=>$av) {
-				$reg['area-'.$ak]=htmlspecialchars($av);
+			$reg = array('area-href' => $node["value"]);
+			foreach ($node['@'] as $ak => $av) {
+				$reg['area-' . $ak] = htmlspecialchars($av);
 			}
-			$cObj->LOAD_REGISTER($reg,'LOAD_REGISTER');
-			$tmp = self::map2array($cObj->typolink('-',$this->getTypolinkSetup(($node['value']?$node['value']:$node['@']['href']),$conf['area.'])),'a');
-			$cObj->LOAD_REGISTER($reg,'RESTORE_REGISTER');
-			if(is_array($tmp['@'])) {
+			$cObj->LOAD_REGISTER($reg, 'LOAD_REGISTER');
+			$tmp = self::map2array($cObj->typolink('-', $this->getTypolinkSetup(($node['value'] ? $node['value'] : $node['@']['href']), $conf['area.'])), 'a');
+			$cObj->LOAD_REGISTER($reg, 'RESTORE_REGISTER');
+			if (is_array($tmp['@'])) {
 				unset($mapArray['#'][$key]['@']['href']);
-				$mapArray['#'][$key]['@'] = array_merge(array_filter($tmp['@']),array_filter($mapArray['#'][$key]['@']));
+				$mapArray['#'][$key]['@'] = array_merge(array_filter($tmp['@']), array_filter($mapArray['#'][$key]['@']));
 
-				if($useWhitelist) {
-					$mapArray['#'][$key]['@'] = array_intersect_key($mapArray['#'][$key]['@'],$whitelist);
+				if ($useWhitelist) {
+					$mapArray['#'][$key]['@'] = array_intersect_key($mapArray['#'][$key]['@'], $whitelist);
 				}
 				//Remove emoty attributes
 				$mapArray['#'][$key]['@'] = array_filter($mapArray['#'][$key]['@']);
@@ -94,14 +94,14 @@ class tx_imagemapwizard_model_mapper {
 	 */
 	public function createValidNameAttribute($value) {
 
-		if(!preg_match('/\S+/',$value)) {
-			$value = t3lib_div::shortMD5(rand(0,100));
+		if (!preg_match('/\S+/', $value)) {
+			$value = t3lib_div::shortMD5(rand(0, 100));
 		}
-		$name = preg_replace('/[^a-zA-Z0-9\-_]/i','-',$value);  // replace any special character with an dash
-		$name = preg_replace('/\-+$/','',$name);    // remove trailing dashes
+		$name = preg_replace('/[^a-zA-Z0-9\-_]/i', '-', $value); // replace any special character with an dash
+		$name = preg_replace('/\-+$/', '', $name); // remove trailing dashes
 
-		while(!preg_match('/^[a-zA-Z]{3}/',$name)) {
-			$name = chr(rand(97,122)).$name;
+		while (!preg_match('/^[a-zA-Z]{3}/', $name)) {
+			$name = chr(rand(97, 122)) . $name;
 		}
 		return $name;
 	}
@@ -112,10 +112,10 @@ class tx_imagemapwizard_model_mapper {
 	 * @param String param the paramater which is used for the link-generation
 	 * @return Array typolink-conf array
 	 */
-	protected function getTypolinkSetup($param,$conf=NULL) {
-		$ret = array('parameter'=>$param);
-		if(is_array($conf) && array_key_exists('typolink.',$conf) && is_array($conf['typolink.'])) {
-			$ret = array_merge($ret,$conf['typolink.']);
+	protected function getTypolinkSetup($param, $conf = NULL) {
+		$ret = array('parameter' => $param);
+		if (is_array($conf) && array_key_exists('typolink.', $conf) && is_array($conf['typolink.'])) {
+			$ret = array_merge($ret, $conf['typolink.']);
 		}
 		return $ret;
 	}
@@ -130,29 +130,35 @@ class tx_imagemapwizard_model_mapper {
 	 * @param String basetag the Root-Tag of the resulting Array
 	 * @return Array transformed Array keys: 'name'~Tagname, 'value'~Tagvalue, '@'~Sub-Array with Attributes, '#'~Sub-Array with Childnodes
 	 */
-	public static function map2array($value,$basetag='map') {
-		if(!strlen($value) || !is_string($value)) { $value = '<map></map>'; }
-		$ret = array('name'=>$basetag);
-		if(!($xml = @simplexml_load_string($value))) return $ret;
+	public static function map2array($value, $basetag = 'map') {
+		if (!strlen($value) || !is_string($value)) {
+			$value = '<map></map>';
+		}
+		$ret = array('name' => $basetag);
+		if (!($xml = @simplexml_load_string($value))) {
+			return $ret;
+		}
 
-		if(!($xml->getName() == $basetag)) return $ret;
+		if (!($xml->getName() == $basetag)) {
+			return $ret;
+		}
 
-		if(self::nodeHasAttributes($xml)) {
+		if (self::nodeHasAttributes($xml)) {
 			$ret['@'] = self::getAttributesFromXMLNode($xml);
 		}
-		$ret['#']=array();
+		$ret['#'] = array();
 		foreach ($xml->children() as $subNode) {
 			$newChild = array();
-			$newChild['name']=$subNode->getName();
-			if((string)$subNode) {
-				$newChild['value']=(string)$subNode;
+			$newChild['name'] = $subNode->getName();
+			if ((string) $subNode) {
+				$newChild['value'] = (string) $subNode;
 			}
-			if(self::nodeHasAttributes($subNode)) {
-				$newChild['@']=self::getAttributesFromXMLNode($subNode);
+			if (self::nodeHasAttributes($subNode)) {
+				$newChild['@'] = self::getAttributesFromXMLNode($subNode);
 			}
-			$ret['#'][]=$newChild;
+			$ret['#'][] = $newChild;
 		}
-		if(!count($ret['#'])) unset($ret['#']);
+		if (!count($ret['#'])) unset($ret['#']);
 		return $ret;
 	}
 
@@ -164,18 +170,20 @@ class tx_imagemapwizard_model_mapper {
 	 * @param Integer level counting the current level for recursion...
 	 * @return String XML-String
 	 */
-	public static function array2map($value,$level=0) {
-		if((!$value['name']) && ($level==0)) $value['name']='map';
+	public static function array2map($value, $level = 0) {
+		if ((!$value['name']) && ($level == 0)) {
+			$value['name'] = 'map';
+		}
 		$ret = NULL;
-		if(!$value['#'] && !$value['value']) {
-			$ret = '<'.$value['name'].self::implodeXMLAttributes($value['@']).' />';
+		if (!$value['#'] && !$value['value']) {
+			$ret = '<' . $value['name'] . self::implodeXMLAttributes($value['@']) . ' />';
 		} else {
-			$ret = '<'.$value['name'].self::implodeXMLAttributes($value['@']).'>';
-			while(is_array($value['#']) && (list(,$subNode) = each($value['#']))) {
-				$ret .= self::array2map($subNode,$level+1);
+			$ret = '<' . $value['name'] . self::implodeXMLAttributes($value['@']) . '>';
+			while (is_array($value['#']) && (list(, $subNode) = each($value['#']))) {
+				$ret .= self::array2map($subNode, $level + 1);
 			}
-			$ret.= $value['value'];
-			$ret.= '</'.$value['name'].'>';
+			$ret .= $value['value'];
+			$ret .= '</' . $value['name'] . '>';
 		}
 		return $ret;
 	}
@@ -183,15 +191,15 @@ class tx_imagemapwizard_model_mapper {
 	/**
 	 * compare two maps
 	 *
-	 * @param    string  $map1   first imagemap
-	 * @param    string  $map2   second imagemap
-	 * @return   boolean         determines whether the maps match or not
+	 * @param	string  $map1   first imagemap
+	 * @param	string  $map2   second imagemap
+	 * @return   boolean		 determines whether the maps match or not
 	 * @see arrays_match
 	 */
-	public function compareMaps($map1,$map2) {
+	public function compareMaps($map1, $map2) {
 		$arrayMap1 = self::map2array($map1);
 		$arrayMap2 = self::map2array($map2);
-		return self::arrays_match($arrayMap1,$arrayMap2);
+		return self::arrays_match($arrayMap1, $arrayMap2);
 	}
 
 
@@ -203,9 +211,9 @@ class tx_imagemapwizard_model_mapper {
 	 * @return Mixed Extracted attribute(s)
 	 *
 	 */
-	protected static function getAttributesFromXMLNode($node,$attr=NULL) {
-		$tmp = (array)$node->attributes();
-		return ($attr==NULL)?$tmp['@attributes']:(string)$tmp['@attributes'][$attr];
+	protected static function getAttributesFromXMLNode($node, $attr = NULL) {
+		$tmp = (array) $node->attributes();
+		return ($attr == NULL) ? $tmp['@attributes'] : (string) $tmp['@attributes'][$attr];
 	}
 
 	/**
@@ -225,10 +233,12 @@ class tx_imagemapwizard_model_mapper {
 	 * @return String
 	 */
 	protected static function implodeXMLAttributes($attributes) {
-		if(!is_array($attributes)) return '';
+		if (!is_array($attributes)) {
+			return '';
+		}
 		$ret = '';
-		foreach($attributes as $key=>$value) {
-			$ret.= sprintf(' %s="%s"',$key,htmlspecialchars($value));
+		foreach ($attributes as $key => $value) {
+			$ret .= sprintf(' %s="%s"', $key, htmlspecialchars($value));
 		}
 		return $ret;
 	}
@@ -237,20 +247,20 @@ class tx_imagemapwizard_model_mapper {
 	 * compare two element recursivly and check whether the content of both match
 	 * order of elements is not important, just that every content related to a key is matching within these arrays
 	 *
-	 * @param    mixed  $a   first element
-	 * @param    mixed  $b   second element
-	 * @return   boolean     determine whether elements match of not
+	 * @param	mixed  $a   first element
+	 * @param	mixed  $b   second element
+	 * @return   boolean	 determine whether elements match of not
 	 */
-	protected static function arrays_match($a,$b) {
-		if(!is_array($a) || !is_array($b)) {
-			return $a==$b;
+	protected static function arrays_match($a, $b) {
+		if (!is_array($a) || !is_array($b)) {
+			return $a == $b;
 		}
 		$match = true;
-		foreach($a as $key=>$value) {
-			$match = $match && self::arrays_match($a[$key],$b[$key]);
+		foreach ($a as $key => $value) {
+			$match = $match && self::arrays_match($a[$key], $b[$key]);
 		}
-		foreach($b as $key=>$value) {
-			$match = $match && self::arrays_match($b[$key],$a[$key]);
+		foreach ($b as $key => $value) {
+			$match = $match && self::arrays_match($b[$key], $a[$key]);
 		}
 		return $match;
 	}
@@ -259,18 +269,18 @@ class tx_imagemapwizard_model_mapper {
 	 * check whether a given string is a valid imagemap
 	 * the check is not very robust so far but it resolves all required situations (see unit-tests)
 	 *
-	 * @param    mixed   $map    the value which is supposed to be a imagemap
-	 * @return   boolean     determine whether the valued passed the test or not
+	 * @param	mixed   $map	the value which is supposed to be a imagemap
+	 * @return   boolean	 determine whether the valued passed the test or not
 	 */
 	public static function isEmptyMap($map) {
 		$arr = is_array($map) ? $map : self::map2array($map);
-		return !(count($arr['#'])>0);
+		return !(count($arr['#']) > 0);
 	}
 
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_mapper.php'])    {
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_mapper.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_mapper.php']);
 }
 

@@ -27,37 +27,37 @@
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
 
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_model_mapper.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard') . 'classes/model/class.tx_imagemapwizard_model_mapper.php');
 
 class tx_imagemapwizard_parser extends tslib_pibase {
 
-	public function applyImageMap($content,$conf) {
-		$xhtml = preg_match('/^xhtml/',$GLOBALS['TSFE']->config['config']['doctype']);
-		$attrlist = explode(',','shape,coords,href,target,nohref,alt,title,accesskey,tabindex,onfocus,onblur,id,class,style,lang,dir,onclick,ondblclick,onmousedown,onmouseup,onmouseover,onmousemove,onmouseout,onkeypressonkeydown,onkeyup');
-			// remove target attribute to have xhtml-strict output
-		if(strcmp($GLOBALS['TSFE']->config['config']['doctype'],'xhtml_strict')===0) {
-			$attrlist =  array_diff($attrlist, array('target'));
+	public function applyImageMap($content, $conf) {
+		$xhtml = preg_match('/^xhtml/', $GLOBALS['TSFE']->config['config']['doctype']);
+		$attrlist = explode(',', 'shape,coords,href,target,nohref,alt,title,accesskey,tabindex,onfocus,onblur,id,class,style,lang,dir,onclick,ondblclick,onmousedown,onmouseup,onmouseover,onmousemove,onmouseout,onkeypressonkeydown,onkeyup');
+		// remove target attribute to have xhtml-strict output
+		if (strcmp($GLOBALS['TSFE']->config['config']['doctype'], 'xhtml_strict')===0) {
+			$attrlist = array_diff($attrlist, array('target'));
 		}
 
-		$mapname = $this->cObj->stdWrap(preg_replace('/\s/','-',$this->cObj->getData($conf['map.']['name'],$this->cObj->data)),$conf['map.']['name.']);
+		$mapname = $this->cObj->stdWrap(preg_replace('/\s/', '-', $this->cObj->getData($conf['map.']['name'], $this->cObj->data)), $conf['map.']['name.']);
 
-			// checking which image this is - using registers I guess these won't change in later versions (global vars might)
-		$num = $this->cObj->getData('register:IMAGE_NUM_CURRENT',$this->cObj->data);
-		if($num==0) {
-				/* @var $converter tx_imagemapwizard_model_mapper */
+		// checking which image this is - using registers I guess these won't change in later versions (global vars might)
+		$num = $this->cObj->getData('register:IMAGE_NUM_CURRENT', $this->cObj->data);
+		if ($num == 0) {
+			/* @var $converter tx_imagemapwizard_model_mapper */
 			$converter = t3lib_div::makeInstance('tx_imagemapwizard_model_mapper');
 			$mapname = $converter->createValidNameAttribute($mapname);
-			$map = $converter->generateMap($this->cObj,$mapname,$this->cObj->getData($conf['map.']['data'],$this->cObj->data),$attrlist,$xhtml,$conf,$num);
-			if(!$converter->isEmptyMap($map) || $this->cObj->getData('register:keepUsemapMarker', $this->cObj->data)) {
-				return str_replace('###IMAGEMAP_USEMAP###',$mapname,$content).$map;
+			$map = $converter->generateMap($this->cObj, $mapname, $this->cObj->getData($conf['map.']['data'], $this->cObj->data), $attrlist, $xhtml, $conf, $num);
+			if (!$converter->isEmptyMap($map) || $this->cObj->getData('register:keepUsemapMarker', $this->cObj->data)) {
+				return str_replace('###IMAGEMAP_USEMAP###', $mapname, $content) . $map;
 			}
 		}
-		return str_replace(' usemap="####IMAGEMAP_USEMAP###"','',$content);
+		return str_replace(' usemap="####IMAGEMAP_USEMAP###"', '', $content);
 	}
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/class.tx_imagemapwizard_parser.php'])    {
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/class.tx_imagemapwizard_parser.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/class.tx_imagemapwizard_parser.php']);
 }
 

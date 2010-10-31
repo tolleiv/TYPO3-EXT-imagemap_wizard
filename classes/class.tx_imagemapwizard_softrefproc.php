@@ -28,8 +28,8 @@
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
 
-require_once(PATH_t3lib."class.t3lib_softrefproc.php");
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_model_mapper.php');
+require_once(PATH_t3lib . "class.t3lib_softrefproc.php");
+require_once(t3lib_extMgm::extPath('imagemap_wizard') . 'classes/model/class.tx_imagemapwizard_model_mapper.php');
 
 
 class tx_imagemapwizard_softrefproc extends t3lib_softrefproc {
@@ -48,34 +48,34 @@ class tx_imagemapwizard_softrefproc extends t3lib_softrefproc {
 	 * @return Array the Array which describes what references we found and where ...
 	 */
 
-	function findRef($table, $field, $uid, $content, $spKey, $spParams, $structurePath='')  {
+	function findRef($table, $field, $uid, $content, $spKey, $spParams, $structurePath = '') {
 		$conv = t3lib_div::makeInstance("tx_imagemapwizard_model_mapper");
 		$data = $conv->map2array($content);
-		$idx=0;
+		$idx = 0;
 
-		$zeroToken = $this->makeTokenID('setTypoLinkPartsElement:'.$idx).':0';
+		$zeroToken = $this->makeTokenID('setTypoLinkPartsElement:' . $idx) . ':0';
 		$elements = array();
 		$links = array();
-		if(is_array($data['#'])) {
-			foreach($data['#'] as $key=>$value) {
-				$tmp = $this->findRef_typolink($value['value'],$spParams);
+		if (is_array($data['#'])) {
+			foreach ($data['#'] as $key => $value) {
+				$tmp = $this->findRef_typolink($value['value'], $spParams);
 				$linkData = $tmp['elements'][$zeroToken];
 
-				$newToken = $this->makeTokenID('setTypoLinkPartsElement:'.$idx);
-				$data['#'][$key]['value'] = str_replace($linkData['subst']['tokenID'],$newToken,$tmp['content']);
-				$linkData['subst']['tokenID']=$newToken;
-				$elements[$newToken.':'.$idx] = $linkData;
+				$newToken = $this->makeTokenID('setTypoLinkPartsElement:' . $idx);
+				$data['#'][$key]['value'] = str_replace($linkData['subst']['tokenID'], $newToken, $tmp['content']);
+				$linkData['subst']['tokenID'] = $newToken;
+				$elements[$newToken . ':' . $idx] = $linkData;
 				$idx++;
 			}
 			reset($elements);
 			reset($data['#']);
 		}
-		return array("content"=>$conv->array2map($data),"elements"=>$elements);
+		return array("content" => $conv->array2map($data), "elements" => $elements);
 	}
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/class.tx_imagemapwizard_softrefproc.php'])    {
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/class.tx_imagemapwizard_softrefproc.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/class.tx_imagemapwizard_softrefproc.php']);
 }
 

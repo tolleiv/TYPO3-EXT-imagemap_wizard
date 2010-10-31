@@ -27,13 +27,13 @@
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
 
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/model/class.tx_imagemapwizard_model_typo3env.php');
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_imagemapwizard_view_abstract.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard') . 'classes/model/class.tx_imagemapwizard_model_typo3env.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard') . 'classes/view/class.tx_imagemapwizard_view_abstract.php');
 
 
 class tx_imagemapwizard_view_tceform extends tx_imagemapwizard_view_abstract {
 
-	protected $form,$formName,$wizardConf;
+	protected $form, $formName, $wizardConf;
 
 	public function setTCEForm($form) {
 		$this->form = $form;
@@ -42,10 +42,10 @@ class tx_imagemapwizard_view_tceform extends tx_imagemapwizard_view_abstract {
 	/**
 	 * Renders Content and prints it to the screen (or any active output buffer)
 	 *
-	 * @return string     the rendered form content
+	 * @return string	 the rendered form content
 	 */
 	public function renderContent() {
-		if(!$this->data->hasValidImageFile()) {
+		if (!$this->data->hasValidImageFile()) {
 			$content = $this->form->sL('LLL:EXT:imagemap_wizard/locallang.xml:form.no_image');
 		} else {
 			$content = $this->renderTemplate('tceform.php');
@@ -64,7 +64,7 @@ class tx_imagemapwizard_view_tceform extends tx_imagemapwizard_view_abstract {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_tceform.php'])    {
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_tceform.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_tceform.php']);
 }
 ?>

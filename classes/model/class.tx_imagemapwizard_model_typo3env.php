@@ -26,7 +26,7 @@
  *
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
-define('PATH_tslib', PATH_site.'typo3/sysext/cms/tslib/');
+define('PATH_tslib', PATH_site . 'typo3/sysext/cms/tslib/');
 
 class tx_imagemapwizard_model_typo3env {
 	protected $lastError;
@@ -39,33 +39,33 @@ class tx_imagemapwizard_model_typo3env {
 	 * @param	Integer		pid The pid if the page which is simulated
 	 * @return	Boolean		returns success of the operation
 	 */
-	public function initTSFE($pid = 1,$ws = 0){
+	public function initTSFE($pid = 1, $ws = 0) {
 		/* local includes otherwise XCLASSES might be lost due to extension load order */
-		require_once(PATH_tslib.'class.tslib_fe.php');
-		require_once(PATH_t3lib.'class.t3lib_userauth.php');
-		require_once(PATH_t3lib.'class.t3lib_userauthgroup.php');
-		require_once(PATH_t3lib.'class.t3lib_beuserauth.php');
-		require_once(PATH_t3lib.'class.t3lib_tsfebeuserauth.php');
-		require_once(PATH_tslib.'class.tslib_feuserauth.php');
-		require_once(PATH_t3lib.'class.t3lib_cs.php');
-		require_once(PATH_tslib.'class.tslib_pagegen.php');
-		require_once(PATH_t3lib.'class.t3lib_tstemplate.php');
-		require_once(PATH_t3lib.'class.t3lib_page.php');
-		require_once(PATH_t3lib.'class.t3lib_timetrack.php');
-		require_once(t3lib_extMgm::extPath('css_styled_content').'pi1/class.tx_cssstyledcontent_pi1.php');
+		require_once(PATH_tslib . 'class.tslib_fe.php');
+		require_once(PATH_t3lib . 'class.t3lib_userauth.php');
+		require_once(PATH_t3lib . 'class.t3lib_userauthgroup.php');
+		require_once(PATH_t3lib . 'class.t3lib_beuserauth.php');
+		require_once(PATH_t3lib . 'class.t3lib_tsfebeuserauth.php');
+		require_once(PATH_tslib . 'class.tslib_feuserauth.php');
+		require_once(PATH_t3lib . 'class.t3lib_cs.php');
+		require_once(PATH_tslib . 'class.tslib_pagegen.php');
+		require_once(PATH_t3lib . 'class.t3lib_tstemplate.php');
+		require_once(PATH_t3lib . 'class.t3lib_page.php');
+		require_once(PATH_t3lib . 'class.t3lib_timetrack.php');
+		require_once(t3lib_extMgm::extPath('css_styled_content') . 'pi1/class.tx_cssstyledcontent_pi1.php');
 
 		$tca = $GLOBALS['TCA'];
 		$GLOBALS['TT'] = t3lib_div::makeInstance('t3lib_timeTrack');
 		$GLOBALS['TT']->start();
 
-		if(version_compare(TYPO3_version,'4.3.0','<')) {
+		if (version_compare(TYPO3_version, '4.3.0', '<')) {
 			$TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
-			$GLOBALS['TSFE'] = new $TSFEclassName($GLOBALS['TYPO3_CONF_VARS'], $pid, '0', 0, '','','','');
+			$GLOBALS['TSFE'] = new $TSFEclassName($GLOBALS['TYPO3_CONF_VARS'], $pid, '0', 0, '', '', '', '');
 		} else {
-			$GLOBALS['TSFE'] = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pid, '0', 0, '','','','');
+			$GLOBALS['TSFE'] = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pid, '0', 0, '', '', '', '');
 		}
-		$GLOBALS['TSFE']->ADMCMD_preview_postInit(array('BEUSER_uid'=>$GLOBALS['BE_USER']->user['uid']));
-		$GLOBALS['TSFE']->config['config']['language']=$_GET['L'];
+		$GLOBALS['TSFE']->ADMCMD_preview_postInit(array('BEUSER_uid' => $GLOBALS['BE_USER']->user['uid']));
+		$GLOBALS['TSFE']->config['config']['language'] = $_GET['L'];
 		$GLOBALS['TSFE']->id = $pid;
 		$GLOBALS['TSFE']->workspacePreview = $GLOBALS['BE_USER']->workspace;
 		$GLOBALS['TSFE']->connectToDB();
@@ -79,33 +79,33 @@ class tx_imagemapwizard_model_typo3env {
 		$page = $GLOBALS['TSFE']->sys_page->getPage($pid);
 		if (count($page) == 0) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
-			$this->lastError = "Error(".__LINE__.") [ Unable to find the requested host-page ]:".$sqlDebug;
+			$this->lastError = "Error(" . __LINE__ . ") [ Unable to find the requested host-page ]:" . $sqlDebug;
 			return false;
 		}
-		if ($page['doktype']==4 && count($GLOBALS['TSFE']->getPageShortcut($page['shortcut'],$page['shortcut_mode'],$page['uid'])) == 0) {
+		if ($page['doktype'] == 4 && count($GLOBALS['TSFE']->getPageShortcut($page['shortcut'], $page['shortcut_mode'], $page['uid'])) == 0) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
-			$this->lastError = "Error(".__LINE__.") [ The parent-page is a shortcut therefor preview won't render properly ] :" .$sqlDebug;
-				//return false; we continue using the TSFE but write down that there's something which was wrong
+			$this->lastError = "Error(" . __LINE__ . ") [ The parent-page is a shortcut therefor preview won't render properly ] :" . $sqlDebug;
+			//return false; we continue using the TSFE but write down that there's something which was wrong
 		}
 		if ($page['doktype'] == 199 || $page['doktype'] == 254) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
-			$this->lastError = "Error(".__LINE__.") [ The parent-page is a recycle or sysfolder therefor the preview won't render properly ]:".$sqlDebug;
-				//return false; we continue using the TSFE but write down that there's something which was wrong
+			$this->lastError = "Error(" . __LINE__ . ") [ The parent-page is a recycle or sysfolder therefor the preview won't render properly ]:" . $sqlDebug;
+			//return false; we continue using the TSFE but write down that there's something which was wrong
 		}
 		$GLOBALS['TSFE']->showHiddenRecords = true;
 		$GLOBALS['TSFE']->getPageAndRootline();
 		$GLOBALS['TSFE']->initTemplate();
-			//$GLOBALS['TSFE']->forceTemplateParsing = 1;
+		//$GLOBALS['TSFE']->forceTemplateParsing = 1;
 		$GLOBALS['TSFE']->tmpl->start($GLOBALS['TSFE']->rootLine);
-		$GLOBALS['TSFE']->sPre = $GLOBALS['TSFE']->tmpl->setup['types.'][$GLOBALS['TSFE']->type];        // toplevel - objArrayName
-		$GLOBALS['TSFE']->pSetup = $GLOBALS['TSFE']->tmpl->setup[$GLOBALS['TSFE']->sPre.'.'];
+		$GLOBALS['TSFE']->sPre = $GLOBALS['TSFE']->tmpl->setup['types.'][$GLOBALS['TSFE']->type]; // toplevel - objArrayName
+		$GLOBALS['TSFE']->pSetup = $GLOBALS['TSFE']->tmpl->setup[$GLOBALS['TSFE']->sPre . '.'];
 		if (!$GLOBALS['TSFE']->tmpl->loaded || ($GLOBALS['TSFE']->tmpl->loaded && !$GLOBALS['TSFE']->pSetup)) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
-			$this->lastError = "Error(".__LINE__.") [ template not loaded as supposed ] :".$sqlDebug;
-				//return false;   we continue using the TSFE but write down that there's something which was wrong
+			$this->lastError = "Error(" . __LINE__ . ") [ template not loaded as supposed ] :" . $sqlDebug;
+			//return false;   we continue using the TSFE but write down that there's something which was wrong
 		}
 		$GLOBALS['TSFE']->getConfigArray();
-		$GLOBALS['TSFE']->TYPO3_CONF_VARS['EXT']['extCache']=0;
+		$GLOBALS['TSFE']->TYPO3_CONF_VARS['EXT']['extCache'] = 0;
 		$GLOBALS['TSFE']->getCompressedTCarray();
 		$GLOBALS['TSFE']->inituserGroups();
 		$GLOBALS['TSFE']->workspacePreviewInit();
@@ -130,7 +130,7 @@ class tx_imagemapwizard_model_typo3env {
 	 * @see popEnv()
 	 */
 	public function pushEnv() {
-		array_push($this->envStack,array('workDir'=>getcwd(),'BE_USER'=>$GLOBALS['BE_USER'],'TCA'=>$GLOBALS['TCA']));
+		array_push($this->envStack, array('workDir' => getcwd(), 'BE_USER' => $GLOBALS['BE_USER'], 'TCA' => $GLOBALS['TCA']));
 	}
 
 	/**
@@ -140,11 +140,11 @@ class tx_imagemapwizard_model_typo3env {
 	 * @see pushEnv()
 	 * @see popEnv()
 	 */
-	public function setEnv($backPath='') {
-		if($this->BE_USER==NULL) {
+	public function setEnv($backPath = '') {
+		if ($this->BE_USER == NULL) {
 			$this->initMyBE_USER();
 		}
-		if($backPath && is_dir($backPath)) {
+		if ($backPath && is_dir($backPath)) {
 			chdir($backPath);
 		}
 		//$this->BE_USER_GLOBAL = $GLOBALS['BE_USER'];
@@ -157,19 +157,21 @@ class tx_imagemapwizard_model_typo3env {
 	 *
 	 * @see setEnv()
 	 */
-	public function popEnv($curPath='') {
-		if(!is_array($this->envStack) || !count($this->envStack)) { return false; }
+	public function popEnv($curPath = '') {
+		if (!is_array($this->envStack) || !count($this->envStack)) {
+			return false;
+		}
 		$env = array_pop($this->envStack);
 
-		if($env['TCA'] && is_array($env['TCA'])) {
+		if ($env['TCA'] && is_array($env['TCA'])) {
 			$GLOBALS['TCA'] = $env['TCA'];
 		}
 
-		if($env['BE_USER'] && is_object($env['BE_USER']))  {
+		if ($env['BE_USER'] && is_object($env['BE_USER'])) {
 			$GLOBALS['BE_USER'] = $env['BE_USER'];
 		}
 
-		if($env['workDir'] && is_dir($env['workDir'])) {
+		if ($env['workDir'] && is_dir($env['workDir'])) {
 			chdir($env['workDir']);
 		}
 	}
@@ -178,9 +180,13 @@ class tx_imagemapwizard_model_typo3env {
 	 * reset/clear enableColumns - used to enable preview of access-restricted
 	 * elements - use only with stored Env!!!!!
 	 */
-	public function resetEnableColumns($table,$newConf=NULL) {
-		if(!is_array($this->envStack) || !count($this->envStack)) { return false; }
-		if(!in_array($table,array_keys($GLOBALS['TCA']))) { return false; }
+	public function resetEnableColumns($table, $newConf = NULL) {
+		if (!is_array($this->envStack) || !count($this->envStack)) {
+			return false;
+		}
+		if (!in_array($table, array_keys($GLOBALS['TCA']))) {
+			return false;
+		}
 		$GLOBALS['TCA'][$table]['ctrl']['enablecolumns'] = $newConf;
 		return true;
 	}
@@ -190,12 +196,12 @@ class tx_imagemapwizard_model_typo3env {
 	 *
 	 */
 	protected function initMyBE_USER() {
-		$this->BE_USER = t3lib_div::makeInstance('t3lib_tsfeBeUserAuth');     // New backend user object
+		$this->BE_USER = t3lib_div::makeInstance('t3lib_tsfeBeUserAuth'); // New backend user object
 		$this->BE_USER->userTS_dontGetCached = 1;
 		$this->BE_USER->OS = TYPO3_OS;
 		$this->BE_USER->setBeUserByUid($GLOBALS['BE_USER']->user['uid']);
 		$this->BE_USER->unpack_uc('');
-		if ($this->BE_USER->user['uid'])      {
+		if ($this->BE_USER->user['uid']) {
 			$this->BE_USER->fetchGroupData();
 			$GLOBALS['TSFE']->beUserLogin = 1;
 		} else {
@@ -221,7 +227,7 @@ class tx_imagemapwizard_model_typo3env {
 	 * @return string   the BACKPATH
 	 */
 	public static function getBackPath() {
-		return preg_replace('/([^\/]+)\//','../',str_replace(array(PATH_site,basename(PATH_thisScript)),array('',''),PATH_thisScript));
+		return preg_replace('/([^\/]+)\//', '../', str_replace(array(PATH_site, basename(PATH_thisScript)), array('', ''), PATH_thisScript));
 	}
 
 	/**
@@ -229,29 +235,29 @@ class tx_imagemapwizard_model_typo3env {
 	 * used to include resources from an extension (usually this is only used with imagemap_wizard)
 	 * but it has a more generic functionality - YAGNI rules :P
 	 *
-	 * @param  string    $extKey - the source extension
-	 * @return string    the Extensions BACKPATH
+	 * @param  string	$extKey - the source extension
+	 * @return string	the Extensions BACKPATH
 	 */
-	public static function getExtBackPath($extKey='imagemap_wizard') {
-		return self::getBackPath().str_replace(PATH_site,'',t3lib_extMgm::extPath($extKey));
+	public static function getExtBackPath($extKey = 'imagemap_wizard') {
+		return self::getBackPath() . str_replace(PATH_site, '', t3lib_extMgm::extPath($extKey));
 	}
 
 	/**
 	 * Get the value out of the Extension-Configuration determined by the submitted key
 	 *
-	 * @param  string    $confKey - the extension configuration key
-	 * @param  string    $defaulr - default value which is used whenevery the extension configuration doesn't contain a valid value
-	 * @return mixed     either the config value or the default value
+	 * @param  string	$confKey - the extension configuration key
+	 * @param  string	$defaulr - default value which is used whenevery the extension configuration doesn't contain a valid value
+	 * @return mixed	 either the config value or the default value
 	 */
-	public static function getExtConfValue($confKey,$default) {
+	public static function getExtConfValue($confKey, $default) {
 		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['imagemap_wizard']);
-		return (is_array($conf) && in_array($confKey,array_keys($conf)))?$conf[$confKey]:$default;
+		return (is_array($conf) && in_array($confKey, array_keys($conf))) ? $conf[$confKey] : $default;
 	}
 
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_typo3env.php'])    {
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_typo3env.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/model/class.tx_imagemapwizard_model_typo3env.php']);
 }
 

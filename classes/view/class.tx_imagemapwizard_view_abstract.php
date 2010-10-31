@@ -29,7 +29,7 @@
 
 abstract class tx_imagemapwizard_view_abstract {
 
-	protected $jsFiles,$cssFiles,$inlineJs,$data,$id;
+	protected $jsFiles, $cssFiles, $inlineJs, $data, $id;
 
 	protected static $icon2Sprite = array(
 		"gfx/button_up.gif" => 'actions-move-up',
@@ -53,7 +53,7 @@ abstract class tx_imagemapwizard_view_abstract {
 	 * Just initialize the View, fill internal variables etc...
 	 */
 	public function init() {
-		$this->id = "imagemap".t3lib_div::shortMD5(rand(1,100000));
+		$this->id = "imagemap" . t3lib_div::shortMD5(rand(1, 100000));
 		$this->jsFiles = array();
 		$this->cssFiles = array();
 	}
@@ -68,7 +68,7 @@ abstract class tx_imagemapwizard_view_abstract {
 	 * @param tx_imagemapwizard_dataObject Data-Object
 	 */
 	public function setData(tx_imagemapwizard_model_dataObject $data) {
-		$this->data=$data;
+		$this->data = $data;
 	}
 
 	/**
@@ -77,7 +77,7 @@ abstract class tx_imagemapwizard_view_abstract {
 	 * @param String Filename
 	 */
 	protected function addExternalJS($file) {
-		if(!in_array($file,$this->jsFiles)) {
+		if (!in_array($file, $this->jsFiles)) {
 			$this->jsFiles[] = $file;
 		}
 	}
@@ -88,7 +88,7 @@ abstract class tx_imagemapwizard_view_abstract {
 	 * @param String Javascript-Block
 	 */
 	protected function addInlineJS($js) {
-		$this->inlineJs .= "\n\n".$js;
+		$this->inlineJs .= "\n\n" . $js;
 	}
 
 
@@ -98,7 +98,7 @@ abstract class tx_imagemapwizard_view_abstract {
 	 * @param String Filename
 	 */
 	protected function addExternalCSS($file) {
-		if(!in_array($file,$this->cssFiles)) {
+		if (!in_array($file, $this->cssFiles)) {
 			$this->cssFiles[] = $file;
 		}
 	}
@@ -106,24 +106,24 @@ abstract class tx_imagemapwizard_view_abstract {
 	protected function getExternalJSIncludes() {
 		$extPath = tx_imagemapwizard_model_typo3env::getExtBackPath('imagemap_wizard');
 
-		if(is_array($this->jsFiles)) {
-			foreach($this->jsFiles as $file) {
-				$ret .= "\n<script type=\"text/javascript\" src=\"".$backPath.$extPath.$file."\"></script>";
+		if (is_array($this->jsFiles)) {
+			foreach ($this->jsFiles as $file) {
+				$ret .= "\n<script type=\"text/javascript\" src=\"" . $backPath . $extPath . $file . "\"></script>";
 			}
 		}
 		return $ret;
 	}
 
 	protected function getInlineJSIncludes() {
-		return trim($this->inlineJs)?('<script type="text/javascript">'.trim($this->inlineJs).'</script>'):'';
+		return trim($this->inlineJs) ? ('<script type="text/javascript">' . trim($this->inlineJs) . '</script>') : '';
 	}
 
 	protected function getExternalCSSIncludes() {
 		$backPath = tx_imagemapwizard_model_typo3env::getBackPath();
-		$extPath = str_replace(PATH_site,'',t3lib_extMgm::extPath('imagemap_wizard'));
-		if(is_array($this->cssFiles)) {
-			foreach($this->cssFiles as $file) {
-				$ret .= "\n<link rel=\"stylesheet\" type=\"text/css\" href=\"".$backPath.$extPath.$file."\" />";
+		$extPath = str_replace(PATH_site, '', t3lib_extMgm::extPath('imagemap_wizard'));
+		if (is_array($this->cssFiles)) {
+			foreach ($this->cssFiles as $file) {
+				$ret .= "\n<link rel=\"stylesheet\" type=\"text/css\" href=\"" . $backPath . $extPath . $file . "\" />";
 			}
 		}
 		return $ret;
@@ -131,19 +131,19 @@ abstract class tx_imagemapwizard_view_abstract {
 
 	protected function renderTemplate($file) {
 		ob_start();
-		include(t3lib_extMgm::extPath('imagemap_wizard').'templates/'.$file);
+		include(t3lib_extMgm::extPath('imagemap_wizard') . 'templates/' . $file);
 		$ret = ob_get_contents();
 		ob_end_clean();
 		return $ret;
 	}
 
 	protected function getAjaxURL($script) {
-		return tx_imagemapwizard_model_typo3env::getExtBackPath('imagemap_wizard').$script;
+		return tx_imagemapwizard_model_typo3env::getExtBackPath('imagemap_wizard') . $script;
 	}
 
-	protected function getLL($label,$printIt=false) {
+	protected function getLL($label, $printIt = false) {
 		$value = $GLOBALS['LANG']->getLL($label);
-		if($printIt) {
+		if ($printIt) {
 			echo $value;
 		}
 		return $value;
@@ -156,17 +156,17 @@ abstract class tx_imagemapwizard_view_abstract {
 	 * @param String attr additional required attributes
 	 * @return String HTML-img-tag
 	 */
-	protected function getIcon($skinPath,$attr='') {
+	protected function getIcon($skinPath, $attr = '') {
 
-		if(version_compare(TYPO3_version,'4.4','<')) {
-			$source = t3lib_iconWorks::skinImg($this->doc->backPath,$skinPath);
-			$match=array();
-			if(preg_match('/src="(\S+)"/',$source,$match) && !is_file($match[1])) {
-				$source='src ="'.$this->getTplSubpath().$skinPath.'"';
+		if (version_compare(TYPO3_version, '4.4', '<')) {
+			$source = t3lib_iconWorks::skinImg($this->doc->backPath, $skinPath);
+			$match = array();
+			if (preg_match('/src="(\S+)"/', $source, $match) && !is_file($match[1])) {
+				$source = 'src ="' . $this->getTplSubpath() . $skinPath . '"';
 			}
-			return "<img ".$source.($attr?' '.$attr:'')." />";
+			return "<img " . $source . ($attr ? ' ' . $attr : '') . " />";
 		} else {
-			return '<span '.$attr.'>'.t3lib_iconWorks::getSpriteIcon(self::$icon2Sprite[$skinPath]).'</span>';
+			return '<span ' . $attr . '>' . t3lib_iconWorks::getSpriteIcon(self::$icon2Sprite[$skinPath]) . '</span>';
 		}
 	}
 
@@ -174,16 +174,16 @@ abstract class tx_imagemapwizard_view_abstract {
 	 *   Determine path to the view-templates
 	 *   Just a shortcut to reduce the code within the view's
 	 *
-	 *   @return string      relative path to the template folder
+	 *   @return string	  relative path to the template folder
 	 */
 	protected function getTplSubpath() {
-		return tx_imagemapwizard_model_typo3env::getExtBackPath('imagemap_wizard').'templates/';
+		return tx_imagemapwizard_model_typo3env::getExtBackPath('imagemap_wizard') . 'templates/';
 	}
 
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_abstract.php'])    {
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_abstract.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_abstract.php']);
 }
 ?>

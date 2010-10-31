@@ -26,12 +26,13 @@
  *
  * @author	Tolleiv Nietsch <info@tolleiv.de>
  */
-require_once(t3lib_extMgm::extPath('imagemap_wizard').'classes/view/class.tx_imagemapwizard_view_abstract.php');
+require_once(t3lib_extMgm::extPath('imagemap_wizard') . 'classes/view/class.tx_imagemapwizard_view_abstract.php');
 
 
 class tx_imagemapwizard_view_wizard extends tx_imagemapwizard_view_abstract {
 
 	protected $doc;
+
 	/**
 	 * Just initialize the View, fill internal variables etc...
 	 */
@@ -48,20 +49,20 @@ class tx_imagemapwizard_view_wizard extends tx_imagemapwizard_view_abstract {
 	 */
 	public function renderContent() {
 		$this->params = t3lib_div::_GP('P');
-			// Setting field-change functions:
+		// Setting field-change functions:
 		$fieldChangeFuncArr = $this->params['fieldChangeFunc'];
 		$update = '';
-		if (is_array($fieldChangeFuncArr))	{
+		if (is_array($fieldChangeFuncArr)) {
 			unset($fieldChangeFuncArr['alert']);
-			foreach($fieldChangeFuncArr as $v)	{
-				$update.= 'parent.opener.'.$v;
+			foreach ($fieldChangeFuncArr as $v) {
+				$update .= 'parent.opener.' . $v;
 			}
 		}
 
 		$this->doc->JScode = $this->doc->wrapScriptTags('
 			function checkReference()	{	//
-				if (parent.opener && parent.opener.document && parent.opener.document.'.$this->params['formName'].' && parent.opener.document.'.$this->params['formName'].'["'.$this->params['itemName'].'"])	{
-				  return parent.opener.document.'.$this->params['formName'].'["'.$this->params['itemName'].'"];
+				if (parent.opener && parent.opener.document && parent.opener.document.' . $this->params['formName'] . ' && parent.opener.document.' . $this->params['formName'] . '["' . $this->params['itemName'] . '"])	{
+				  return parent.opener.document.' . $this->params['formName'] . '["' . $this->params['itemName'] . '"];
 				} else {
 				  close();
 				}
@@ -70,7 +71,7 @@ class tx_imagemapwizard_view_wizard extends tx_imagemapwizard_view_abstract {
 				var field = checkReference();
 				if (field)	{
 				  field.value = input;
-				  '.$update.'
+				  ' . $update . '
 				}
 			  }
 			  function getValue()	{	//
@@ -79,11 +80,11 @@ class tx_imagemapwizard_view_wizard extends tx_imagemapwizard_view_abstract {
 			}
 		');
 
-		$this->content.=$this->doc->startPage($GLOBALS['LANG']->getLL('imagemap_wizard.title'));
+		$this->content .= $this->doc->startPage($GLOBALS['LANG']->getLL('imagemap_wizard.title'));
 
 		$mainContent = $this->renderTemplate('wizard.php');
-		$this->content.= $this->doc->section($GLOBALS['LANG']->getLL('imagemap_wizard.title'), $mainContent, 0,1);
-		$this->content.= $this->doc->endPage();
+		$this->content .= $this->doc->section($GLOBALS['LANG']->getLL('imagemap_wizard.title'), $mainContent, 0, 1);
+		$this->content .= $this->doc->endPage();
 		$this->content = $this->insertMyStylesAndJs($this->content);
 
 		echo $this->doc->insertStylesAndJS($this->content);
@@ -95,9 +96,9 @@ class tx_imagemapwizard_view_wizard extends tx_imagemapwizard_view_abstract {
 	 * @param String Content
 	 */
 	protected function insertMyStylesAndJs($content) {
-		$content = str_replace('<!--###POSTJSMARKER###-->',$this->getExternalJSIncludes().'<!--###POSTJSMARKER###-->',$content);
-		$content = str_replace('<!--###POSTJSMARKER###-->',$this->getInlineJSIncludes().'<!--###POSTJSMARKER###-->',$content);
-		$content = str_replace('<!--###POSTJSMARKER###-->',$this->getExternalCSSIncludes().'<!--###POSTJSMARKER###-->',$content);
+		$content = str_replace('<!--###POSTJSMARKER###-->', $this->getExternalJSIncludes() . '<!--###POSTJSMARKER###-->', $content);
+		$content = str_replace('<!--###POSTJSMARKER###-->', $this->getInlineJSIncludes() . '<!--###POSTJSMARKER###-->', $content);
+		$content = str_replace('<!--###POSTJSMARKER###-->', $this->getExternalCSSIncludes() . '<!--###POSTJSMARKER###-->', $content);
 		return $content;
 	}
 
@@ -110,7 +111,7 @@ class tx_imagemapwizard_view_wizard extends tx_imagemapwizard_view_abstract {
 	 * @param String updateCallback the Javascript-Callback in case of successful change
 	 * @return String Generated HTML-link to the Link-Wizard
 	 */
-	protected function linkWizardIcon($linkId,$fieldName,$fieldValue,$updateCallback='') {
+	protected function linkWizardIcon($linkId, $fieldName, $fieldValue, $updateCallback = '') {
 
 		$params = array(
 			//'act' => 'page',
@@ -123,10 +124,12 @@ class tx_imagemapwizard_view_wizard extends tx_imagemapwizard_view_abstract {
 			'P[fieldChangeFunc][focus]' => 'focus()',
 			'P[currentValue]' => $fieldValue,
 		);
-		if($updateCallback) $params['P[fieldChangeFunc][callback]'] = $updateCallback;
+		if ($updateCallback) {
+			$params['P[fieldChangeFunc][callback]'] = $updateCallback;
+		}
 
-		$link = t3lib_div::linkThisUrl($this->doc->backPath.'browse_links.php', $params);
-		return "<a href=\"#\" id=\"".$linkId."\" onclick=\"this.blur(); vHWin=window.open('".$link."','','height=600,width=500,status=0,menubar=0,scrollbars=1');vHWin.focus();return false;\">".$this->getIcon("gfx/link_popup.gif","alt=\"".$this->getLL('imagemap_wizard.form.area.linkwizard')."\" title=\"".$this->getLL('imagemap_wizard.form.area.linkwizard')."\"")."</a>";
+		$link = t3lib_div::linkThisUrl($this->doc->backPath . 'browse_links.php', $params);
+		return "<a href=\"#\" id=\"" . $linkId . "\" onclick=\"this.blur(); vHWin=window.open('" . $link . "','','height=600,width=500,status=0,menubar=0,scrollbars=1');vHWin.focus();return false;\">" . $this->getIcon("gfx/link_popup.gif", "alt=\"" . $this->getLL('imagemap_wizard.form.area.linkwizard') . "\" title=\"" . $this->getLL('imagemap_wizard.form.area.linkwizard') . "\"") . "</a>";
 	}
 
 	/**
@@ -135,15 +138,15 @@ class tx_imagemapwizard_view_wizard extends tx_imagemapwizard_view_abstract {
 	 * @return String the HTML-form-tag
 	 */
 	protected function getFormTag() {
-		return "<form id='".$this->getId()."' name='".$this->getId()."'>";
+		return "<form id='" . $this->getId() . "' name='" . $this->getId() . "'>";
 	}
 
 	public function renderAttributesTemplate($inp) {
 		$attrKeys = $this->data->getAttributeKeys();
 		$ret = '';
-		if(is_array($attrKeys)) {
-			foreach($attrKeys as $key) {
-				$ret .= str_replace(array('ATTRLABEL','ATTRNAME'),array(ucfirst($key),strtolower($key)),$inp);
+		if (is_array($attrKeys)) {
+			foreach ($attrKeys as $key) {
+				$ret .= str_replace(array('ATTRLABEL', 'ATTRNAME'), array(ucfirst($key), strtolower($key)), $inp);
 			}
 		}
 		return $ret;
@@ -152,14 +155,14 @@ class tx_imagemapwizard_view_wizard extends tx_imagemapwizard_view_abstract {
 	public function getEmptyAttributset() {
 		$attrKeys = $this->data->getAttributeKeys();
 		$ret = "";
-		foreach($attrKeys as $key) {
-			$ret[] = $key.':\'\'';
+		foreach ($attrKeys as $key) {
+			$ret[] = $key . ':\'\'';
 		}
-		return implode(',',$ret);
+		return implode(',', $ret);
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_wizard.php'])    {
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_wizard.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/imagemap_wizard/classes/view/class.tx_imagemapwizard_view_wizard.php']);
 }
 ?>
