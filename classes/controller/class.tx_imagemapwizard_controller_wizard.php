@@ -50,8 +50,12 @@ class tx_imagemapwizard_controller_wizard {
 	protected function wizardAction() {
 		$params = t3lib_div::_GP('P');
 		$currentValue = $GLOBALS['BE_USER']->getSessionData('imagemap_wizard.value');
-		//TODO: use-Flex-DataObject if needed
-		$this->view->setData($this->makeDataObj($params['table'], $params['field'], $params['uid'], $currentValue));
+		// @todo use-Flex-DataObject if needed
+		try {
+			$this->view->setData($this->makeDataObj($params['table'], $params['field'], $params['uid'], $currentValue));
+		} catch (Exception $e) {
+			// @todo make something smart if params are empty and object creation failed
+		}
 		$this->view->renderContent();
 	}
 
@@ -60,8 +64,11 @@ class tx_imagemapwizard_controller_wizard {
 	 * comes with a cool preview and Ajax functionality which updates the preview...
 	 */
 	protected function tceformAction() {
-
-		$data = $this->makeDataObj($this->params['table'], $this->params['field'], $this->params['uid'], $this->forceValue);
+		try {
+			$data = $this->makeDataObj($this->params['table'], $this->params['field'], $this->params['uid'], $this->forceValue);
+		} catch (Exception $e) {
+			// @todo make something smart if params are empty and object creation failed
+		}
 		$data->setFieldConf($this->params['fieldConf']);
 
 		$this->view->setData($data);
