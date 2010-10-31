@@ -48,7 +48,7 @@ class tx_imagemapwizard_parser extends tslib_pibase {
 			$converter = t3lib_div::makeInstance('tx_imagemapwizard_model_mapper');
 			$mapname = $converter->createValidNameAttribute($mapname);
 			$map = $converter->generateMap($this->cObj,$mapname,$this->cObj->getData($conf['map.']['data'],$this->cObj->data),$attrlist,$xhtml,$conf,$num);
-			if(!$converter->isEmptyMap($map) || $this->cObj->getData('register:keepUsemapMarker')) {
+			if(!$converter->isEmptyMap($map) || $this->cObj->getData('register:keepUsemapMarker', $this->cObj->data)) {
 				return str_replace('###IMAGEMAP_USEMAP###',$mapname,$content).$map;
 			}
 		}
