@@ -113,7 +113,7 @@ class tx_imagemapwizard_model_mapper {
 	 * @return Array typolink-conf array
 	 */
 	protected function getTypolinkSetup($param, $conf = NULL) {
-		$ret = array('parameter' => $param);
+		$ret = array('parameter.' => array('wrap'=>$param));
 		if (is_array($conf) && array_key_exists('typolink.', $conf) && is_array($conf['typolink.'])) {
 			$ret = array_merge($ret, $conf['typolink.']);
 		}

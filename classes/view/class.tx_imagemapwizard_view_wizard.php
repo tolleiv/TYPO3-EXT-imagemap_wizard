@@ -123,6 +123,7 @@ class tx_imagemapwizard_view_wizard extends tx_imagemapwizard_view_abstract {
 			'P[itemName]' => $fieldName,
 			'P[fieldChangeFunc][focus]' => 'focus()',
 			'P[currentValue]' => $fieldValue,
+			'P[pid]'=>$this->params['pid']
 		);
 		if ($updateCallback) {
 			$params['P[fieldChangeFunc][callback]'] = $updateCallback;
