@@ -168,13 +168,14 @@ var areaClass = Class
 						"#" + this.getFormId()
 								+ " > .basicOptions > .colorPreview > div")
 						.data(
-								"pseudo",
-								"#"
-										+ this.getFormId()
-										+ " > .basicOptions > .exp > .expUpDown:visible").parent()
+								"target",
+								this
+						)
 						.click(
 								function(event) {
-									jQuery(jQuery(this).data("pseudo"))
+									var that = jQuery(this).data("target");
+									var upDownToggle = jQuery("#" + that.getFormId() + " > .basicOptions > .exp > .expUpDown:visible").parent();
+									jQuery(upDownToggle)
 											.trigger('click');
 								});
 				jQuery("#" + this.getFormId() + "_link").data("obj", this)
