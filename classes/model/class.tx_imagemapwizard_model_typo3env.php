@@ -53,6 +53,12 @@ class tx_imagemapwizard_model_typo3env {
 		require_once(PATH_t3lib . 'class.t3lib_page.php');
 		require_once(PATH_t3lib . 'class.t3lib_timetrack.php');
 		require_once(t3lib_extMgm::extPath('css_styled_content') . 'pi1/class.tx_cssstyledcontent_pi1.php');
+		if (t3lib_extMgm::isLoaded('dam')) {
+			require_once(t3lib_extMgm::extPath('dam') . 'lib/class.tx_dam_tsfe.php');
+		}
+		if (t3lib_extMgm::isLoaded('dam_ttcontent')) {
+			require_once(t3lib_extMgm::extPath('dam_ttcontent') . 'pi_cssstyledcontent/class.tx_damttcontent_pi1.php');
+		}
 
 		$tca = $GLOBALS['TCA'];
 		$GLOBALS['TT'] = t3lib_div::makeInstance('t3lib_timeTrack');
