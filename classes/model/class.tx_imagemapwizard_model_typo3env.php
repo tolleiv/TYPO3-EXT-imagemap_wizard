@@ -115,6 +115,7 @@ class tx_imagemapwizard_model_typo3env {
 		$GLOBALS['TSFE']->inituserGroups();
 		$GLOBALS['TSFE']->workspacePreviewInit();
 		$GLOBALS['TSFE']->clear_preview();
+		unset($GLOBALS['TSFE']->TYPO3_CONF_VARS['FE']['pageNotFound_handling']);
 		$GLOBALS['TSFE']->determineId();
 		$GLOBALS['TSFE']->newCObj();
 		$GLOBALS['TCA'] = $tca; //todo: check why TCA is lost sometimes...
