@@ -77,10 +77,15 @@ class tx_imagemapwizard_model_typo3env {
 		//$GLOBALS['TSFE']->sys_page->init($GLOBALS['TSFE']->showHiddenPage);
 		$GLOBALS['TSFE']->sys_page->init(true);
 		$page = $GLOBALS['TSFE']->sys_page->getPage($pid);
-		if (count($page) == 0) {
-			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
-			$this->lastError = "Error(" . __LINE__ . ") [ Unable to find the requested host-page ]:" . $sqlDebug;
-			return false;
+		if (count($page) == 0 && $GLOBALS['BE_USER']->workspace != 0) {
+			$GLOBALS['TSFE']->sys_page->versioningPreview = TRUE;
+			$wsRec = t3lib_beFunc::getWorkspaceVersionOfRecord($GLOBALS['BE_USER']->workspace, 'pages', $pid);
+			$page = $GLOBALS['TSFE']->sys_page->getPage($wsRec['uid']);
+			if (count($page) == 0) {
+				$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
+				$this->lastError = "Error(" . __LINE__ . ") [ Unable to find the requested host-page ]:" . $sqlDebug;
+				return false;
+			}
 		}
 		if ($page['doktype'] == 4 && count($GLOBALS['TSFE']->getPageShortcut($page['shortcut'], $page['shortcut_mode'], $page['uid'])) == 0) {
 			$GLOBALS['TYPO3_DB']->debugOutput = $sqlDebug;
