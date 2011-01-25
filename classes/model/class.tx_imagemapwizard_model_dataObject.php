@@ -120,7 +120,7 @@ class tx_imagemapwizard_model_dataObject {
 	public function getImageLocation($abs = false) {
 		$location = '';
 		$imageField = $this->determineImageFieldName();
-		if ($this->table == 'tt_content' && $imageField == 'image' && t3lib_extMgm::isLoaded('dam_ttcontent') && t3lib_extMgm::isLoaded('dam')) { 
+		if ($this->table == 'tt_content' && $imageField == 'image' && t3lib_extMgm::isLoaded('dam_ttcontent') && t3lib_extMgm::isLoaded('dam')) {
 			$imageField = 'tx_damttcontent_files';
 			$damFiles = tx_dam_db::getReferencedFiles('tt_content', $this->getFieldValue('uid'), $imageField);
 			$location = array_pop($damFiles['files']);
@@ -298,7 +298,9 @@ class tx_imagemapwizard_model_dataObject {
 	 */
 	public function getAttributeKeys() {
 		$keys = t3lib_div::trimExplode(',', tx_imagemapwizard_model_typo3env::getExtConfValue('additionalAttributes', ''));
-		return array_diff($keys, array('alt', 'href', 'shape', 'coords'));
+		$keys = array_diff($keys, array('alt', 'href', 'shape', 'coords'));
+		$keys = array_map("strtolower", $keys);
+		return $keys;
 	}
 
 	/**
